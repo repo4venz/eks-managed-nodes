@@ -18,7 +18,7 @@ provider "aws" {
 
  terraform {
   backend "s3" {
-    bucket = "suvendu-terraform-state" #var.s3_bucket_name
+    bucket = "suvendu-eks-terraform-state" #var.s3_bucket_name
     key    = "eks/terraform.tfstate" #var.tfstate_file_path
     region = "eu-west-2" #var.region_name   ### Mentioned fixed region for s3 bucket
     encrypt= true

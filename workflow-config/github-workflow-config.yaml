@@ -4,4 +4,4 @@ EKSConfig:
     clusterRegion: "eu-west-2"
 
 TerraformConfig:
-    s3NameTFstate: "suvendu-terraform-state"
+    s3NameTFstate: "suvendu-eks-terraform-state"
