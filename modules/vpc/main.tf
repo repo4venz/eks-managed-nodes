@@ -31,8 +31,8 @@ Public Subnets
 
   tags = {
     Name        = substr("public-subnet-${var.environment}-${element(var.availability_zones_public, count.index)}",0,64)
-    "kubernetes.io/role/elb" = "1"
-    "kubernetes.io/cluster/${var.cluster_name}-${var.environment}" = "shared"
+    "kubernetes.io/role/elb" = "1"    # this instruct the kubernetes to create public load balancer in these subnets
+    "kubernetes.io/cluster/${var.cluster_name}-${var.environment}" = "owned"
     Environment = var.environment
     Group = var.cluster_group
   }
@@ -54,7 +54,7 @@ Private Subnets
   tags = {
     Name        = substr("private-subnet-${var.environment}-${element(var.availability_zones_private, count.index)}",0,64)
     "kubernetes.io/role/internal-elb" = "1"
-    "kubernetes.io/cluster/${var.cluster_name}-${var.environment}" = "shared"
+    "kubernetes.io/cluster/${var.cluster_name}-${var.environment}" = "owned"
     Environment = var.environment
     Group = var.cluster_group
   }

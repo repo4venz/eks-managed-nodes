@@ -7,6 +7,7 @@ provider "aws" {
      Owner_Email       = "suvendu.mandal@gmail.com"
      Owner_Group     = "Personal"
      Owner_Location     = "UK"
+     Purpose = "eks_agentic_ai"
      Environment =  var.environment
      Resource_Region = var.region_name
      EKS_Cluster_Name = "${var.cluster_name}-${var.environment}"
@@ -18,7 +19,7 @@ provider "aws" {
 
  terraform {
   backend "s3" {
-    bucket = "suvendu-eks-terraform-state" #var.s3_bucket_name
+    bucket = "suvendu-terraform-state-all" #var.s3_bucket_name
     key    = "eks/terraform.tfstate" #var.tfstate_file_path
     region = "eu-west-2" #var.region_name   ### Mentioned fixed region for s3 bucket
     encrypt= true

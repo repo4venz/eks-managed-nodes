@@ -34,11 +34,7 @@ variable "github_runner_base_path" {
  
 variable "tags" {
   type        = map(string)
-  default     = {
-    business_owner  = "Suvendu Mandal"
-    cost_profile  = "personal"
-    purpose = "eks_agentic_ai"
-    }
+  default     = {}
   description = "Additional tags e.g. `map('BusinessUnit`,`XYZ`)"
 }
  
