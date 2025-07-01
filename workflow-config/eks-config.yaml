@@ -1,0 +1,4 @@
+EKSConfig:
+    envName: "dev"
+    clusterName: "eks-managed-clstr-dev"
+    clusterRegion: "eu-west-2"
