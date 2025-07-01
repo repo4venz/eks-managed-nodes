@@ -14,3 +14,10 @@ module "vpc" {
     cidr_block_internet_gw              =  var.cidr_block_internet_gw
 }
 
+module kms_aws {
+    source                              =  "./modules/kms-aws"
+    cluster_name                        =  var.cluster_name
+    environment                         =  var.environment
+
+    depends_on = [module.vpc]
+}
