@@ -27,7 +27,7 @@ jobs:
       - name: Install kubectl
         uses: azure/setup-kubectl@v4
         with:
-          version: 'v4.0.1'
+          version: 'v4.0.0'
         id: install
       - uses: actions/checkout@v2
 
