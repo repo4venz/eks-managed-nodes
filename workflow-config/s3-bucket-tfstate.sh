@@ -4,6 +4,9 @@ AWS_REGION=$2
   #"suvendu-terraform-state"
   #"eu-west-2"
 
+  echo "S3 Bucket Name: ${S3_BUCKET_NAME}" 
+  echo "S3 AWS Region: ${AWS_REGION}" 
+
 bucketstatus=$(aws s3api head-bucket --bucket "${S3_BUCKET_NAME}" 2>&1)
 if echo "${bucketstatus}" | grep 'Not Found';
 then
