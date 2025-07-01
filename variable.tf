@@ -39,6 +39,6 @@ variable "tags" {
     cost_profile  = "personal"
     purpose = "eks_agentic_ai"
     }
-  description = "Additional tags (e.g. `map('BusinessUnit`,`XYZ`)"
+  description = "Additional tags e.g. `map('BusinessUnit`,`XYZ`)"
 }
  
