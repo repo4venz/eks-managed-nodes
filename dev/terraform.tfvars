@@ -19,12 +19,12 @@ github_runner_base_path      = "/home/runner/"
 aws_sm_secrets               = [
                                     {
                                         secret_name = "test/application1/credentials",          # Reference to the secret of AWS Secret Manager 
-                                        application_namespace = "ns-fargate-app"                # K8s namespace in EKS where the AWS Secret will sync
+                                        application_namespace = "ns-application"                # K8s namespace in EKS where the AWS Secret will sync
                                         k8s_secret_store_name = "application1-secret-store"     # K8s Secret Store name which will be created in EKS to sync the AWS Secrets
                                     },
                                     {
                                         secret_name = "test/application2/credentials",
-                                        application_namespace = "ns-fargate-app"
+                                        application_namespace = "ns-application"
                                         k8s_secret_store_name = "application2-secret-store" 
                                     }
                                 ]

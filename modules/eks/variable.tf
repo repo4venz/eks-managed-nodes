@@ -15,10 +15,7 @@ variable "public_subnets" {
   description = "List of private subnet IDs"
 }
 
-variable "fargate_app_namespace" {
-  description = "Name of fargate selector namespace"
-}
-
+ 
 
 variable "cluster_version" {
   description = "Version of the EKS Cluster"
