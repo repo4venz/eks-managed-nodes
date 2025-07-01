@@ -23,7 +23,8 @@
 	      "kms:ScheduleKeyDeletion",
 	      "kms:CancelKeyDeletion",
 	      "kms:TagResource",
-	      "kms:UntagResource"
+	      "kms:UntagResource",
+          "kms:ListAliases"
 	    ]
 	
 	    resources = ["*"]
@@ -46,7 +47,12 @@
 	      "kms:Decrypt",
 	      "kms:ReEncrypt",
 	      "kms:GenerateDataKey",
-	      "kms:DescribeKey"
+	      "kms:DescribeKey",
+	      "kms:ScheduleKeyDeletion",
+	      "kms:CancelKeyDeletion",
+	      "kms:TagResource",
+	      "kms:UntagResource",
+          "kms:ListAliases"
 	    ]
 	
 	    resources = ["*"]
