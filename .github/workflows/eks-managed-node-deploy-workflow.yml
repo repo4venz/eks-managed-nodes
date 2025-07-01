@@ -40,16 +40,21 @@ jobs:
           echo "Environment Name: ${{ steps.yaml.outputs.EKSConfig__envName }}"
           echo "EKS cluster Name: ${{ steps.yaml.outputs.EKSConfig__clusterName }}"
           echo "EKS Cluster Region: ${{ steps.yaml.outputs.EKSConfig__clusterRegion }}" 
+          echo "S3 Bucket Name - TF State: ${{ steps.yaml.outputs.TerraformConfig__s3NameTFstate }}" 
           echo "Setting Env variable with EKS cluster name...."
           echo "AWS_EKS_CLUSTER_NAME=$(echo "${{ steps.yaml.outputs.EKSConfig__clusterName }}")" >> $GITHUB_ENV
           echo "Setting Env variable with EKS cluster AWS Region...."
           echo "AWS_DEFAULT_REGION=$(echo "${{ steps.yaml.outputs.EKSConfig__clusterRegion }}")" >> $GITHUB_ENV
+          echo "Setting Env variable with S3 Bucket Name for TF State...."
+          echo "S3_NAME_TF_STATE=$(echo "${{ steps.yaml.outputs.TerraformConfig__s3NameTFstate }}")" >> $GITHUB_ENV
+
 
       - name: Checking the GitHub Env variable values
         id: Test-Cluster-name-Env-Var
         run: |
           echo "AWS_EKS_CLUSTER_NAME: ${AWS_EKS_CLUSTER_NAME}" 
           echo "AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION}"
+          echo "S3_NAME_TF_STATE: ${S3_NAME_TF_STATE}"
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -65,7 +70,7 @@ jobs:
         run: chmod +x ./workflow-config/s3-bucket-tfstate.sh
       - name: Run the tfstate S3 bucket creation scripts 
         run: |
-          ./workflow-config/s3-bucket-tfstate.sh suvendu-terraform-state ${AWS_DEFAULT_REGION}
+          ./workflow-config/s3-bucket-tfstate.sh ${S3_NAME_TF_STATE} ${AWS_DEFAULT_REGION}
 
       - uses: hashicorp/setup-terraform@v3
         with:
@@ -89,18 +94,7 @@ jobs:
         id: plan
         run: TF_LOG=DEBUG terraform plan -input=false -var-file=${{ matrix.environment }}/terraform.tfvars -no-color
 
-      - name: Terraform apply
-        #if: always()
-       # if: github.ref == 'refs/heads/master'
-        if: "!contains(github.event.head_commit.message, 'destroy')"
-        id: apply
-        run: TF_LOG=DEBUG terraform apply -auto-approve -input=false -var-file=${{matrix.environment }}/terraform.tfvars
 
-      - name: Terraform Destroy
-        #if: github.ref == 'refs/heads/master'
-        if: "contains(github.event.head_commit.message, 'destroy')"
-        id: destroy
-        run: TF_LOG=DEBUG terraform destroy -auto-approve -input=false -var-file=${{ matrix.environment }}/terraform.tfvars
   comment:
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
