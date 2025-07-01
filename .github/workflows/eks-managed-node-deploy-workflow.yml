@@ -28,56 +28,39 @@ jobs:
         uses: azure/setup-kubectl@v4
         id: install
 
+      - name: Read EKS cluster name from config yaml action
+        id: yaml
+        uses: actions-tools/yaml-outputs@v2     
+        with:
+          file-path: './workflow-config/github-workflow-config.yaml'          # File to read from
+      - run: |
+          echo "Environment Name: ${{ steps.yaml.outputs.EKSConfig__envName }}"
+          echo "EKS cluster Name: ${{ steps.yaml.outputs.EKSConfig__clusterName }}"
+          echo "EKS Cluster Region: ${{ steps.yaml.outputs.EKSConfig__clusterRegion }}" 
+          echo "Setting Env variable with EKS cluster name...."
+          echo "AWS_EKS_CLUSTER_NAME=$(echo "${{ steps.yaml.outputs.EKSConfig__clusterName }}")" >> $GITHUB_ENV
+          echo "Setting Env variable with EKS cluster AWS Region...."
+          echo "AWS_DEFAULT_REGION=$(echo "${{ steps.yaml.outputs.EKSConfig__clusterRegion }}")" >> $GITHUB_ENV
+
+      - name: Checking the GitHub Env variable values
+        id: Test-Cluster-name-Env-Var
+        run: |
+          echo "AWS_EKS_CLUSTER_NAME: ${AWS_EKS_CLUSTER_NAME}" 
+          echo "AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION}"
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: eu-west-2
+          aws-region: ${{ env.AWS_DEFAULT_REGION }}
       
       - name: Verify AWS credentials
         run: aws sts get-caller-identity
 
-      - uses: hashicorp/setup-terraform@v1
+      - uses: hashicorp/setup-terraform@v3
         with:
           terraform_wrapper: false
-      - uses: actions/checkout@v1
-
-      - name: Read EKS cluster name from config yaml action
-        id: yaml-data-cluster-name
-        uses: KJ002/read-yaml@main      # You may wish to replace main with a version tag such as '1.6' etc.
-        with:
-          file: './workflow-config/eks-config.yaml'          # File to read from
-          key-path: '["EKSConfig", "clusterName"]' # Access the runs key then the using key and retuns the value.
-
-      - name: Display Env Config YAML and Set Cluster Name Env variable
-        run: |
-            echo "Config file EKS cluster name: ${{ steps.yaml-data-cluster-name.outputs.data }}"
-            echo "Setting Env variable with EKS cluster name...."
-            echo "AWS_EKS_CLUSTER_NAME=$(echo "${{ steps.yaml-data-cluster-name.outputs.data }}")" >> $GITHUB_ENV
-
-      - name: Checking the Env variable for cluster name
-        id: Test-Cluster-name-Env-Var
-        run: |
-          echo "EKS Cluster name in env variable: ${AWS_EKS_CLUSTER_NAME}"
-
-      - name: Read AWS Region Name from config yaml action
-        id: yaml-data-cluster-region
-        uses: KJ002/read-yaml@main      # You may wish to replace main with a version tag such as '1.6' etc.
-        with:
-          file: './workflow-config/eks-config.yaml'            # File to read from
-          key-path: '["EKSConfig", "clusterRegion"]' # Access the runs key then the using key and retuns the value.
-
-      - name: Display Env Config YAML and Set Cluster Region Env variable
-        run: |
-            echo "Config file EKS cluster AWS Region: ${{ steps.yaml-data-cluster-region.outputs.data }}"
-            echo "Setting Env variable with EKS cluster AWS Region...."
-            echo "AWS_DEFAULT_REGION=$(echo "${{ steps.yaml-data-cluster-region.outputs.data }}")" >> $GITHUB_ENV
-
-      - name: Checking the Env variable for cluster AWS Region
-        id: Test-Cluster-Region-Env-Var
-        run: |
-          echo "EKS Cluster AWS Region in env variable: ${AWS_DEFAULT_REGION}"
 
       - name: Format Terraform
         run: terraform fmt
