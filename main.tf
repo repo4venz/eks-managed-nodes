@@ -21,3 +21,4 @@ module kms_aws {
 
     depends_on = [module.vpc]
 }
+
