@@ -33,7 +33,10 @@ jobs:
         uses: actions-tools/yaml-outputs@v2     
         with:
           file-path: './workflow-config/github-workflow-config.yaml'          # File to read from
-      - run: |
+      
+      - name: Display Config values from YAML
+        id: display-yaml
+        run: |
           echo "Environment Name: ${{ steps.yaml.outputs.EKSConfig__envName }}"
           echo "EKS cluster Name: ${{ steps.yaml.outputs.EKSConfig__clusterName }}"
           echo "EKS Cluster Region: ${{ steps.yaml.outputs.EKSConfig__clusterRegion }}" 
@@ -57,6 +60,12 @@ jobs:
       
       - name: Verify AWS credentials
         run: aws sts get-caller-identity
+
+      - name: Make the shell script files executable
+        run: chmod +x ./workflow-config/s3-bucket-tfstate.sh
+      - name: Run the tfstate S3 bucket creation scripts 
+        run: |
+          ./workflow-config/s3-bucket-tfstate.sh suvendu-terraform-state ${AWS_DEFAULT_REGION}
 
       - uses: hashicorp/setup-terraform@v3
         with:
