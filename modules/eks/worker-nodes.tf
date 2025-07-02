@@ -58,10 +58,7 @@ resource "aws_eks_node_group" "demo_eks_nodegroup" {
   node_group_name = substr("${var.cluster_name}-${var.environment}-workernodes-group",0,64)  
   node_role_arn   = aws_iam_role.eks_worker_nodes_role.arn
 
-  subnet_ids = [
-   var.public_subnets, 
-   var.private_subnets
-  ]
+  subnet_ids =  var.private_subnets
 
   capacity_type  = "SPOT"
   instance_types = ["t2.medium"]

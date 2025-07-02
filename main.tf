@@ -27,7 +27,7 @@ module "eks" {
     cluster_name                                  =  var.cluster_name
     cluster_version                               =  var.cluster_version
     environment                                   =  var.environment
-    private_subnets                               =  module.vpc.aws_subnets_private
+    private_subnets                               =  module.vpc.aws_subnets_private    
     public_subnets                                =  module.vpc.aws_subnets_public
     eks_kms_secret_encryption_key_arn             =  module.kms_aws.eks_kms_secret_encryption_key_arn  # KMS Key ID
     eks_kms_secret_encryption_alias_arn           =  module.kms_aws.eks_kms_secret_encryption_alias_arn  
