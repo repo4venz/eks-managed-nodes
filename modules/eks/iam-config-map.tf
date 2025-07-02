@@ -7,11 +7,11 @@ resource "null_resource" "eks_get_config_exec" {
 	    always_run = timestamp()
 	  }
 	  provisioner "local-exec" {
-	    command = "aws eks --region ${data.aws_region.current.name} update-kubeconfig --name ${aws_eks_cluster.eks_cluster.name}"
+	    command = "aws eks --region ${data.aws_region.current.name} update-kubeconfig --name ${aws_eks_cluster.demo_eks_cluster.name}"
 	  }
 	
 	  depends_on = [
-	    aws_eks_cluster.eks_cluster
+	    aws_eks_cluster.demo_eks_cluster
 	  ]
 	}
 
