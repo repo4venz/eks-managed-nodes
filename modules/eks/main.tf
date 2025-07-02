@@ -131,7 +131,12 @@ resource "aws_eks_cluster" "demo_eks_cluster" {
   
   depends_on = [
     aws_iam_role.eks_cluster_role,
-    aws_cloudwatch_log_group.cloudwatch_log_group
+    aws_cloudwatch_log_group.cloudwatch_log_group,
+    aws_iam_role_policy_attachment.AmazonEKSClusterPolicy,
+    aws_iam_role_policy_attachment.AmazonEKSCloudWatchMetricsPolicy,
+    aws_iam_role_policy_attachment.AmazonEKSVPCResourceController,
+    aws_iam_role_policy_attachment.AmazonEC2ContainerRegistryReadOnly-EKS,
+    aws_iam_role_policy_attachment.eks_kms_usage
   ]
 }
 
