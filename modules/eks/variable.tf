@@ -42,5 +42,8 @@ variable "eks_kms_cloudwatch_logs_encryption_alias_arn" {
 	}
  
 
-
- 
+variable "eks_readiness_timeout" {
+  description = "The maximum time (in seconds) to wait for EKS API server endpoint to become healthy"
+  type        = number
+  default     = "600"
+}
