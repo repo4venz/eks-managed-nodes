@@ -144,17 +144,4 @@ resource "aws_eks_cluster" "demo_eks_cluster" {
 
 
 
-# Update the Kubeconfig file in the GitHub Actions Runner
-resource "null_resource" "eks_get_config_exec" {
-	
-	  triggers = {
-	    always_run = timestamp()
-	  }
-	  provisioner "local-exec" {
-	    command = "aws eks --region ${data.aws_region.current.name} update-kubeconfig --name ${aws_eks_cluster.demo_eks_cluster.name}"
-	  }
-	
-	  depends_on = [
-	    aws_eks_cluster.demo_eks_cluster
-	  ]
-	}
+ 
