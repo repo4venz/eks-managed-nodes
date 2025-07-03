@@ -47,3 +47,13 @@ variable "eks_readiness_timeout" {
   type        = number
   default     = "600"
 }
+
+
+variable "aws_admin_role_name" {
+  description = "AWS Admin Role to manage EKS cluster. The role must be created in AWS with required permission."
+}
+
+variable "aws_admin_user_name" {
+  description = "AWS User who will assume AWS Admin Role to manage EKS cluster. The user must be created in AWS to assume the admin role."
+}
+ 

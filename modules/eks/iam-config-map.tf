@@ -55,7 +55,7 @@ resource "null_resource" "eks_delete_configmap_exec" {
 
  
 
-# Update the aws-auth configmap
+# Update existing the aws-auth configmap
 #resource "kubernetes_config_map" "aws_auth" {
 resource "kubernetes_config_map_v1_data" "aws_auth" {
   metadata {
@@ -66,8 +66,8 @@ resource "kubernetes_config_map_v1_data" "aws_auth" {
   data = {
     "mapRoles" = yamlencode([
       {
-        rolearn  = "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:role/suvendu-super-admin-role"
-        username = "suvendu-super-admin-role"
+        rolearn  = "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:role/${var.aws_admin_role_name}"
+        username = "${var.aws_admin_role_name}"
         groups   = ["system:masters", "system:bootstrappers", "system:nodes"]
       },
       {
@@ -79,12 +79,12 @@ resource "kubernetes_config_map_v1_data" "aws_auth" {
     ])
     "mapUsers" = yamlencode([
       {
-        userarn  = "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:user/suvendu_admin_user"
-        username = "suvendu_admin_user"
+        userarn  = "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:user/${var.aws_admin_user_name}"
+        username = "${var.aws_admin_user_name}"
         groups   = ["system:masters"]
       },
       {
-        userarn  = "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:user/suvendu_admin_user"
+        userarn  = "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:user/${var.aws_admin_user_name}"
         username = "system:node:{{EC2PrivateDNSName}}"
         groups   = ["system:masters", "system:bootstrappers", "system:nodes"]
       }

@@ -14,7 +14,8 @@ availability_zones_public    =  ["eu-west-2a", "eu-west-2b", "eu-west-2c"]
 availability_zones_private   =  ["eu-west-2a", "eu-west-2b", "eu-west-2c"]
 cidr_block_internet_gw       =  "0.0.0.0/0"
 cidr_block_nat_gw            =  "0.0.0.0/0"
-#fargate_app_namespace        =  ["ns-fargate-app", "ns-fargate-app2", "my-apps"]
+aws_admin_role_name          = "suvendu-super-admin-role"
+aws_admin_user_name          = "suvendu_admin_user"
 github_runner_base_path      = "/home/runner/"
 aws_sm_secrets               = [
                                     {

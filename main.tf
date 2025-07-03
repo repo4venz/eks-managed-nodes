@@ -33,6 +33,8 @@ module "eks" {
     eks_kms_secret_encryption_alias_arn           =  module.kms_aws.eks_kms_secret_encryption_alias_arn  
 	eks_kms_cloudwatch_logs_encryption_key_arn    =  module.kms_aws.eks_kms_cloudwatch_logs_encryption_key_arn # KMS Key ID
     eks_kms_cloudwatch_logs_encryption_alias_arn  =  module.kms_aws.eks_kms_cloudwatch_logs_encryption_alias_arn 
+    aws_admin_role_name                           =  var.aws_admin_role_name
+    aws_admin_user_name                           =  var.aws_admin_user_name
 
     depends_on = [module.vpc, module.kms_aws]
 }

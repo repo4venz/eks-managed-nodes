@@ -10,7 +10,15 @@ variable "private_subnets_cidr" {}
 variable "availability_zones_private" {}
 variable "cidr_block_internet_gw" {}
 variable "cidr_block_nat_gw" {}
- 
+
+variable aws_admin_role_name {
+  description = "AWS Admin Role to manage EKS cluster. The role must be created in AWS with required permission."
+  default = "eks_admin_role"
+}
+variable aws_admin_user_name {
+  description = "AWS User who will assume AWS Admin Role to manage EKS cluster. The user must be created in AWS to assume the admin role."
+  default = "eks_admin_user"
+}
  
 variable "cluster_version" {}
 variable "region_name" {
