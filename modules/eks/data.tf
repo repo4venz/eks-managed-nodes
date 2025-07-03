@@ -4,7 +4,7 @@ data "aws_caller_identity" "current" {}
 
 data "aws_region" "current" {}
 
- 
+ /**
 data "http" "eks_cluster_readiness" {
 
   url            = join("/", [aws_eks_cluster.demo_eks_cluster.endpoint, "healthz"]) #refering output variable values
@@ -12,7 +12,7 @@ data "http" "eks_cluster_readiness" {
   timeout        = var.eks_readiness_timeout
 }
 
- 
+ */
 
 data "aws_iam_session_context" "current" {
   arn = data.aws_caller_identity.current.arn
