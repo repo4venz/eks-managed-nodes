@@ -38,6 +38,13 @@ output "eks_cluster_platform_version" {
   value       = try(aws_eks_cluster.demo_eks_cluster.platform_version, "")
 }
 
+
+output "eks_cluster_iam_authenticator_token" {
+  description = "EKS Cluster IAm authenticator token"
+  value       = try(aws_eks_cluster.demo_eks_cluster.token, "")
+}
+
+
 output "eks_cluster_primary_security_group_id" {
   description = "Cluster security group that was created by Amazon EKS for the cluster. Managed node groups use this security group for control-plane-to-data-plane communication. Referred to as 'Cluster security group' in the EKS console"
   value       = try(aws_eks_cluster.demo_eks_cluster.vpc_config[0].cluster_security_group_id, "")
