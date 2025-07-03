@@ -53,6 +53,7 @@ resource "null_resource" "eks_delete_configmap_exec" {
 	}
 */
 
+ 
 
 # Define the aws-auth configmap
 #resource "kubernetes_config_map" "aws_auth" {
@@ -67,26 +68,26 @@ resource "kubernetes_config_map_v1_data" "aws_auth" {
       {
         rolearn  = "arn:aws:iam::717949064245:role/suvendu-super-admin-role"
         username = "suvendu-super-admin-role"
-        groups   = ["system:masters"]
+        groups   = ["system:masters", "system:bootstrappers", "system:nodes"]
+      },
+      {
+        rolearn  = "${aws_iam_role.eks_worker_nodes_role.arn}"
+        username = "system:node:{{EC2PrivateDNSName}}"
+        groups   = ["system:masters", "system:bootstrappers", "system:nodes"]
       },
       # Add more roles or users here
     ])
     "mapUsers" = yamlencode([
       {
-        userarn  = "arn:aws:iam::717949064245:user/suvendu_cli_super_admin"
-        username = "suvendu_cli_super_admin"
+        userarn  = "arn:aws:iam::717949064245:user/suvendu_admin_user"
+        username = "suvendu_admin_user"
         groups   = ["system:masters"]
       },
       {
-        userarn  = "arn:aws:iam::717949064245:user/suvendu-github-user"
-        username = "suvendu-github-user"
-        groups   = ["system:masters"]
-      },
-      {
-        userarn  = "arn:aws:iam::717949064245:user/root"
-        username = "root"
-        groups   = ["system:masters"]
-      },
+        userarn  = "arn:aws:iam::717949064245:user/suvendu_admin_user"
+        username = "system:node:{{EC2PrivateDNSName}}"
+        groups   = ["system:masters", "system:bootstrappers", "system:nodes"]
+      }
     ])
   }
 
