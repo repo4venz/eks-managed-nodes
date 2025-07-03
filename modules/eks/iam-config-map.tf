@@ -55,7 +55,8 @@ resource "null_resource" "eks_delete_configmap_exec" {
 
 
 # Define the aws-auth configmap
-resource "kubernetes_config_map" "aws_auth" {
+#resource "kubernetes_config_map" "aws_auth" {
+resource "kubernetes_config_map_v1_data" "aws_auth" {
   metadata {
     name      = "aws-auth"
     namespace = "kube-system"
