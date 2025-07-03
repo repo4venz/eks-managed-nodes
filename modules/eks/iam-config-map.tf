@@ -25,7 +25,7 @@ resource "null_resource" "eks_get_config_exec" {
 	    always_run = timestamp()
 	  }
 	  provisioner "local-exec" {
-	    command = "aws eks --region ${data.aws_region.current.name} update-kubeconfig --name ${aws_eks_cluster.demo_eks_cluster.name}"
+	    command = "aws eks update-kubeconfig --region ${data.aws_region.current.name} --name ${aws_eks_cluster.demo_eks_cluster.name}"
 	  }
 	
 	  depends_on = [
@@ -36,22 +36,25 @@ resource "null_resource" "eks_get_config_exec" {
 
 
 
-/*
-# Update the Kubeconfig file in the GitHub Actions Runner
-resource "null_resource" "eks_delete_configmap_exec" {
+ 
+# Describe existing Config Map aws-auth  
+resource "null_resource" "eks_describe_existing_configmap_exec" {
 	
 	  triggers = {
 	    always_run = timestamp()
 	  }
 	  provisioner "local-exec" {
-	    command = "kubectl delete configmap aws-auth -n kube-system"
+	    command = "kubectl describe configmap -n kube-system aws-auth"
 	  }
 	
 	  depends_on = [
-	    null_resource.eks_get_config_exec
+	      null_resource.eks_get_config_exec,
+        null_resource.wait_for_cluster,
+        aws_eks_cluster.demo_eks_cluster,
+        aws_eks_node_group.demo_eks_nodegroup   #wait for cluster to initialise - aws_auth must be initialised first before any update
 	  ]
 	}
-*/
+ 
 
  
 
