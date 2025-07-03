@@ -1,5 +1,23 @@
 
 
+
+# Example of a local-exec provisioner to verify cluster readiness
+resource "null_resource" "wait_for_cluster" {
+
+  	  triggers = {
+	    always_run = timestamp()
+	  }
+
+  provisioner "local-exec" {
+    command = "aws eks wait cluster-active --name ${aws_eks_cluster.demo_eks_cluster.name} --region ${data.aws_region.current.name}"
+    # Use `kubectl` commands to verify the cluster's status after it's active
+    # Example:
+    # command = "kubectl get nodes && kubectl get pods -A"
+  }
+  depends_on = [aws_eks_cluster.demo_eks_cluster]
+}
+
+
 # Update the Kubeconfig file in the GitHub Actions Runner
 resource "null_resource" "eks_get_config_exec" {
 	
@@ -11,7 +29,8 @@ resource "null_resource" "eks_get_config_exec" {
 	  }
 	
 	  depends_on = [
-	    aws_eks_cluster.demo_eks_cluster
+	    aws_eks_cluster.demo_eks_cluster,
+      null_resource.wait_for_cluster
 	  ]
 	}
 
@@ -33,6 +52,7 @@ resource "null_resource" "eks_delete_configmap_exec" {
 	  ]
 	}
 */
+
 
 # Define the aws-auth configmap
 resource "kubernetes_config_map" "aws_auth" {
