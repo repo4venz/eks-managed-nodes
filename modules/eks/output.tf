@@ -19,7 +19,7 @@ output "eks_cluster_name" {
 
 output "eks_cluster_certificate_authority_data" {
   description = "Base64 encoded certificate data required to communicate with the cluster"
-  value       = try(aws_eks_cluster.demo_eks_cluster.certificate_authority[0].data, "")
+  value       = try(base64decode(aws_eks_cluster.demo_eks_cluster.certificate_authority[0].data), "")
 }
 
 output "eks_cluster_oidc_issuer_url" {
