@@ -94,7 +94,8 @@ resource "kubernetes_config_map_v1_data" "aws_auth" {
   	  depends_on = [
         null_resource.eks_get_config_exec,
         null_resource.wait_for_cluster,
-        aws_eks_cluster.demo_eks_cluster
+        aws_eks_cluster.demo_eks_cluster,
+        aws_eks_node_group.demo_eks_nodegroup   #wait for cluster to initialise - aws_auth must be initialised first before any update
 	  ]
 }
 
