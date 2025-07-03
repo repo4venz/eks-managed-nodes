@@ -32,7 +32,7 @@ resource "null_resource" "eks_delete_configmap_exec" {
 	    null_resource.eks_get_config_exec
 	  ]
 	}
-
+*/
 
 # Define the aws-auth configmap
 resource "kubernetes_config_map" "aws_auth" {
@@ -65,10 +65,7 @@ resource "kubernetes_config_map" "aws_auth" {
   }
 
   	  depends_on = [
-	      aws_eks_cluster.demo_eks_cluster,
-        null_resource.eks_get_config_exec,
-        data.http.eks_cluster_readiness[0]
+        null_resource.eks_get_config_exec
 	  ]
 }
 
-*/
