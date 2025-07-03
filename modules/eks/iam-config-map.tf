@@ -74,7 +74,7 @@ resource "kubernetes_config_map_v1_data" "aws_auth" {
         rolearn  = "${aws_iam_role.eks_worker_nodes_role.arn}"
         username = "system:node:{{EC2PrivateDNSName}}"
         groups   = ["system:masters", "system:bootstrappers", "system:nodes"]
-      },
+      } 
       # Add more roles or users here
     ])
     "mapUsers" = yamlencode([
@@ -92,7 +92,8 @@ resource "kubernetes_config_map_v1_data" "aws_auth" {
   }
 
   	  depends_on = [
-        null_resource.eks_get_config_exec
+        null_resource.eks_get_config_exec,
+        null_resource.wait_for_cluster
 	  ]
 }
 
