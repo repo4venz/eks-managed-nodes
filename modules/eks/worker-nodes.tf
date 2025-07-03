@@ -78,6 +78,11 @@ resource "aws_eks_node_group" "demo_eks_nodegroup" {
     node = substr("${var.cluster_name}-${var.environment}",0,64)  
   }
 
+  tags = {
+    "kubernetes.io/cluster/${aws_eks_cluster.demo_eks_cluster.name}" = "owned"
+    "aws:eks:cluster-name" = "${aws_eks_cluster.demo_eks_cluster.name}"
+  }
+
   depends_on = [
     aws_iam_role_policy_attachment.AmazonEKSWorkerNodePolicy,
     aws_iam_role_policy_attachment.AmazonEKS_CNI_Policy,
