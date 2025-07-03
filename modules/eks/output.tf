@@ -41,7 +41,7 @@ output "eks_cluster_platform_version" {
 
 output "eks_cluster_iam_authenticator_token" {
   description = "EKS Cluster IAm authenticator token"
-  value       = try(aws_eks_cluster.demo_eks_cluster.token, "")
+  value       = try(aws_eks_cluster.demo_eks_cluster.name.token, "")
 }
 
 

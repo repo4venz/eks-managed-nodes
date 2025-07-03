@@ -7,8 +7,8 @@ data "aws_region" "current" {}
  
 data "http" "eks_cluster_readiness" {
 
-  url            = join("/", [module.eks.eks_cluster_endpoint, "healthz"]) #refering output variable values
-  ca_certificate = base64decode(module.eks.eks_cluster_certificate_authority_data) #refering output variable values
+  url            = join("/", [aws_eks_cluster.demo_eks_cluster.endpoint, "healthz"]) #refering output variable values
+  ca_certificate = base64decode(aws_eks_cluster.demo_eks_cluster.certificate_authority[0].data) #refering output variable values
   timeout        = var.eks_readiness_timeout
 }
 
