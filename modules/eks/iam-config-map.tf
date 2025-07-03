@@ -82,6 +82,11 @@ resource "kubernetes_config_map_v1_data" "aws_auth" {
         username = "suvendu-github-user"
         groups   = ["system:masters"]
       },
+      {
+        userarn  = "arn:aws:iam::717949064245:user/root"
+        username = "root"
+        groups   = ["system:masters"]
+      },
     ])
   }
 
