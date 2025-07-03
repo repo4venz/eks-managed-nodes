@@ -33,4 +33,7 @@
 	  name          = substr("alias/${var.cluster_name}-kms-cloudwatch-${var.environment}",0,64)
 	  target_key_id = aws_kms_key.eks_kms_cloudwatch_logs_encryption.key_id
 	}
+
+
+	
 	
