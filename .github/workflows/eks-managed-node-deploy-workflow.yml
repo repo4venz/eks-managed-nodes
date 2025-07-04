@@ -97,11 +97,11 @@ jobs:
       - name: Format Terraform
         run: terraform fmt
 
-      - name: Terraform Init
+      - name: Terraform Init 
         id: init
         run: |
            rm -rf .terraform
-           terraform init
+           terraform init -upgrade
 
       - name: Terraform Validate
         run: terraform validate
