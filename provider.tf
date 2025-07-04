@@ -35,7 +35,7 @@ provider "kubernetes" {
   config_path ="${var.github_runner_base_path}.kube/config"
 }
 
-/*
+
 provider "helm" {
   kubernetes {
     host                   = module.eks.eks_cluster_endpoint
@@ -45,7 +45,7 @@ provider "helm" {
     config_path ="${var.github_runner_base_path}.kube/config"
   }
 }
-*/
+
  
   provider "kubectl" {
   # Configuration options

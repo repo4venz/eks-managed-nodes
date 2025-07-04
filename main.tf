@@ -41,7 +41,7 @@ module "eks" {
 
 
 module "nginx_alb_controller" {
-  #count = var.include_nginx_controller_module ? 1 : 0
+  count = var.include_nginx_controller_module ? 1 : 0
   source  = "./modules/nginx-lb-controller"
 
   depends_on = [module.eks]
