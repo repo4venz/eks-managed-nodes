@@ -34,29 +34,12 @@ resource "helm_release" "cluster_autoscaler" {
   chart      = "cluster-autoscaler"
   version    = " 9.46.6" # Use latest compatible version
 
-  set {
-    name  = "autoDiscovery.clusterName"
-    value = module.eks.eks_cluster_name
-  }
-
-  set {
-    name  = "awsRegion"
-    value = data.aws_region.current.id
-  }
-
-  set {
-    name  = "rbac.serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
-    value = aws_iam_role.cluster_autoscaler.arn
-  }
-
-  set {
-    name  = "rbac.create"
-    value = "true"
-  }
-
-  set {
-    name  = "cloudProvider"
-    value = "aws"
+  set = {
+    "autoDiscovery.clusterName"                                 = data.aws_eks_cluster.cluster.name
+    "awsRegion"                                                 = data.aws_region.current.id
+    "rbac.serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn" = aws_iam_role.cluster_autoscaler.arn
+    "rbac.create"                                               = "true"
+    "cloudProvider"                                             = "aws"
   }
 
   depends_on = [aws_iam_role_policy_attachment.cluster_autoscaler_attach]
