@@ -31,7 +31,7 @@ aws_sm_secrets               = [
                                 ]
 
 
-
+include_alb_controller_module = true
 /*
 include_fluentbit_module = true
 include_coredns_patching_module = true

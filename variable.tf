@@ -45,4 +45,10 @@ variable "tags" {
   default     = {}
   description = "Additional tags e.g. `map('BusinessUnit`,`XYZ`)"
 }
- 
+
+
+variable "include_nginx_controller_module" {
+  type        = bool
+  default     = true
+  description = "Execute module or not. true = execute and false = don't execute"
+}

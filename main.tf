@@ -38,3 +38,11 @@ module "eks" {
 
     depends_on = [module.vpc, module.kms_aws]
 }
+
+
+module "nginx_alb_controller" {
+  count = var.include_nginx_controller_module ? 1 : 0
+  source  = "./modules/nginx-lb-controller"
+
+  depends_on = [module.eks]
+}
