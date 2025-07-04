@@ -6,7 +6,7 @@ resource "aws_iam_policy" "cluster_autoscaler" {
   policy = file("${path.module}/cluster-autoscaler-policy.json")
 }
 
-
+/**
 resource "aws_iam_role" "cluster_autoscaler" {
   name = "eks-cluster-autoscaler-role"
 
@@ -28,8 +28,9 @@ resource "aws_iam_role" "cluster_autoscaler" {
     ]
   })
 }
+*/
 
-/*
+
 resource "aws_iam_role" "cluster_autoscaler" {
  name = substr("${var.k8s_cluster_name}-ClusterAutoscalerRole",0,64)
 
@@ -44,7 +45,7 @@ resource "aws_iam_role" "cluster_autoscaler" {
     }]
   })
 }
-**/
+
 
 /*
 resource "aws_iam_role" "this" {
