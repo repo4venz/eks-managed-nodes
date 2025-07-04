@@ -52,3 +52,10 @@ variable "include_nginx_controller_module" {
   default     = true
   description = "Execute module or not. true = execute and false = don't execute"
 }
+
+
+variable "include_eks_cluster_autoscaler" {
+  type        = bool
+  default     = true
+  description = "Execute module or not. true = execute and false = don't execute"
+}
