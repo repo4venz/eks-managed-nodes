@@ -17,7 +17,7 @@ resource "aws_iam_role" "external_dns" {
       Action = "sts:AssumeRoleWithWebIdentity",
       Condition = {
         StringEquals = {
-          "${replace(data.aws_iam_openid_connect_provider.this.url, "https://", "")}:sub" = "system:serviceaccount:kube-system:external-dns"
+          "${replace(data.aws_iam_openid_connect_provider.this.url, "https://", "")}:sub" = "system:serviceaccount:${var.k8s_namespace}:external-dns"
         }
       }
     }]
@@ -34,7 +34,7 @@ resource "helm_release" "external_dns" {
   repository       = "https://kubernetes-sigs.github.io/external-dns/"
   chart            = "external-dns"
   version          = "1.17.0" # check for latest compatible version
-  namespace        = "kube-system"
+  namespace        = var.k8s_namespace
   create_namespace = false
   atomic           = true
   cleanup_on_fail  = true

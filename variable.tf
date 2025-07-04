@@ -54,14 +54,19 @@ variable "include_nginx_controller_module" {
 }
 
 
-variable "include_eks_cluster_autoscaler" {
+variable "include_eks_cluster_autoscaler_module" {
   type        = bool
   default     = true
   description = "Execute module or not. true = execute and false = don't execute"
 }
 
-variable "include_external_dns" {
+variable "include_external_dns_module" {
   type        = bool
   default     = true
   description = "Execute module or not. true = execute and false = don't execute"
+}
+
+variable "k8s_namespace" {
+  type    = string
+  default = "kube-system"
 }

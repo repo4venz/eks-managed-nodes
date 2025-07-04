@@ -21,7 +21,7 @@ resource "aws_iam_role" "cluster_autoscaler" {
         Action = "sts:AssumeRoleWithWebIdentity"
         Condition = {
           StringEquals = {
-            "${replace(data.aws_iam_openid_connect_provider.this.url, "https://", "")}:sub" = "system:serviceaccount:kube-system:cluster-autoscaler"
+            "${replace(data.aws_iam_openid_connect_provider.this.url, "https://", "")}:sub" = "system:serviceaccount:${var.k8s_namespace}:cluster-autoscaler"
           }
         }
       }
@@ -38,7 +38,7 @@ resource "aws_iam_role_policy_attachment" "cluster_autoscaler_attach" {
 
 resource "helm_release" "cluster_autoscaler" {
   name       = "cluster-autoscaler"
-  namespace  = "kube-system"
+  namespace  = var.k8s_namespace
   repository = "https://kubernetes.github.io/autoscaler"
   chart      = "cluster-autoscaler"
   #version    = " 9.46.6" # Use latest compatible version

@@ -6,3 +6,8 @@ variable "k8s_cluster_name" {
 variable "environment" {
   description = "the name of your environment, e.g. \"prod\""
 }
+
+variable "k8s_namespace" {
+  type    = string
+  default = "kube-system"
+}
