@@ -22,6 +22,17 @@ resource "aws_iam_role" "cluster_autoscaler" {
 }
 
 
+/*
+resource "aws_iam_role" "this" {
+  name        = local.service_account_name
+  description = "Permissions required by the Kubernetes External DNS to do its job."
+  path        = null
+  force_detach_policies = true
+  assume_role_policy = data.aws_iam_policy_document.eks_oidc_assume_role.json
+}
+**/
+
+
 resource "aws_iam_role_policy_attachment" "cluster_autoscaler_attach" {
   role       = aws_iam_role.cluster_autoscaler.name
   policy_arn = aws_iam_policy.cluster_autoscaler.arn
@@ -50,9 +61,11 @@ resource "helm_release" "cluster_autoscaler" {
           }
         }
       }
+      name = "serviceAccount.create"
     })
   ]
 
-  depends_on = [aws_iam_role_policy_attachment.cluster_autoscaler_attach]
+  depends_on = [aws_iam_role_policy_attachment.cluster_autoscaler_attach,
+  aws_iam_role.cluster_autoscaler ]
 }
  
