@@ -26,7 +26,7 @@ resource "helm_release" "metrics_server" {
   chart            = "metrics-server"
   version          = "3.12.1" # latest as of July 2025
   namespace        = var.k8s_namespace
-  create_namespace = false
+  create_namespace = true
   atomic           = true
   cleanup_on_fail  = true
   timeout    = 900

@@ -35,7 +35,7 @@ resource "helm_release" "external_dns" {
   chart            = "external-dns"
   version          = "1.17.0" # check for latest compatible version
   namespace        = var.k8s_namespace
-  create_namespace = false
+  create_namespace = true
   atomic           = true
   cleanup_on_fail  = true
   timeout    = 900

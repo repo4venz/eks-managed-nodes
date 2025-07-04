@@ -45,7 +45,7 @@ module "metrics_server" {
   count = var.include_metrics_server_module ? 1 : 0
   source             = "./modules/metrics-server"
   k8s_cluster_name   = module.eks.eks_cluster_name
-  k8s_namespace  = "kube-system"
+  k8s_namespace  = "observability"
 
   depends_on = [module.eks]
 }
@@ -74,6 +74,16 @@ module "external-dns" {
   source                                        = "./modules/external-dns"
   k8s_cluster_name                              =  module.eks.eks_cluster_name
   k8s_namespace                                 = "kube-system"
+
+  depends_on = [module.eks]
+}
+
+
+module "fluentbit" {
+  count = var.include_fluentbit_module ? 1 : 0
+  source                                        = "./modules/fluentbit"
+  k8s_cluster_name                              =  module.eks.eks_cluster_name
+  k8s_namespace                                 = "observability"
 
   depends_on = [module.eks]
 }
