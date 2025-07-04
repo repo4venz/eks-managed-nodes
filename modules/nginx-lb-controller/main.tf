@@ -2,13 +2,20 @@
 
 resource "helm_release" "nginx_ingress" {
   name       = "nginx-ingress"
-  repository = "https://kubernetes.github.io/ingress-nginx"
-  chart      = "ingress-nginx"
   namespace  = "ingress-nginx"
   create_namespace = true
 
-  set {
-    name  = "controller.service.type"
-    value = "LoadBalancer"
-  }
+  repository = "https://kubernetes.github.io/ingress-nginx"
+  chart      = "ingress-nginx"
+  version    = "4.12.3" # Check for latest compatible version if needed
+
+  values = [
+    yamlencode({
+      controller = {
+        service = {
+          type = "LoadBalancer"
+        }
+      }
+    })
+  ]
 }
