@@ -35,7 +35,7 @@ resource "helm_release" "cluster_autoscaler" {
   version    = " 9.46.6" # Use latest compatible version
 
   set = {
-    "autoDiscovery.clusterName"                                 = data.aws_eks_cluster.cluster.name
+    "autoDiscovery.clusterName"                                 = module.eks.eks_cluster_name
     "awsRegion"                                                 = data.aws_region.current.id
     "rbac.serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn" = aws_iam_role.cluster_autoscaler.arn
     "rbac.create"                                               = "true"
