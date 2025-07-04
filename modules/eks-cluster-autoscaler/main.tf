@@ -33,33 +33,26 @@ resource "helm_release" "cluster_autoscaler" {
   repository = "https://kubernetes.github.io/autoscaler"
   chart      = "cluster-autoscaler"
   version    = " 9.46.6" # Use latest compatible version
+  cleanup_on_fail = true
 
-set {
-    name  = "autoDiscovery.clusterName"
-    value = var.k8s_cluster_name
-  }
-
-  set {
-    name  = "awsRegion"
-    value = data.aws_region.current.id
-  }
-
-  set {
-    name  = "rbac.serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
-    value = aws_iam_role.cluster_autoscaler.arn
-  }
-
-  set {
-    name  = "rbac.create"
-    value = "true"
-  }
-
-  set {
-    name  = "cloudProvider"
-    value = "aws"
-  }
+ values = [
+    yamlencode({
+      autoDiscovery = {
+        clusterName = var.k8s_cluster_name
+      }
+      awsRegion      = data.aws_region.current.id
+      cloudProvider  = "aws"
+      rbac = {
+        create = true
+        serviceAccount = {
+          annotations = {
+            "eks.amazonaws.com/role-arn" = aws_iam_role.cluster_autoscaler.arn
+          }
+        }
+      }
+    })
+  ]
 
   depends_on = [aws_iam_role_policy_attachment.cluster_autoscaler_attach]
 }
-
-
+ 
