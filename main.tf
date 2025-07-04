@@ -51,7 +51,7 @@ module "nginx_alb_controller" {
 module "eks-cluster-autoscaler" {
   count = var.include_eks_cluster_autoscaler ? 1 : 0
   source                                        = "./modules/eks-cluster-autoscaler"
-  cluster_name                                  =  var.cluster_name
+  k8s_cluster_name                              = module.eks.eks_cluster_name
   environment                                   =  var.environment
 
   depends_on = [module.eks]
