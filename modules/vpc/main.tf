@@ -81,7 +81,7 @@ Elastic IP(s) for NAT
 ====================*/
 
 resource "aws_eip" "nat_eip" {
-  vpc        = true
+  #vpc        = true
   count = length(var.private_subnets_cidr)
   public_ipv4_pool = "amazon"
   depends_on = [aws_internet_gateway.internet_gw]
