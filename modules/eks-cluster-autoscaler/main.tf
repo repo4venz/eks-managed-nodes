@@ -6,9 +6,9 @@ resource "aws_iam_policy" "cluster_autoscaler" {
   policy = file("${path.module}/cluster-autoscaler-policy.json")
 }
 
-/**
+ 
 resource "aws_iam_role" "cluster_autoscaler" {
-  name = "eks-cluster-autoscaler-role"
+  name = substr("${var.k8s_cluster_name}-ClusterAutoscalerRole",0,64)
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -28,9 +28,9 @@ resource "aws_iam_role" "cluster_autoscaler" {
     ]
   })
 }
-*/
+ 
 
-
+/*
 resource "aws_iam_role" "cluster_autoscaler" {
  name = substr("${var.k8s_cluster_name}-ClusterAutoscalerRole",0,64)
 
@@ -45,7 +45,7 @@ resource "aws_iam_role" "cluster_autoscaler" {
     }]
   })
 }
-
+*/
 
 /*
 resource "aws_iam_role" "this" {
@@ -81,12 +81,16 @@ resource "helm_release" "cluster_autoscaler" {
       rbac = {
         create = true
         serviceAccount = {
+          name = "cluster-autoscaler"
           annotations = {
             "eks.amazonaws.com/role-arn" = aws_iam_role.cluster_autoscaler.arn
           }
         }
       }
-      name = "serviceAccount.create"
+      extraArgs = {
+      skip-nodes-with-local-storage = "false"
+      expander                      = "least-waste"
+      }
     })
   ]
 
