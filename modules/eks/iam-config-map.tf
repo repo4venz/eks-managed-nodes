@@ -9,7 +9,7 @@ resource "null_resource" "wait_for_cluster" {
 	  }
 
   provisioner "local-exec" {
-    command = "aws eks wait cluster-active --name ${aws_eks_cluster.demo_eks_cluster.name} --region ${data.aws_region.current.name}"
+    command = "aws eks wait cluster-active --name ${aws_eks_cluster.demo_eks_cluster.name} --region ${data.aws_region.current.id}"
     # Use `kubectl` commands to verify the cluster's status after it's active
     # Example:
     # command = "kubectl get nodes && kubectl get pods -A"
@@ -25,7 +25,7 @@ resource "null_resource" "eks_get_config_exec" {
 	    always_run = timestamp()
 	  }
 	  provisioner "local-exec" {
-	    command = "aws eks update-kubeconfig --region ${data.aws_region.current.name} --name ${aws_eks_cluster.demo_eks_cluster.name}"
+	    command = "aws eks update-kubeconfig --region ${data.aws_region.current.id} --name ${aws_eks_cluster.demo_eks_cluster.name}"
 	  }
 	
 	  depends_on = [
