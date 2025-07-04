@@ -87,3 +87,5 @@ module "fluentbit" {
 
   depends_on = [module.eks]
 }
+
+
