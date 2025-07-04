@@ -31,7 +31,7 @@ module "eks" {
     public_subnets                                =  module.vpc.aws_subnets_public
     eks_kms_secret_encryption_key_arn             =  module.kms_aws.eks_kms_secret_encryption_key_arn  # KMS Key ID
     eks_kms_secret_encryption_alias_arn           =  module.kms_aws.eks_kms_secret_encryption_alias_arn  
-	eks_kms_cloudwatch_logs_encryption_key_arn    =  module.kms_aws.eks_kms_cloudwatch_logs_encryption_key_arn # KMS Key ID
+	  eks_kms_cloudwatch_logs_encryption_key_arn    =  module.kms_aws.eks_kms_cloudwatch_logs_encryption_key_arn # KMS Key ID
     eks_kms_cloudwatch_logs_encryption_alias_arn  =  module.kms_aws.eks_kms_cloudwatch_logs_encryption_alias_arn 
     aws_admin_role_name                           =  var.aws_admin_role_name
     aws_admin_user_name                           =  var.aws_admin_user_name
@@ -51,6 +51,16 @@ module "nginx_alb_controller" {
 module "eks-cluster-autoscaler" {
   count = var.include_eks_cluster_autoscaler ? 1 : 0
   source                                        = "./modules/eks-cluster-autoscaler"
+  k8s_cluster_name                              = module.eks.eks_cluster_name
+  environment                                   =  var.environment
+
+  depends_on = [module.eks]
+}
+
+
+module "external-dns" {
+  count = var.include_external_dns ? 1 : 0
+  source                                        = "./modules/external-dns"
   k8s_cluster_name                              = module.eks.eks_cluster_name
   environment                                   =  var.environment
 

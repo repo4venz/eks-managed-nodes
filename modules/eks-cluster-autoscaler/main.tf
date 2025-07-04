@@ -28,34 +28,7 @@ resource "aws_iam_role" "cluster_autoscaler" {
     ]
   })
 }
- 
-
-/*
-resource "aws_iam_role" "cluster_autoscaler" {
- name = substr("${var.k8s_cluster_name}-ClusterAutoscalerRole",0,64)
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [{
-      Effect = "Allow"
-      Principal = {
-        Service = "ec2.amazonaws.com"
-      }
-      Action = "sts:AssumeRole"
-    }]
-  })
-}
-*/
-
-/*
-resource "aws_iam_role" "this" {
-  name        = local.service_account_name
-  description = "Permissions required by the Kubernetes External DNS to do its job."
-  path        = null
-  force_detach_policies = true
-  assume_role_policy = data.aws_iam_policy_document.eks_oidc_assume_role.json
-}
-**/
+  
 
 
 resource "aws_iam_role_policy_attachment" "cluster_autoscaler_attach" {
@@ -69,7 +42,10 @@ resource "helm_release" "cluster_autoscaler" {
   repository = "https://kubernetes.github.io/autoscaler"
   chart      = "cluster-autoscaler"
   #version    = " 9.46.6" # Use latest compatible version
-  cleanup_on_fail = true
+  create_namespace = false
+  atomic           = true
+  cleanup_on_fail  = true
+  timeout    = 900
 
  values = [
     yamlencode({
