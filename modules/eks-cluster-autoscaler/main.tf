@@ -32,7 +32,7 @@ resource "helm_release" "cluster_autoscaler" {
   namespace  = "kube-system"
   repository = "https://kubernetes.github.io/autoscaler"
   chart      = "cluster-autoscaler"
-  version    = " 9.46.6" # Use latest compatible version
+  #version    = " 9.46.6" # Use latest compatible version
   cleanup_on_fail = true
 
  values = [
