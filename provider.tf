@@ -37,12 +37,12 @@ provider "kubernetes" {
 
 
 provider "helm" {
-  kubernetes {
-    #host                   = module.eks.eks_cluster_endpoint
-    #token                  = data.aws_eks_cluster_auth.aws_iam_authenticator.token
-    #cluster_ca_certificate = module.eks.eks_cluster_certificate_authority_data
+  kubernetes = {
+    host                   = module.eks.eks_cluster_endpoint
+    token                  = data.aws_eks_cluster_auth.aws_iam_authenticator.token
+    cluster_ca_certificate = module.eks.eks_cluster_certificate_authority_data
     #config_path = "./.kube/config"
-    config_path = "${var.github_runner_base_path}.kube/config"
+    #config_path = "${var.github_runner_base_path}.kube/config"
   }
 }
 
