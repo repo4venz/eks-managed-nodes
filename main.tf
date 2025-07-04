@@ -43,7 +43,8 @@ module "eks" {
 
 module "metrics_server" {
   count = var.include_metrics_server_module ? 1 : 0
-  source         = "./modules/metrics-server"
+  source             = "./modules/metrics-server"
+  k8s_cluster_name   = module.eks.eks_cluster_name
   k8s_namespace  = "kube-system"
 
   depends_on = [module.eks]
@@ -62,7 +63,6 @@ module "eks-cluster-autoscaler" {
   count = var.include_eks_cluster_autoscaler_module ? 1 : 0
   source                                        = "./modules/eks-cluster-autoscaler"
   k8s_cluster_name                              = module.eks.eks_cluster_name
-  environment                                   =  var.environment
   k8s_namespace                                 = "kube-system"
 
   depends_on = [module.eks]
@@ -73,7 +73,6 @@ module "external-dns" {
   count = var.include_external_dns_module ? 1 : 0
   source                                        = "./modules/external-dns"
   k8s_cluster_name                              =  module.eks.eks_cluster_name
-  environment                                   =  var.environment
   k8s_namespace                                 = "kube-system"
 
   depends_on = [module.eks]

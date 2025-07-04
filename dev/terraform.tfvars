@@ -34,6 +34,7 @@ aws_sm_secrets               = [
 include_nginx_controller_module = true
 include_eks_cluster_autoscaler_module = true
 include_external_dns_module = true
+include_metrics_server_module = true
 /*
 include_fluentbit_module = true
 include_coredns_patching_module = true

@@ -66,6 +66,14 @@ variable "include_external_dns_module" {
   description = "Execute module or not. true = execute and false = don't execute"
 }
 
+variable "include_metrics_server_module" {
+  type        = bool
+  default     = true
+  description = "Execute module or not. true = execute and false = don't execute"
+}
+
+
+
 variable "k8s_namespace" {
   type    = string
   default = "kube-system"
