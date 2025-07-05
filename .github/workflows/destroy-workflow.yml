@@ -20,6 +20,27 @@ jobs:
     steps:
       - name: Checkout Code 
         uses: actions/checkout@v2
+    
+      - name: Display Config values from YAML
+        id: display-yaml
+        run: |
+          echo "Environment Name: ${{ steps.yaml.outputs.EKSConfig__envName }}"
+          echo "EKS cluster Name: ${{ steps.yaml.outputs.EKSConfig__clusterName }}"
+          echo "EKS Cluster Region: ${{ steps.yaml.outputs.EKSConfig__clusterRegion }}" 
+          echo "S3 Bucket Name - TF State: ${{ steps.yaml.outputs.TerraformConfig__s3NameTFstate }}" 
+          echo "Setting Env variable with EKS cluster name...."
+          echo "AWS_EKS_CLUSTER_NAME=$(echo "${{ steps.yaml.outputs.EKSConfig__clusterName }}")" >> $GITHUB_ENV
+          echo "Setting Env variable with EKS cluster AWS Region...."
+          echo "AWS_DEFAULT_REGION=$(echo "${{ steps.yaml.outputs.EKSConfig__clusterRegion }}")" >> $GITHUB_ENV
+          echo "Setting Env variable with S3 Bucket Name for TF State...."
+          echo "S3_NAME_TF_STATE=$(echo "${{ steps.yaml.outputs.TerraformConfig__s3NameTFstate }}")" >> $GITHUB_ENV
+
+      - name: Checking the GitHub Env variable values
+        id: Test-Cluster-name-Env-Var
+        run: |
+          echo "AWS_EKS_CLUSTER_NAME: ${AWS_EKS_CLUSTER_NAME}" 
+          echo "AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION}"
+          echo "S3_NAME_TF_STATE: ${S3_NAME_TF_STATE}"
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
