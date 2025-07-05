@@ -50,6 +50,13 @@ resource "aws_iam_role_policy_attachment" "AmazonEKSWorkerNodePolicy" {
   policy_arn = "arn:aws:iam::aws:policy/EC2InstanceProfileForImageBuilderECRContainerBuilds"
   role    = aws_iam_role.eks_worker_nodes_role.name
  }
+
+# Allow worker node-group to access KMS key for EBS volume encryption / decryption of worker nodes
+ resource "aws_iam_role_policy_attachment" "eks_kms_usage_nodegroup" {
+  policy_arn = aws_iam_policy.EKS_KMS_Usage_Policy.arn
+  role       = aws_iam_role.eks_worker_nodes_role.name
+}
+
  
 # AWS EKS node group 
 
