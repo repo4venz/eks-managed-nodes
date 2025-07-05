@@ -36,12 +36,6 @@ resource "aws_iam_policy" "AmazonEKSClusterCloudWatchMetricsPolicy" {
 EOF
 }
 
- # AWS IAM Policy for KMS usage. Required for EKS to access KMS Key.
- resource "aws_iam_policy" "EKS_KMS_Usage_Policy" {
-  name   = substr("${var.cluster_name}-${var.environment}-AmazonEKS-KMS-UsagePolicy",0,64)
-  policy = data.aws_iam_policy_document.eks_use_kms_policy.json
-}
-
 
 /* ==================================
 Creating IAM Role for EKS Cluster 
