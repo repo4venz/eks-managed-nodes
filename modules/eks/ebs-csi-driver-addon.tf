@@ -11,7 +11,8 @@ resource "aws_eks_addon" "ebs_csi" {
   addon_name   = "aws-ebs-csi-driver"
   addon_version = data.aws_eks_addon_version.ebs_csi.version  # Use `latest` or lookup via data source
 
-  configuration_values_conflict_resolution = "OVERWRITE"
+  resolve_conflicts_on_create = "OVERWRITE"
+  resolve_conflicts_on_update = "OVERWRITE"
   service_account_role_arn = null  # not needed for managed add-on
     tags = {
     Name = "EBS CSI Driver Addon"
