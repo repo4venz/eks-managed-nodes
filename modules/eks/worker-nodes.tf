@@ -126,27 +126,14 @@ resource "aws_launch_template" "eks_worker_nodes" {
       kms_key_id  = var.eks_kms_secret_encryption_key_arn
     }
   }
-/*
-  iam_instance_profile {
-    name = aws_iam_instance_profile.eks_node_instance_profile.name
-  }
-*/
+ 
   tag_specifications {
     resource_type = "instance"
     tags = {
       NodeType = "eks-worker-node"
     }
   }
-  depends_on = [
-    aws_iam_instance_profile.eks_node_instance_profile
-  ]
+  
 }
 
-/*
-resource "aws_iam_instance_profile" "eks_node_instance_profile" {
-  name = substr("eks-node-instance-profile-${var.cluster_name}-${var.environment}",0,64)
-  role = aws_iam_role.eks_worker_nodes_role.name
-}
-
-*/
  
