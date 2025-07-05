@@ -20,7 +20,7 @@ data "aws_eks_addon_version" "efs_csi" {
   kubernetes_version = aws_eks_cluster.demo_eks_cluster.version
 }
 
-data "aws_eks_cluster" "eks_cluster_name" {
+data "aws_eks_cluster" "this" {
   name = aws_eks_cluster.demo_eks_cluster.name
 }
 

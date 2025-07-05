@@ -21,7 +21,7 @@ data "aws_iam_policy_document" "efs_csi_assume_role_policy" {
 resource "aws_iam_role" "efs_csi_driver_role" {
   count = var.include_efs_csi_driver_addon ? 1 : 0
 
-  name = substr("${data.aws_eks_cluster.eks_cluster_name}-efs-csi-driver-role",0,64) 
+  name = substr("${data.aws_eks_cluster.this.name}-efs-csi-driver-role", 0, 64)
   assume_role_policy = data.aws_iam_policy_document.efs_csi_assume_role_policy[0].json
 }
 
@@ -36,10 +36,10 @@ resource "aws_iam_role_policy_attachment" "efs_csi_policy" {
 resource "aws_eks_addon" "efs_csi_driver" {
   count = var.include_efs_csi_driver_addon ? 1 : 0
 
-  cluster_name             = data.aws_eks_cluster.eks_cluster_name
+  cluster_name             = data.aws_eks_cluster.this.name
   addon_name               = "aws-efs-csi-driver"
   addon_version = data.aws_eks_addon_version.efs_csi.version  # Use `latest` or lookup via data source
-  service_account_role_arn = aws_iam_role.efs_csi_driver_role.arn
+  service_account_role_arn = var.include_efs_csi_driver_addon ? aws_iam_role.efs_csi_driver_role[0].arn : null
  
   resolve_conflicts_on_create = "OVERWRITE"
   resolve_conflicts_on_update = "OVERWRITE"
