@@ -144,8 +144,8 @@ resource "aws_launch_template" "eks_worker_nodes" {
 
 
 resource "aws_iam_instance_profile" "eks_node_instance_profile" {
-  name = "eks-node-instance-profile"
-  role = aws_iam_role.eks_worker_nodes_role.arn
+  name = substr("eks-node-instance-profile-${var.cluster_name}-${var.environment}",0,64)
+  role = aws_iam_role.eks_worker_nodes_role.name
 }
 
 
