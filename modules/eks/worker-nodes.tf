@@ -104,7 +104,6 @@ resource "aws_launch_template" "eks_worker_nodes" {
  # image_id      = data.aws_ami.eks_worker_ami.id
 
   instance_type = "t2.medium"
-  instance_initiated_shutdown_behavior = "terminate"
 
   instance_market_options {
     market_type = "spot"
