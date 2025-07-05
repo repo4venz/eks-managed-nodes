@@ -83,6 +83,7 @@ variable "ebs_csi_driver_addon_flag" {
   default = true
 }
 
+variable "include_ebs_csi_driver_addon" {}
 
 variable "k8s_namespace" {
   type    = string
