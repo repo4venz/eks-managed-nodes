@@ -15,7 +15,8 @@ data "aws_iam_policy_document" "kms_key_policy" {
       "kms:Decrypt",
       "kms:ReEncrypt*",
       "kms:GenerateDataKey*",
-      "kms:DescribeKey"
+      "kms:DescribeKey",
+      "kms:CreateGrant"
     ]
 
     resources = ["*"]
@@ -35,7 +36,8 @@ data "aws_iam_policy_document" "kms_key_policy" {
       "kms:Decrypt",
       "kms:ReEncrypt*",
       "kms:GenerateDataKey*",
-      "kms:DescribeKey"
+      "kms:Describe*",
+      "kms:CreateGrant"
     ]
 
     resources = ["*"]
@@ -61,7 +63,8 @@ data "aws_iam_policy_document" "kms_key_policy" {
       "kms:Encrypt*",
       "kms:Decrypt*",
       "kms:GenerateDataKey*",
-      "kms:Describe*"
+      "kms:Describe*",
+      "kms:ReEncrypt*"
     ]
 
     resources = ["*"]

@@ -4,8 +4,10 @@ data "aws_iam_policy_document" "eks_use_kms_policy" {
 	    actions = [
 	      "kms:Encrypt",
 	      "kms:Decrypt",
-	      "kms:GenerateDataKey",
-	      "kms:DescribeKey",
+	      "kms:GenerateDataKey*",
+	      "kms:Describe*",
+		  "kms:CreateGrant",
+		  "kms:ReEncrypt*",
 	    ]
 	
 	    resources = [

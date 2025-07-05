@@ -121,7 +121,7 @@ resource "aws_launch_template" "eks_worker_nodes" {
       volume_size = 20
       volume_type = "gp3"
       encrypted   = true
-      kms_key_id  = var.eks_kms_secret_encryption_alias_arn
+      kms_key_id  = var.eks_kms_secret_encryption_key_arn
     }
   }
 
