@@ -59,10 +59,7 @@ resource "aws_eks_node_group" "demo_eks_nodegroup" {
   node_role_arn   = aws_iam_role.eks_worker_nodes_role.arn
 
   subnet_ids =  var.private_subnets
-
-  disk_size = 20
-  capacity_type = "SPOT"
-
+ 
   launch_template {
     id      = aws_launch_template.eks_worker_nodes.id
     version = "$Latest"
