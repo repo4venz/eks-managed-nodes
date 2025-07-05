@@ -60,8 +60,13 @@ resource "aws_eks_node_group" "demo_eks_nodegroup" {
 
   subnet_ids =  var.private_subnets
 
-  capacity_type  = "SPOT"
-  instance_types = ["t2.medium"]
+  disk_size = 20
+  capacity_type = "SPOT"
+
+  launch_template {
+    id      = aws_launch_template.eks_worker_nodes.id
+    version = "$Latest"
+  }
 
   scaling_config {
     desired_size = 3
@@ -81,6 +86,7 @@ resource "aws_eks_node_group" "demo_eks_nodegroup" {
   tags = {
     "kubernetes.io/cluster/${aws_eks_cluster.demo_eks_cluster.name}" = "owned"
     "aws:eks:cluster-name" = "${aws_eks_cluster.demo_eks_cluster.name}"
+    "k8s.io/cluster-autoscaler/enabled" = "true"
   }
 
   depends_on = [
@@ -88,9 +94,44 @@ resource "aws_eks_node_group" "demo_eks_nodegroup" {
     aws_iam_role_policy_attachment.AmazonEKS_CNI_Policy,
     aws_iam_role_policy_attachment.AmazonEC2ContainerRegistryReadOnly,
     aws_iam_role_policy_attachment.EC2InstanceProfileForImageBuilderECRContainerBuilds,
-    aws_iam_role.eks_worker_nodes_role
+    aws_iam_role.eks_worker_nodes_role,
+    aws_eks_cluster.demo_eks_cluster
 
   ]
 }
+
+
+
+resource "aws_launch_template" "eks_worker_nodes" {
+  name_prefix   = "eks-node-template-"
+ # image_id      = data.aws_ami.eks_worker_ami.id
+
+  instance_types = ["t2.medium"]
+  instance_initiated_shutdown_behavior = "terminate"
+
+  instance_market_options {
+    market_type = "spot"
+  }
+
+  block_device_mappings {
+    device_name = "/dev/xvda"
+
+    ebs {
+      volume_size = 20
+      volume_type = "gp3"
+      encrypted   = true
+      kms_key_id  = var.eks_kms_secret_encryption_alias_arn
+    }
+  }
+
+  tag_specifications {
+    resource_type = "instance"
+    tags = {
+      NodeType = "eks-worker-node"
+    }
+  }
+}
+
+
 
  
