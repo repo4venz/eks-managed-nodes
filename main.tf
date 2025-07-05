@@ -35,6 +35,7 @@ module "eks" {
     eks_kms_cloudwatch_logs_encryption_alias_arn  =  module.kms_aws.eks_kms_cloudwatch_logs_encryption_alias_arn 
     aws_admin_role_name                           =  var.aws_admin_role_name
     aws_admin_user_name                           =  var.aws_admin_user_name
+    ebs_csi_driver_addon_flag                     =  var.include_ebs_csi_driver_addon_flag
 
     depends_on = [module.vpc, module.kms_aws]
 }
