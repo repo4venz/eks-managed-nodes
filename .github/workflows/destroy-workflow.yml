@@ -20,6 +20,12 @@ jobs:
     steps:
       - name: Checkout Code 
         uses: actions/checkout@v2
+
+      - name: Read EKS cluster name from config yaml action
+        id: yaml
+        uses: actions-tools/yaml-outputs@v2     
+        with:
+          file-path: './workflow-config/github-workflow-config.yaml' 
     
       - name: Display Config values from YAML
         id: display-yaml
