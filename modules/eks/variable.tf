@@ -57,7 +57,7 @@ variable "aws_admin_user_name" {
   description = "AWS User who will assume AWS Admin Role to manage EKS cluster. The user must be created in AWS to assume the admin role."
 }
 
-variable "ebs_csi_driver_addon_flag" {
+variable "include_ebs_csi_driver_addon" {
   description = "Execute module/feature or not. true = execute and false = don't execute"
   default = true
 }
