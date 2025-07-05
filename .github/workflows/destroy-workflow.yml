@@ -65,7 +65,7 @@ jobs:
       - name: Terraform Init
         run: terraform init
 
-      - name: Terraform Destroy Auto Approve)
+      - name: Terraform Destroy (Auto Approve)
         id: destroy
         run: TF_LOG=DEBUG terraform destroy -auto-approve -input=false -var-file=${{ matrix.environment }}/terraform.tfvars
 
