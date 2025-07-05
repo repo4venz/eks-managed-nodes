@@ -14,4 +14,16 @@ data "aws_eks_addon_version" "ebs_csi" {
   addon_name   = "aws-ebs-csi-driver"
   kubernetes_version = aws_eks_cluster.demo_eks_cluster.version
 }
- 
+
+data "aws_eks_addon_version" "efs_csi" {
+  addon_name   = "aws-efs-csi-driver"
+  kubernetes_version = aws_eks_cluster.demo_eks_cluster.version
+}
+
+data "aws_eks_cluster" "eks_cluster_name" {
+  name = aws_eks_cluster.demo_eks_cluster.name
+}
+
+data "aws_eks_cluster_auth" "aws_iam_authenticator" {
+  name = aws_eks_cluster.demo_eks_cluster.name
+}

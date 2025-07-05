@@ -36,6 +36,7 @@ module "eks" {
     aws_admin_role_name                           =  var.aws_admin_role_name
     aws_admin_user_name                           =  var.aws_admin_user_name
     include_ebs_csi_driver_addon                  =  var.include_ebs_csi_driver_addon
+    include_efs_csi_driver_addon                  =  var.include_efs_csi_driver_addon
 
     depends_on = [module.vpc, module.kms_aws]
 }

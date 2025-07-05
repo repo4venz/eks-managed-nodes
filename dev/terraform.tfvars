@@ -37,6 +37,7 @@ include_external_dns_module = true
 include_metrics_server_module = true
 include_fluentbit_module = true
 include_ebs_csi_driver_addon = true
+include_efs_csi_driver_addon = true
 
 /*
 include_fluentbit_module = true

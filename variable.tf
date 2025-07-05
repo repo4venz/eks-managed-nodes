@@ -83,6 +83,11 @@ variable "include_ebs_csi_driver_addon" {
   default = true
 }
 
+variable "include_efs_csi_driver_addon" {
+  description = "Execute module/feature or not. true = execute and false = don't execute"
+  default = true
+}
+
 variable "k8s_namespace" {
   type    = string
   default = "kube-system"
