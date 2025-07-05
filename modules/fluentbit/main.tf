@@ -32,6 +32,12 @@ resource "aws_iam_role_policy_attachment" "fluentbit_attach" {
 }
 
 
+resource "aws_cloudwatch_log_group" "fluentbit" {
+  name              = "/eks/${data.aws_eks_cluster.this.name}/fluentbit/logs"
+  retention_in_days = 7
+}
+
+
 resource "helm_release" "fluentbit" {
   name             = "fluent-bit"
   namespace        = var.k8s_namespace
@@ -55,9 +61,9 @@ resource "helm_release" "fluentbit" {
 
       cloudwatch = {
         enabled     = true
-        region      = data.aws_eks_cluster.this.region
-        logGroupName = "/eks/${data.aws_eks_cluster.this.name}/fluentbit/logs"
-        logStreamPrefix = "fluentbit-"
+        region      = data.aws_eks_cluster.this.id
+        logGroupName = aws_cloudwatch_log_group.fluentbit.name
+        logStreamPrefix = "fluentbit-"  
       }
 
       output = {
@@ -76,5 +82,6 @@ resource "helm_release" "fluentbit" {
   ]
 
   depends_on = [aws_iam_role_policy_attachment.fluentbit_attach,
-  aws_iam_role.fluentbit]
+  aws_iam_role.fluentbit,
+  aws_cloudwatch_log_group.fluentbit]
 }
