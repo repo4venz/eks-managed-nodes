@@ -101,7 +101,8 @@ resource "aws_eks_node_group" "demo_eks_nodegroup" {
     aws_iam_role_policy_attachment.AmazonEC2ContainerRegistryReadOnly,
     aws_iam_role_policy_attachment.EC2InstanceProfileForImageBuilderECRContainerBuilds,
     aws_iam_role.eks_worker_nodes_role,
-    aws_eks_cluster.demo_eks_cluster
+    aws_eks_cluster.demo_eks_cluster,
+    aws_launch_template.eks_worker_nodes
 
   ]
 }
@@ -125,14 +126,26 @@ resource "aws_launch_template" "eks_worker_nodes" {
     }
   }
 
+  iam_instance_profile {
+    name = aws_iam_instance_profile.eks_node_instance_profile.name
+  }
+
   tag_specifications {
     resource_type = "instance"
     tags = {
       NodeType = "eks-worker-node"
     }
   }
+  depends_on = [
+    aws_iam_instance_profile.eks_node_instance_profile
+  ]
 }
 
+
+resource "aws_iam_instance_profile" "eks_node_instance_profile" {
+  name = "eks-node-instance-profile"
+  role = aws_iam_role.eks_worker_nodes_role.arn
+}
 
 
  

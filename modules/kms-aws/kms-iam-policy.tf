@@ -1,6 +1,7 @@
 
 
 data "aws_iam_policy_document" "kms_key_policy" {
+  # Allow EKS to use the key (for secrets encryption)
   statement {
     sid     = "AllowEKS"
     effect  = "Allow"
@@ -21,7 +22,7 @@ data "aws_iam_policy_document" "kms_key_policy" {
 
     resources = ["*"]
   }
-
+ # Allow EC2/EBS (for encrypted volumes)
   statement {
     sid     = "AllowEC2EBS"
     effect  = "Allow"
@@ -49,7 +50,36 @@ data "aws_iam_policy_document" "kms_key_policy" {
       values = ["ec2.${data.aws_region.current.id}.amazonaws.com"]
     }
   }
+# Allow EC2 Node Role Access (for secrets encryption)
+  statement {
+    sid     = "AllowNodeRoleAccess"
+    effect  = "Allow"
 
+    principals {
+      type        = "AWS"
+      identifiers = ["*"]
+    }
+
+    actions = [
+      "kms:Encrypt",
+      "kms:Decrypt",
+      "kms:ReEncrypt*",
+      "kms:GenerateDataKey*",
+      "kms:Describe*",
+      "kms:CreateGrant"
+    ]
+
+    resources = ["*"]
+
+    condition {
+      test     = "StringEquals"
+      variable = "kms:ViaService"
+
+      values = ["ec2.${data.aws_region.current.id}.amazonaws.com"]
+    }
+  }
+
+# Allow CloudWatch (e.g., Logs insights or metric streams)
   statement {
     sid     = "AllowCloudWatchLogs"
     effect  = "Allow"
@@ -70,6 +100,7 @@ data "aws_iam_policy_document" "kms_key_policy" {
     resources = ["*"]
   }
 
+ # Allow account root/admins full access
   statement {
     sid     = "AllowRootAccount"
     effect  = "Allow"
