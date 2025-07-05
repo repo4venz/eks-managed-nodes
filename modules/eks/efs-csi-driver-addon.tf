@@ -28,7 +28,7 @@ resource "aws_iam_role" "efs_csi_driver_role" {
 resource "aws_iam_role_policy_attachment" "efs_csi_policy" {
   count = var.include_efs_csi_driver_addon ? 1 : 0
 
-  role       = aws_iam_role.efs_csi_driver_role.name
+  role       = aws_iam_role.efs_csi_driver_role[0].name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEFSCSIDriverPolicy"
 }
 
@@ -39,7 +39,7 @@ resource "aws_eks_addon" "efs_csi_driver" {
   cluster_name             = data.aws_eks_cluster.eks_cluster_name
   addon_name               = "aws-efs-csi-driver"
   addon_version = data.aws_eks_addon_version.efs_csi.version  # Use `latest` or lookup via data source
-  service_account_role_arn = aws_iam_role.efs_csi_driver_role.arn
+  service_account_role_arn = aws_iam_role.efs_csi_driver_role[0].arn
  
   resolve_conflicts_on_create = "OVERWRITE"
   resolve_conflicts_on_update = "OVERWRITE"
