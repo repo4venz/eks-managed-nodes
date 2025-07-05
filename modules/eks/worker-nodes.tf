@@ -124,6 +124,10 @@ resource "aws_launch_template" "eks_worker_nodes" {
       volume_type = "gp3"
       encrypted   = true
       kms_key_id  = var.eks_kms_secret_encryption_key_arn
+
+      tags = {
+        Name = "${aws_eks_cluster.demo_eks_cluster.name}-ebs-storage"
+     }
     }
   }
  
@@ -131,6 +135,7 @@ resource "aws_launch_template" "eks_worker_nodes" {
     resource_type = "instance"
     tags = {
       NodeType = "eks-worker-node"
+      Name = "${aws_eks_cluster.demo_eks_cluster.name}-worker-node"
     }
   }
   
