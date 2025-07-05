@@ -39,7 +39,7 @@ resource "aws_eks_addon" "efs_csi_driver" {
   cluster_name             = data.aws_eks_cluster.eks_cluster_name
   addon_name               = "aws-efs-csi-driver"
   addon_version = data.aws_eks_addon_version.efs_csi.version  # Use `latest` or lookup via data source
-  service_account_role_arn = aws_iam_role.efs_csi_driver_role[0].arn
+  service_account_role_arn = aws_iam_role.efs_csi_driver_role.arn
  
   resolve_conflicts_on_create = "OVERWRITE"
   resolve_conflicts_on_update = "OVERWRITE"
