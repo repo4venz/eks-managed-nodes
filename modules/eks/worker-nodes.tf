@@ -3,7 +3,8 @@ Creating IAM Role for EKS Wroker Nodes EC2
 ==============================================*/
 
 resource "aws_iam_role" "eks_worker_nodes_role" {
-  name = substr("${var.cluster_name}-${var.environment}-workernodes-role",0,64)
+  #name = substr("${var.cluster_name}-${var.environment}-workernodes-role",0,64)
+  name = "EKSWorkerNodesRole"
   description = " IAM role for the EKS worker nodes."
   force_detach_policies = true
   assume_role_policy = <<POLICY
