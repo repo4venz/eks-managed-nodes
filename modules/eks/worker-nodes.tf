@@ -59,7 +59,9 @@ resource "aws_eks_node_group" "demo_eks_nodegroup" {
   node_role_arn   = aws_iam_role.eks_worker_nodes_role.arn
 
   subnet_ids =  var.private_subnets
- 
+
+  capacity_type = "SPOT"
+
   launch_template {
     id      = aws_launch_template.eks_worker_nodes.id
     version = "$Latest"
@@ -104,11 +106,7 @@ resource "aws_launch_template" "eks_worker_nodes" {
  # image_id      = data.aws_ami.eks_worker_ami.id
 
   instance_type = "t2.medium"
-
-  instance_market_options {
-    market_type = "spot"
-  }
-
+ 
   block_device_mappings {
     device_name = "/dev/xvda"
 
