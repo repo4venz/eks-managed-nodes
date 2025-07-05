@@ -1,0 +1,42 @@
+name: Terraform Destroy
+
+on:
+  workflow_dispatch:  # Manual trigger via GitHub UI
+
+jobs:
+  terraform-destroy:
+    name:   ${{matrix.runner}} - ${{matrix.environment }} - Destroy Infrastructure
+    runs-on: [ '${{ matrix.runner }}']
+    strategy:
+      max-parallel: 1
+      matrix:
+         include:
+           - environment: dev
+             runner: ubuntu-latest
+    env:
+         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+    steps:
+      - name: Checkout Code 
+        uses: actions/checkout@v2
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_DEFAULT_REGION }}
+      
+      - name: Verify AWS credentials
+        run: aws sts get-caller-identity
+        
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_wrapper: false
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Destroy (Auto Approve)
+        run: terraform destroy -auto-approve
