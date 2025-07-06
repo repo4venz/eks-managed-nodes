@@ -61,8 +61,8 @@ resource "helm_release" "fluentbit" {
 
       cloudwatch = {
         enabled     = true
-        region      = data.aws_region.current.region
-        logGroupName = aws_cloudwatch_log_group.fluentbit.name
+        region      = "eu-west-2"
+        logGroupName = "/aws/eks/eks-managed-clstr-dev/fluentbit/logs"
         logStreamPrefix = "fluentbit-" 
         autoCreateGroup = true
       }
