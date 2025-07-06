@@ -1,8 +1,12 @@
 
 data "kubernetes_ingress" "ingress_lb" {
   metadata {
-    name = kubernetes_ingress_v1.game-app-ingress.id
+    name = kubernetes_ingress_v1.game-app-ingress.metadata[0].name
   }
+}
+
+output "ingress_name" {
+  value = kubernetes_ingress_v1.game-app-ingress.metadata[0].name
 }
 
 # Display load balancer hostname (typically present in AWS)
