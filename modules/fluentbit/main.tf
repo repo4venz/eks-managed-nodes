@@ -1,28 +1,29 @@
  
-resource "aws_iam_policy" "fluentbit" {
-  name = substr("${var.k8s_cluster_name}-fluentbit-cloudwatch-policy",0,64)
-  description = "IAM policy for FluentBit for CloudWatch"
-  policy      = file("${path.module}/fluentbit-policy.json")
+resource "aws_iam_role" "fluentbit" {
+  name  = substr("${var.k8s_cluster_name}-fluentbit-irsa-role",0,64)
+  description = "IAM Role for FluentBit for CloudWatch"
+  assume_role_policy = data.aws_iam_policy_document.fluentbit_assume.json
 }
 
- 
-resource "aws_iam_role" "fluentbit" {
-  name = substr("${var.k8s_cluster_name}-fluentbit-irsa-role",0,64)
 
-  assume_role_policy = jsonencode({
+ resource "aws_iam_policy" "fluentbit" {
+  name   = substr("${var.k8s_cluster_name}-fluentbit-cloudwatch-policy",0,64)
+  description = "IAM policy for FluentBit for CloudWatch"
+  policy = jsonencode({
     Version = "2012-10-17",
-    Statement = [{
-      Effect = "Allow",
-      Principal = {
-        Federated = data.aws_iam_openid_connect_provider.this.arn
-      },
-      Action = "sts:AssumeRoleWithWebIdentity",
-      Condition = {
-        StringEquals = {
-          "${replace(data.aws_iam_openid_connect_provider.this.url, "https://", "")}:sub" = "system:serviceaccount:${var.k8s_namespace}:fluent-bit"
-        }
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents",
+          "logs:DescribeLogStreams",
+          "logs:DescribeLogGroups"
+        ],
+        Resource = "*"
       }
-    }]
+    ]
   })
 }
 
@@ -61,10 +62,10 @@ resource "helm_release" "fluentbit" {
 
       cloudwatch = {
         enabled     = true
-        region      = "eu-west-2"
-        logGroupName = "/aws/eks/eks-managed-clstr-dev/fluentbit/logs"
-        logStreamPrefix = "fluentbit-" 
-        autoCreateGroup = true
+        region      = data.aws_region.current.name
+        logGroupName = aws_cloudwatch_log_group.fluentbit.name
+        logStreamPrefix = "fluentbit-"
+        autoCreateGroup = false
       }
 
       output = {
