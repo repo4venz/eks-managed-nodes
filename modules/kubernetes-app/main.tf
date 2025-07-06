@@ -11,12 +11,19 @@ resource "kubernetes_namespace" "application_namespace" {
 }
 */
 
-resource "null_resource" "create_namespace" {
+ 
+
+resource "null_resource" "create_namespace_if_not_exists" {
   provisioner "local-exec" {
-    command = "kubectl get ns ${var.app_namespace} || kubectl create namespace ${var.app_namespace} --dry-run=client -o yaml || kubectl label -f - app.kubernetes.io/name=sample-game-app --local=false --overwrite"
+    command = <<EOT
+      kubectl get namespace ${var.app_namespace} || kubectl create namespace ${var.app_namespace}
+    EOT
+  }
+
+  triggers = {
+    always_run = timestamp() # Forces re-run on every `apply`; can be improved
   }
 }
-
 
 resource "kubernetes_deployment" "game-app" {
   metadata {
