@@ -91,8 +91,8 @@ resource "kubernetes_ingress_v1" "game-app-ingress" {
     namespace = var.app_namespace #kubernetes_namespace.application_namespace.metadata.0.name
     annotations = {
       "kubernetes.io/ingress.class"           = "nginx"  #"alb"
-      "alb.ingress.kubernetes.io/scheme"      = "internet-facing"
-      "alb.ingress.kubernetes.io/target-type" = "ip"
+      "nginx.ingress.kubernetes.io/rewrite-target"      = "/"
+      "nginx.ingress.kubernetes.io/ssl-redirect"        = "false"
       "external-dns.alpha.kubernetes.io/hostname" = "sample-app.suvendu.public-dns.aws"
     }
   }
