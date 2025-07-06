@@ -59,7 +59,7 @@ resource "aws_iam_role_policy_attachment" "AmazonEKSWorkerNodePolicy" {
 }
 
  
-# AWS EKS node group 
+# AWS EKS node group SPOT
 
 resource "aws_eks_node_group" "demo_eks_nodegroup_spot" {
   cluster_name    = aws_eks_cluster.demo_eks_cluster.name
@@ -69,15 +69,16 @@ resource "aws_eks_node_group" "demo_eks_nodegroup_spot" {
   subnet_ids =  var.private_subnets
 
   capacity_type = "SPOT"
+  instance_types  = ["t3.medium", "t3.large", "t3.small"]
 
   launch_template {
-    id      = aws_launch_template.eks_worker_nodes.id
+    id      = aws_launch_template.eks_worker_nodes_spot.id
     version = "$Latest"
   }
 
   scaling_config {
     desired_size = 3
-    max_size     = 10
+    max_size     = 6
     min_size     = 1
   }
 
@@ -94,6 +95,7 @@ resource "aws_eks_node_group" "demo_eks_nodegroup_spot" {
     "kubernetes.io/cluster/${aws_eks_cluster.demo_eks_cluster.name}" = "owned"
     "aws:eks:cluster-name" = "${aws_eks_cluster.demo_eks_cluster.name}"
     "k8s.io/cluster-autoscaler/enabled" = "true"
+    "instance_capacity_type" = "SPOT"
   }
 
   depends_on = [
@@ -110,11 +112,11 @@ resource "aws_eks_node_group" "demo_eks_nodegroup_spot" {
 
 
 
-resource "aws_launch_template" "eks_worker_nodes" {
-  name_prefix   = "eks-node-template-"
+resource "aws_launch_template" "eks_worker_nodes_spot" {
+  name_prefix   = "eks-node-template-spot"
  # image_id      = data.aws_ami.eks_worker_ami.id
 
-  instance_type = "t2.medium"
+  instance_type = "t2.medium"  # default/fallback
  
   block_device_mappings {
     device_name = "/dev/xvda"
@@ -130,7 +132,7 @@ resource "aws_launch_template" "eks_worker_nodes" {
   tag_specifications {
     resource_type = "instance"
     tags = {
-      NodeType = "eks-worker-node"
+      NodeType = "eks-worker-node-spot"
       Name = "${aws_eks_cluster.demo_eks_cluster.name}-worker-node"
     }
   }
