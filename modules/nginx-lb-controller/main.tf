@@ -1,7 +1,7 @@
 
 
 resource "helm_release" "nginx_ingress" {
-  name       = "nginx-ingress"
+  name       = "ingress-nginx"
   namespace  = var.k8s_namespace
   create_namespace = true
 
