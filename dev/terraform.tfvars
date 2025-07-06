@@ -5,10 +5,6 @@ user_os                      =  "linux"
 cluster_name                 =  "eks-managed-clstr"
 cluster_version              =  "1.33"
 cluster_group                =  "eks-managed-nodes"
-spot_instance_types          =  ["t3.medium", "t3.large", "t3.small"]
-ondemand_instance_types      =  ["t2.medium", "t2.large", "t2.small"]
-required_spot_instances      =  true   # either spot or ondemand or both instance types provision for eks worker nodes
-required_ondemand_instances  =  true   # either spot or ondemand or both instance types provision for eks worker nodes
 vpc_cidr                     =  "192.168.0.0/16"
 vpc_name                     =  "eks-vpc"
 public_subnets_cidr          =  ["192.168.0.0/24", "192.168.1.0/24", "192.168.2.0/24"]
@@ -52,24 +48,24 @@ include_efs_csi_driver_addon = true
 include_k8s_app_module = true
 
 
+#EKS Worker Nodes config
+spot_instance_types          =  ["t3.medium", "t3.large", "t3.small"]
+ondemand_instance_types      =  ["t2.medium", "t2.large", "t2.small"]
+required_spot_instances      =  true   # either spot or ondemand or both instance types provision for eks worker nodes
+required_ondemand_instances  =  true   # either spot or ondemand or both instance types provision for eks worker nodes
+ebs_volume_size_in_gb        =  20
+ebs_volume_type              =  "gp3"
+
 scaling_config_spot = {
   desired_size = 3
   max_size     = 10
   min_size     = 1
 }
 
-/*
-include_fluentbit_module = true
-include_coredns_patching_module = true
-include_alb_controller_module = true
-include_kubernetes_addons_module = true
-include_appmesh_controller_module = false
-include_metrics_server_module = true
-include_external_secrets_module = false
-include_external_secrets_multiple_module = false
-include_external_dns_module = false
-include_k8s_app_helm_module = false
-include_k8s_app_module = false
-*/
+scaling_config_ondemand = {
+  desired_size = 2
+  max_size     = 6
+  min_size     = 1
+}
 
-
+ 

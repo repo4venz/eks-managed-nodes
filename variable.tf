@@ -179,3 +179,30 @@ variable "scaling_config_spot" {
     min_size     = 1
   }
 }
+
+
+variable "scaling_config_ondemand" {
+  type = object({
+    desired_size = number
+    max_size     = number
+    min_size     = number
+  })
+  default = {
+    desired_size = 2
+    max_size     = 6
+    min_size     = 1
+  }
+}
+
+variable "ebs_volume_size_in_gb" {
+  type        = number
+  description = "EKS Worker Node EBS Volume Size for SPOT and On_DEMAND instances"
+  default     = 20
+}
+
+variable "ebs_volume_type" {
+  type        = string
+  description = "EKS Worker Node EBS Volume Type for SPOT and On_DEMAND instances"
+  default     = "gp3"
+}
+

@@ -42,11 +42,12 @@ module "eks" {
     required_spot_instances                       =  var.required_spot_instances 
     required_ondemand_instances                   =  var.required_ondemand_instances
     scaling_config_spot                           =  var.scaling_config_spot
+    ebs_volume_size_in_gb                         =  var.ebs_volume_size_in_gb
+    ebs_volume_type                               =  var.ebs_volume_type
 
     depends_on = [module.vpc, module.kms_aws]
 }
-
-
+ 
 
 module "metrics_server" {
   count = var.include_metrics_server_module ? 1 : 0

@@ -31,7 +31,7 @@ resource "aws_eks_node_group" "demo_eks_nodegroup_spot" {
   }
 
   labels = {
-    node = substr("${var.cluster_name}-${var.environment}",0,64)  
+    node = substr("${var.cluster_name}-${var.environment}-spot-worker-node",0,64)  
   }
 
   tags = {
@@ -65,8 +65,8 @@ resource "aws_launch_template" "eks_worker_nodes_spot" {
     device_name = "/dev/xvda"
 
     ebs {
-      volume_size = 20
-      volume_type = "gp3"
+      volume_size = var.ebs_volume_size_in_gb
+      volume_type = var.ebs_volume_type 
       encrypted   = true
       kms_key_id  = var.eks_kms_secret_encryption_key_arn
     }
