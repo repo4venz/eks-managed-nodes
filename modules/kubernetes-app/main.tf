@@ -93,14 +93,16 @@ resource "kubernetes_ingress_v1" "game-app-ingress" {
       "kubernetes.io/ingress.class"           = "nginx"  #"alb"
       "nginx.ingress.kubernetes.io/rewrite-target"      = "/"
       "nginx.ingress.kubernetes.io/ssl-redirect"        = "false"
-      "external-dns.alpha.kubernetes.io/hostname" = "sample-app.suvendu.public-dns.aws"
+      "external-dns.alpha.kubernetes.io/hostname" = "game-app.suvendu.public-dns.aws"
     }
   }
   spec {
     rule {
+      host = "game-app.suvendu.public-dns.aws"
       http {
         path {
-          path = "/*"
+          path      = "/*"
+          path_type = "Prefix"
           backend {
             service {
               name = kubernetes_service_v1.game-app-service.metadata.0.name
@@ -113,7 +115,8 @@ resource "kubernetes_ingress_v1" "game-app-ingress" {
       }
     }
   }
-  depends_on = [
+
+ depends_on = [
     kubernetes_service_v1.game-app-service
   ]
 }
