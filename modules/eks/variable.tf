@@ -79,4 +79,14 @@ variable "ondemand_instance_types" {
   default     = ["t2.medium", "t2.large", "t2.small"]
 }
 
- 
+variable "required_spot_instances" {
+  description = "EKS worker nodes Spot instance types"
+  type        = bool
+  default     = true
+}
+
+variable "required_ondemand_instances" {
+  description = "Execute module/feature or not. true = execute and false = don't execute"
+  type        = bool
+  default     = true
+}
