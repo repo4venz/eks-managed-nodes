@@ -11,23 +11,27 @@ data "aws_eks_cluster" "this" {
 data "aws_eks_cluster_auth" "this" {
   name = var.k8s_cluster_name
 }
-data "aws_iam_openid_connect_provider" "this" {
-  url = data.aws_eks_cluster.this.identity[0].oidc[0].issuer
+
+
+data "aws_iam_openid_connect_provider" "oidc" {
+  url = data.aws_eks_cluster.eks.identity[0].oidc[0].issuer
 }
 
 
 data "aws_iam_policy_document" "fluentbit_assume" {
   statement {
+    effect = "Allow"
     actions = ["sts:AssumeRoleWithWebIdentity"]
-    effect  = "Allow"
     principals {
       type        = "Federated"
-      identifiers = [aws_iam_openid_connect_provider.this.arn]
+      identifiers = [data.aws_iam_openid_connect_provider.oidc.arn]
     }
+
     condition {
       test     = "StringEquals"
-      variable = "${replace(data.aws_eks_cluster.this.identity[0].oidc.issuer, "https://", "")}:sub"
+      variable = "${replace(data.aws_eks_cluster.this.identity[0].oidc[0].issuer, "https://", "")}:sub"
       values   = ["system:serviceaccount:${var.k8s_namespace}:fluent-bit"]
     }
   }
 }
+ 
