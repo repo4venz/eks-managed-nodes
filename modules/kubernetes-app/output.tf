@@ -1,7 +1,7 @@
 
 data "kubernetes_ingress" "ingress_lb" {
   metadata {
-    name = kubernetes_ingress_v1.game-app-ingress.name
+    name = kubernetes_ingress_v1.game-app-ingress.id
   }
 }
 
