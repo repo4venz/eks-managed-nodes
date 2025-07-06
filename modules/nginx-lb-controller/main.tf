@@ -12,13 +12,19 @@ resource "helm_release" "nginx_ingress" {
   cleanup_on_fail = true
   timeout    = 900
 
-  values = [
-    yamlencode({
-      controller = {
-        service = {
-          type = "LoadBalancer"
+values = [
+  yamlencode({
+    controller = {
+      service = {
+        annotations = {
+          "service.beta.kubernetes.io/aws-load-balancer-type" = "elb"   #"nlb" # or elb
+        }
+        targetPorts = {
+          http  = "http"
+          https = "https"
         }
       }
-    })
-  ]
+    }
+  })
+]
 }

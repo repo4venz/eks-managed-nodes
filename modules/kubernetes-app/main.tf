@@ -60,7 +60,7 @@ resource "kubernetes_deployment" "game-app" {
       }
     }
   }
-  # depends_on = [kubernetes_namespace.application_namespace]
+   depends_on = [null_resource.create_namespace_if_not_exists]
 }
 
 resource "kubernetes_service_v1" "game-app-service" {
@@ -90,7 +90,7 @@ resource "kubernetes_ingress_v1" "game-app-ingress" {
     name = "game-app-ingress"
     namespace = var.app_namespace #kubernetes_namespace.application_namespace.metadata.0.name
     annotations = {
-      "kubernetes.io/ingress.class"           = "alb"
+      "kubernetes.io/ingress.class"           = "nginx"  #"alb"
       "alb.ingress.kubernetes.io/scheme"      = "internet-facing"
       "alb.ingress.kubernetes.io/target-type" = "ip"
       "external-dns.alpha.kubernetes.io/hostname" = "sample-app.suvendu.public-dns.aws"
