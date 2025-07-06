@@ -125,7 +125,7 @@ jobs:
         id: destroy_all
         run: TF_LOG=DEBUG terraform destroy -auto-approve -input=false -var-file=${{ matrix.environment }}/terraform.tfvars
 
-      - name: Terraform Destroy (Specific Business Application Module)
+      - name: Terraform Destroy (K8s Application Module)
         if: "contains(github.event.head_commit.message, 'destroy app module')"
         id: destroy_app_module
         run: TF_LOG=DEBUG terraform destroy -target=module.kubernetes_app -auto-approve -input=false -var-file=${{ matrix.environment }}/terraform.tfvars
