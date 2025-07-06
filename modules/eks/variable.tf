@@ -88,7 +88,7 @@ variable "required_spot_instances" {
 variable "required_ondemand_instances" {
   description = "Execute module/feature or not. true = execute and false = don't execute"
   type        = bool
-  default     = true
+  default     = false
 }
 
 
