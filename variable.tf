@@ -142,3 +142,16 @@ variable "prometheus_chart_version" {
   description = "Helm chart version for kube-prometheus-stack"
   default     = "55.5.0"
 }
+
+variable "spot_instance_types" {
+  description = "EKS worker nodes Spot instance types"
+  type        = list(string)
+  default     = ["t3.medium", "t3.large", "t3.small"]
+}
+
+variable "ondemand_instance_types" {
+  description = "EKS worker nodes On-Demand instance types"
+  type        = list(string)
+  default     = ["t2.medium", "t2.large", "t2.small"]
+}
+

@@ -62,7 +62,7 @@ resource "helm_release" "fluentbit" {
 
       cloudwatch = {
         enabled     = true
-        region      = data.aws_region.current.name
+        region      = data.aws_region.current.id
         logGroupName = aws_cloudwatch_log_group.fluentbit.name
         logStreamPrefix = "fluentbit-"
         autoCreateGroup = false

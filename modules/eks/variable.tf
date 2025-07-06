@@ -66,5 +66,17 @@ variable "include_efs_csi_driver_addon" {
   description = "Execute module/feature or not. true = execute and false = don't execute"
   default = true
 }
- 
+
+variable "spot_instance_types" {
+  description = "EKS worker nodes Spot instance types"
+  type        = list(string)
+  default     = ["t3.medium", "t3.large", "t3.small"]
+}
+
+variable "ondemand_instance_types" {
+  description = "EKS worker nodes On-Demand instance types"
+  type        = list(string)
+  default     = ["t2.medium", "t2.large", "t2.small"]
+}
+
  
