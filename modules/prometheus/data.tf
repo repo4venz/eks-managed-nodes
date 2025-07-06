@@ -9,7 +9,7 @@ data "aws_eks_cluster_auth" "iam_authenticator" {
   name = var.k8s_cluster_name   
 }
 
-data "aws_eks_cluster" "eks" {
+data "aws_eks_cluster" "this" {
   name = var.k8s_cluster_name  
 }
 
