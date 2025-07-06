@@ -101,7 +101,7 @@ resource "kubernetes_ingress_v1" "game-app-ingress" {
       host = "game-app.suvendu.public-dns.aws"
       http {
         path {
-          path      = "/*"
+          path      = "/"
           path_type = "Prefix"
           backend {
             service {
