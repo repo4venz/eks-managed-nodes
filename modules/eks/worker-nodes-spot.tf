@@ -20,9 +20,9 @@ resource "aws_eks_node_group" "demo_eks_nodegroup_spot" {
   }
 
   scaling_config {
-    desired_size = 3
-    max_size     = 6
-    min_size     = 1
+    desired_size = var.scaling_config_spot.desired_size
+    max_size     = var.scaling_config_spot.max_size
+    min_size     = var.scaling_config_spot.min_size
   }
 
   update_config {

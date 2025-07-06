@@ -90,3 +90,17 @@ variable "required_ondemand_instances" {
   type        = bool
   default     = true
 }
+
+
+variable "scaling_config_spot" {
+  type = object({
+    desired_size = number
+    max_size     = number
+    min_size     = number
+  })
+  default = {
+    desired_size = 3
+    max_size     = 6
+    min_size     = 1
+  }
+}

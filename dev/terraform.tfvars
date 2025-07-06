@@ -52,6 +52,12 @@ include_efs_csi_driver_addon = true
 include_k8s_app_module = true
 
 
+scaling_config_spot = {
+  desired_size = 3
+  max_size     = 10
+  min_size     = 1
+}
+
 /*
 include_fluentbit_module = true
 include_coredns_patching_module = true

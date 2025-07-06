@@ -37,6 +37,11 @@ module "eks" {
     aws_admin_user_name                           =  var.aws_admin_user_name
     include_ebs_csi_driver_addon                  =  var.include_ebs_csi_driver_addon
     include_efs_csi_driver_addon                  =  var.include_efs_csi_driver_addon
+    spot_instance_types                           =  var.spot_instance_types
+    ondemand_instance_types                       =  var.ondemand_instance_types
+    required_spot_instances                       =  var.required_spot_instances 
+    required_ondemand_instances                   =  var.required_ondemand_instances
+    scaling_config_spot                           =  var.scaling_config_spot
 
     depends_on = [module.vpc, module.kms_aws]
 }
