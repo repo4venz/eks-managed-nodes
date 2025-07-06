@@ -61,7 +61,7 @@ resource "helm_release" "fluentbit" {
 
       cloudwatch = {
         enabled     = true
-        region      = data.aws_eks_cluster.this.id
+        region      = data.aws_region.current.region
         logGroupName = aws_cloudwatch_log_group.fluentbit.name
         logStreamPrefix = "fluentbit-"  
       }
@@ -73,9 +73,8 @@ resource "helm_release" "fluentbit" {
       }
 
       input = {
-        tail = {
+        kubernetes = {
           enabled = true
-          path = "/var/log/containers/*.log"
         }
       }
     })
