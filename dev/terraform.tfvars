@@ -49,8 +49,8 @@ include_k8s_app_module = true
 
 
 #EKS Worker Nodes config
-spot_instance_types          =  ["t3.medium", "t3.large", "t3.small"]
-ondemand_instance_types      =  ["t2.medium", "t2.large", "t2.small"]
+spot_instance_types          =  ["t3.medium", "t3.large", "t3.xlarge", "t3.2xlarge"]
+ondemand_instance_types      =  ["t3.medium", "m5.large", "t3.xlarge"]
 required_spot_instances      =  true   # either spot or ondemand or both instance types provision for eks worker nodes
 required_ondemand_instances  =  false   # either spot or ondemand or both instance types provision for eks worker nodes
 ebs_volume_size_in_gb        =  20

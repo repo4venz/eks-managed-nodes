@@ -38,6 +38,7 @@ resource "aws_eks_node_group" "demo_eks_nodegroup_spot" {
     "kubernetes.io/cluster/${aws_eks_cluster.demo_eks_cluster.name}" = "owned"
     "aws:eks:cluster-name" = "${aws_eks_cluster.demo_eks_cluster.name}"
     "k8s.io/cluster-autoscaler/enabled" = "true"
+    "k8s.io/cluster-autoscaler/${aws_eks_cluster.demo_eks_cluster.name}" = "owned"
     "instance_capacity_type" = "SPOT"
   }
 
