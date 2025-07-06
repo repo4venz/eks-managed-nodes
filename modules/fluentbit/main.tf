@@ -33,7 +33,7 @@ resource "aws_iam_role_policy_attachment" "fluentbit_attach" {
 
 
 resource "aws_cloudwatch_log_group" "fluentbit" {
-  name              = "/eks/${data.aws_eks_cluster.this.name}/fluentbit/logs"
+  name              = "/aws/eks/${data.aws_eks_cluster.this.name}/fluentbit/logs"
   retention_in_days = 7
 }
 
@@ -44,7 +44,7 @@ resource "helm_release" "fluentbit" {
   create_namespace = true
   repository       = "https://fluent.github.io/helm-charts"
   chart            = "fluent-bit"
-  version          = "0.46.9" # Latest as of July 2025
+  version          = var.fluentbit_chart_version # Latest as of July 2025
   atomic           = true
   cleanup_on_fail  = true
   timeout    = 900

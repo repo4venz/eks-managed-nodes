@@ -17,6 +17,11 @@ cidr_block_nat_gw            =  "0.0.0.0/0"
 aws_admin_role_name          = "suvendu-super-admin-role"
 aws_admin_user_name          = "suvendu_admin_user"
 #github_runner_base_path      = "/home/runner/"
+k8s_observability_namespace  = "monitoring"
+nginx_ingress_chart_version  = "4.12.3"
+fluentbit_chart_version      = "0.46.9"
+metrics_server_chart_version = "3.12.1"
+prometheus_chart_version     = "55.5.0"
 aws_sm_secrets               = [
                                     {
                                         secret_name = "test/application1/credentials",          # Reference to the secret of AWS Secret Manager 
@@ -36,8 +41,10 @@ include_eks_cluster_autoscaler_module = true
 include_external_dns_module = true
 include_metrics_server_module = true
 include_fluentbit_module = true
+include_prometheus_module = true
 include_ebs_csi_driver_addon = true
 include_efs_csi_driver_addon = true
+
 
 /*
 include_fluentbit_module = true

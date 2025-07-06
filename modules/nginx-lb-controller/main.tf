@@ -7,9 +7,10 @@ resource "helm_release" "nginx_ingress" {
 
   repository = "https://kubernetes.github.io/ingress-nginx"
   chart      = "ingress-nginx"
-  version    = "4.12.3" # Check for latest compatible version if needed
+  version    = var.nginx_ingress_chart_version  # Check for latest compatible version if needed
   atomic           = true
   cleanup_on_fail = true
+  timeout    = 900
 
   values = [
     yamlencode({

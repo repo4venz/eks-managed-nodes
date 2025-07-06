@@ -24,7 +24,7 @@ resource "helm_release" "metrics_server" {
   name             = "metrics-server"
   repository       = "https://kubernetes-sigs.github.io/metrics-server/"
   chart            = "metrics-server"
-  version          = "3.12.1" # latest as of July 2025
+  version          = var.metrics_server_chart_version # latest as of July 2025
   namespace        = var.k8s_namespace
   create_namespace = true
   atomic           = true

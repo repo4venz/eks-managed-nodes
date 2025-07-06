@@ -80,15 +80,53 @@ variable "include_fluentbit_module" {
 
 variable "include_ebs_csi_driver_addon" {
   description = "Execute module/feature or not. true = execute and false = don't execute"
-  default = true
+  type        = bool
+  default     = true
 }
 
 variable "include_efs_csi_driver_addon" {
   description = "Execute module/feature or not. true = execute and false = don't execute"
-  default = true
+  type        = bool
+  default     = true
 }
+
+variable "include_prometheus_module" {
+  description = "Execute module/feature or not. true = execute and false = don't execute"
+  type        = bool
+  default     = true
+}
+
 
 variable "k8s_namespace" {
   type    = string
   default = "kube-system"
+}
+
+variable "k8s_observability_namespace" {
+  type    = string
+  default = "monitoring"
+}
+
+variable "nginx_ingress_chart_version" {
+  type        = string
+  description = "Helm chart version for Ingress nginx LB controller"
+  default     = "4.12.3"
+}
+
+variable "fluentbit_chart_version" {
+  type        = string
+  description = "Helm chart version for Ingress nginx LB controller"
+  default     = "0.46.9"
+}
+
+variable "metrics_server_chart_version" {
+  type        = string
+  description = "Helm chart version for K8s Metrics Server"
+  default     = "3.12.1"
+}
+
+variable "prometheus_chart_version" {
+  type        = string
+  description = "Helm chart version for kube-prometheus-stack"
+  default     = "55.5.0"
 }

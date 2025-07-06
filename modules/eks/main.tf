@@ -2,7 +2,7 @@
 
 # Creating CloudWatch Log Group for EKS Cluster
 resource "aws_cloudwatch_log_group" "cloudwatch_log_group" {
-  name              = "/eks/${var.cluster_name}-${var.environment}/cluster"
+  name              = "/aws/eks/${var.cluster_name}-${var.environment}/cluster"
   retention_in_days = 7
   kms_key_id = var.eks_kms_cloudwatch_logs_encryption_alias_arn
 

@@ -27,6 +27,12 @@ output "eks_cluster_oidc_issuer_url" {
   value       = try(aws_eks_cluster.demo_eks_cluster.identity[0].oidc[0].issuer, "")
 }
 
+output "eks_cluster_oidc_provider_arn" {
+  description = "The ARN on the EKS cluster for the OpenID Connect identity provider"
+  value       = try(aws_iam_openid_connect_provider.oidc_provider.arn, "")
+}
+
+
 output "eks_cluster_version" {
   description = "The Kubernetes version for the cluster"
   value       = try(aws_eks_cluster.demo_eks_cluster.version, "")

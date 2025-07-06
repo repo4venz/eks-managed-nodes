@@ -46,8 +46,9 @@ module "eks" {
 module "metrics_server" {
   count = var.include_metrics_server_module ? 1 : 0
   source             = "./modules/metrics-server"
-  k8s_cluster_name   = module.eks.eks_cluster_name
-  k8s_namespace  = "observability"
+  k8s_cluster_name   = "${var.cluster_name}-${var.environment}" #module.eks.eks_cluster_name
+  k8s_namespace  = "kube-system"
+  metrics_server_chart_version = var.metrics_server_chart_version
 
   depends_on = [module.eks]
 }
@@ -56,6 +57,7 @@ module "nginx_alb_controller" {
   count = var.include_nginx_controller_module ? 1 : 0
   source         = "./modules/nginx-lb-controller"
   k8s_namespace  = "ingress-nginx"
+  nginx_ingress_chart_version = var.nginx_ingress_chart_version
 
   depends_on = [module.eks]
 }
@@ -64,7 +66,7 @@ module "nginx_alb_controller" {
 module "eks-cluster-autoscaler" {
   count = var.include_eks_cluster_autoscaler_module ? 1 : 0
   source                                        = "./modules/eks-cluster-autoscaler"
-  k8s_cluster_name                              = module.eks.eks_cluster_name
+  k8s_cluster_name                              = "${var.cluster_name}-${var.environment}" #module.eks.eks_cluster_name
   k8s_namespace                                 = "kube-system"
 
   depends_on = [module.eks]
@@ -74,7 +76,7 @@ module "eks-cluster-autoscaler" {
 module "external-dns" {
   count = var.include_external_dns_module ? 1 : 0
   source                                        = "./modules/external-dns"
-  k8s_cluster_name                              =  module.eks.eks_cluster_name
+  k8s_cluster_name                              =  "${var.cluster_name}-${var.environment}" #module.eks.eks_cluster_name
   k8s_namespace                                 = "kube-system"
 
   depends_on = [module.eks]
@@ -84,10 +86,23 @@ module "external-dns" {
 module "fluentbit" {
   count = var.include_fluentbit_module ? 1 : 0
   source                                        = "./modules/fluentbit"
-  k8s_cluster_name                              =  module.eks.eks_cluster_name
-  k8s_namespace                                 = "observability"
+  k8s_cluster_name                              =  "${var.cluster_name}-${var.environment}" #module.eks.eks_cluster_name
+  k8s_namespace                                 =  var.k8s_observability_namespace
+  fluentbit_chart_version                       =  var.fluentbit_chart_version
 
   depends_on = [module.eks]
 }
+
+module "prometheus" {
+  count = var.include_prometheus_module ? 1 : 0
+  source                                        = "./modules/prometheus"
+  k8s_cluster_name                              =  "${var.cluster_name}-${var.environment}" #module.eks.eks_cluster_name
+  k8s_namespace                                 =  var.k8s_observability_namespace
+  prometheus_chart_version                       =  var.prometheus_chart_version
+
+  depends_on = [module.eks]
+}
+
+
 
 

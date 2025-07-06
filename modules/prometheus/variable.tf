@@ -4,11 +4,11 @@ variable "k8s_cluster_name" {
  
 variable "k8s_namespace" {
   type    = string
-  default = "kube-system"
+  default = "monitoring"
 }
 
-variable "fluentbit_chart_version" {
+variable "prometheus_chart_version" {
   type        = string
-  description = "Helm chart version for kube-fluentbit-stack"
-  default     = "0.46.9"
+  description = "Helm chart version for kube-prometheus-stack"
+  default     = "55.5.0"
 }
