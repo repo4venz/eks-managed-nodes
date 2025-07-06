@@ -22,6 +22,6 @@ resource "aws_eks_addon" "ebs_csi" {
     Name = "EBS CSI Driver Addon"
   }
   depends_on = [
-    aws_eks_node_group.demo_eks_nodegroup
+    aws_eks_node_group.demo_eks_nodegroup_spot
   ]
 }

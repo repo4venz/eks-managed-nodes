@@ -51,7 +51,7 @@ resource "aws_eks_addon" "efs_csi_driver" {
   depends_on = [
     aws_iam_role_policy_attachment.efs_csi_policy,
     aws_iam_role.efs_csi_driver_role,
-    aws_eks_node_group.demo_eks_nodegroup
+    aws_eks_node_group.demo_eks_nodegroup_spot
   ]
 }
 

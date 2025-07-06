@@ -61,7 +61,7 @@ resource "aws_iam_role_policy_attachment" "AmazonEKSWorkerNodePolicy" {
  
 # AWS EKS node group 
 
-resource "aws_eks_node_group" "demo_eks_nodegroup" {
+resource "aws_eks_node_group" "demo_eks_nodegroup_spot" {
   cluster_name    = aws_eks_cluster.demo_eks_cluster.name
   node_group_name = substr("${var.cluster_name}-${var.environment}-workernodes-group",0,64)  
   node_role_arn   = aws_iam_role.eks_worker_nodes_role.arn
