@@ -22,6 +22,7 @@ nginx_ingress_chart_version  = "4.12.3"
 fluentbit_chart_version      = "0.46.9"
 metrics_server_chart_version = "3.12.1"
 prometheus_chart_version     = "55.5.0"
+app_namespace        =  ["myapps1", "myapps2"]
 aws_sm_secrets               = [
                                     {
                                         secret_name = "test/application1/credentials",          # Reference to the secret of AWS Secret Manager 
@@ -44,6 +45,7 @@ include_fluentbit_module = true
 include_prometheus_module = true
 include_ebs_csi_driver_addon = true
 include_efs_csi_driver_addon = true
+include_k8s_app_module = true
 
 
 /*

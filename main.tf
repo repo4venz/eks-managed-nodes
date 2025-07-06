@@ -104,5 +104,11 @@ module "prometheus" {
 }
 
 
+module "kubernetes_app" {
+    count = var.include_k8s_app_module ? 1 : 0
+    source                      =  "./modules/kubernetes-app"
+    app_namespace               =  var.app_namespace[0]
 
+  depends_on = [module.eks, module.nginx_alb_controller]
+}
 

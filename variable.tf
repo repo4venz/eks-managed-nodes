@@ -19,6 +19,12 @@ variable aws_admin_user_name {
   description = "AWS User who will assume AWS Admin Role to manage EKS cluster. The user must be created in AWS to assume the admin role."
   default = "eks_admin_user"
 }
+
+variable "app_namespace" {
+  description = "Create IAM users with these names"
+  type        = list(string)
+  default     = ["myapps1", "myapps2"]
+}
  
 variable "cluster_version" {}
 variable "region_name" {
@@ -94,6 +100,12 @@ variable "include_prometheus_module" {
   description = "Execute module/feature or not. true = execute and false = don't execute"
   type        = bool
   default     = true
+}
+
+variable "include_k8s_app_module" {
+  type        = bool
+  default     = false
+  description = "Execute module or not. true = execute and false = don't execute"
 }
 
 
