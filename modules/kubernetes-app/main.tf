@@ -12,6 +12,152 @@ resource "null_resource" "create_namespace_if_not_exists" {
   }
 }
 
+# Terraform module to deploy docker-2048 to EKS using NGINX Ingress
+
+# -------------------
+# VARIABLES
+# -------------------
+variable "namespace" {
+  default = var.app_namespace
+}
+
+variable "image" {
+  default = "alexwhen/docker-2048:latest"
+}
+
+variable "replicas" {
+  default = 5
+}
+
+variable "ingress_hostname" {
+  description = "The DNS name to access the app via Ingress (e.g., 2048.example.com)"
+  type        = string
+}
+
+# -------------------
+# NAMESPACE
+# -------------------
+resource "kubernetes_namespace" "this" {
+  metadata {
+    name = var.namespace
+  }
+}
+
+# -------------------
+# DEPLOYMENT
+# -------------------
+resource "kubernetes_deployment" "this" {
+  metadata {
+    name      = "game-2048"
+    namespace = var.namespace
+    labels = {
+      app = "game-2048"
+    }
+  }
+
+  spec {
+    replicas = var.replicas
+
+    selector {
+      match_labels = {
+        app = "game-2048"
+      }
+    }
+
+    template {
+      metadata {
+        labels = {
+          app = "game-2048"
+        }
+      }
+
+      spec {
+        container {
+          name  = "game-2048"
+          image = var.image
+
+          port {
+            container_port = 80
+          }
+        }
+      }
+    }
+  }
+   depends_on = [null_resource.create_namespace_if_not_exists]
+}
+
+# -------------------
+# SERVICE
+# -------------------
+resource "kubernetes_service" "this" {
+  metadata {
+    name      = "game-2048-svc"
+    namespace = var.namespace
+  }
+
+  spec {
+    selector = {
+      app = "game-2048"
+    }
+
+    port {
+      port        = 80
+      target_port = 80
+    }
+
+    type = "ClusterIP"
+  }
+   depends_on = [null_resource.create_namespace_if_not_exists]
+}
+
+# -------------------
+# INGRESS (NGINX)
+# -------------------
+resource "kubernetes_ingress_v1" "this" {
+  metadata {
+    name      = "game-2048-ingress"
+    namespace = var.namespace
+    annotations = {
+      "kubernetes.io/ingress.class" : "nginx"
+    }
+  }
+
+  spec {
+    rule {
+      host = var.ingress_hostname
+
+      http {
+        path {
+          path     = "/"
+          path_type = "Prefix"
+
+          backend {
+            service {
+              name = kubernetes_service.this.metadata[0].name
+              port {
+                number = 80
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+   depends_on = [null_resource.create_namespace_if_not_exists]
+}
+
+# -------------------
+# OUTPUT
+# -------------------
+output "ingress_hostname" {
+  value = var.ingress_hostname
+  description = "DNS host to access the game UI."
+}
+
+
+
+/**
+
 resource "kubernetes_deployment" "game-app" {
   metadata {
     name      = "game-app"
@@ -105,3 +251,4 @@ resource "kubernetes_ingress_v1" "game-app-ingress" {
   ]
 }
 
+*/

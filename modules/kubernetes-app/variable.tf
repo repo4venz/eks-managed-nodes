@@ -10,8 +10,8 @@ variable "vpc_id" {
 variable "cluster_name" {
   description      =   "put your cluster name here"
 }
-*/
 
+*/
 variable "app_namespace" {
    description      =   "Kubernetes namespace name in which the application will be deployed "
    type = string

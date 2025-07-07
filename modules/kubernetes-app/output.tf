@@ -1,5 +1,5 @@
 
-data "kubernetes_ingress" "ingress_lb" {
+/** data "kubernetes_ingress" "ingress_lb" {
   metadata {
     name = kubernetes_ingress_v1.game-app-ingress.metadata[0].name
   }
@@ -19,5 +19,5 @@ output "load_balancer_hostname" {
 output "load_balancer_ip" {
    value = kubernetes_ingress_v1.game-app-ingress.status[0].load_balancer[0].ingress[0].ip
 }
-
+*/
 
