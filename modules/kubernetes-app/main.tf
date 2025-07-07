@@ -7,7 +7,8 @@
 resource "helm_release" "docker_2048" {
   name       = "docker-2048"
   namespace  = var.app_namespace
-  chart      = "./charts/docker-2048"
+  chart      = "http://daocloud.github.io/dao-2048/"
+  version    =  "1.4.1"
   create_namespace = true
   atomic           = true
   cleanup_on_fail  = true
