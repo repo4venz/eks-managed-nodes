@@ -44,6 +44,7 @@ resource "helm_release" "kubecost" {
   atomic           = true
   cleanup_on_fail  = true
   timeout    = 900
+  wait             = true
 
   values = [
     yamlencode({
