@@ -31,7 +31,9 @@ resource "aws_eks_node_group" "demo_eks_nodegroup_spot" {
   }
 
   labels = {
-    node = substr("${var.cluster_name}-${var.environment}-spot-worker-node",0,64)  
+    node = substr("${var.cluster_name}-${var.environment}-spot-worker-node",0,64) 
+    lifecycle = "spot"
+    type      = "spot-node"
   }
 
   tags = {

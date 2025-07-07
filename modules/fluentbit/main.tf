@@ -32,7 +32,7 @@ resource "aws_iam_role_policy_attachment" "fluentbit_attach" {
   policy_arn = aws_iam_policy.fluentbit.arn
 }
 
-
+/*
 resource "aws_cloudwatch_log_group" "fluentbit" {
   name              = "/aws/eks/${data.aws_eks_cluster.this.name}/fluentbit/logs"
   retention_in_days = 7
@@ -91,6 +91,7 @@ resource "helm_release" "fluentbit" {
 
 resource "helm_release" "fluentbit" {
   name             = "fluent-bit"
+  namespace        = var.k8s_namespace
   repository       = "https://fluent.github.io/helm-charts"
   chart            = "fluent-bit"
   version          = var.fluentbit_chart_version # Latest as of July 2025
@@ -99,9 +100,9 @@ resource "helm_release" "fluentbit" {
   timeout    = 900
 
   values = [
-    templatefile("${path.module}/values.yaml", {
+    templatefile("${path.module}/fluentbit-config-values.yaml", {
       region      = data.aws_region.current.id
-      log_group   = aws_cloudwatch_log_group.fluentbit.name
+      log_group   = "/aws/eks/${data.aws_eks_cluster.this.name}/fluentbit/logs" #aws_cloudwatch_log_group.fluentbit.name
       role_arn    = aws_iam_role.fluentbit.arn
     })
   ]

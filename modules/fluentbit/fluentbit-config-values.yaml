@@ -9,7 +9,7 @@ cloudWatch:
   region: "${region}"
   logGroupName: "${log_group}"
   logStreamPrefix: fluentbit-
-  autoCreateGroup: false
+  autoCreateGroup: true
 
 input:
   tail:
@@ -32,5 +32,5 @@ output:
     region: "${region}"
     log_group_name: "${log_group}"
     log_stream_prefix: fluentbit-
-    auto_create_group: false
+    auto_create_group: true
     log_key: log
