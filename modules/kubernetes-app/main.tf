@@ -14,25 +14,6 @@ resource "null_resource" "create_namespace_if_not_exists" {
 
 # Terraform module to deploy docker-2048 to EKS using NGINX Ingress
 
-# -------------------
-# VARIABLES
-# -------------------
-variable "namespace" {
-  default = var.app_namespace
-}
-
-variable "image" {
-  default = "alexwhen/docker-2048:latest"
-}
-
-variable "replicas" {
-  default = 5
-}
-
-variable "ingress_hostname" {
-  description = "The DNS name to access the app via Ingress (e.g., 2048.example.com)"
-  type        = string
-}
 
 # -------------------
 # NAMESPACE
@@ -146,13 +127,6 @@ resource "kubernetes_ingress_v1" "this" {
    depends_on = [null_resource.create_namespace_if_not_exists]
 }
 
-# -------------------
-# OUTPUT
-# -------------------
-output "ingress_hostname" {
-  value = var.ingress_hostname
-  description = "DNS host to access the game UI."
-}
 
 
 
