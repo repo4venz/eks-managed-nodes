@@ -33,6 +33,12 @@ resource "aws_iam_policy" "kube_cost_policy" {
   })
 }
 
+resource "aws_iam_role_policy_attachment" "kubecost_attach" {
+  role       = aws_iam_role.kube_cost_role.name
+  policy_arn = aws_iam_policy.kube_cost_policy.arn
+}
+
+
 
 resource "helm_release" "kubecost" {
   name             = "kubecost"
@@ -78,5 +84,10 @@ resource "helm_release" "kubecost" {
         enabled = false
       }
     })
+  ]
+
+    depends_on = [
+    aws_iam_role.kube_cost_role,
+    aws_iam_role_policy_attachment.kubecost_attach
   ]
 }
