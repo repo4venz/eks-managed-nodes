@@ -22,6 +22,9 @@ nginx_ingress_chart_version  = "4.12.3"
 fluentbit_chart_version      = "0.50.0"
 metrics_server_chart_version = "3.12.1"
 prometheus_chart_version     = "55.5.0"
+kubecost_chart_version       = "1.82.2"
+
+
 app_namespace        =  ["myapps1", "myapps2"]
 aws_sm_secrets               = [
                                     {
@@ -46,6 +49,7 @@ include_prometheus_module = true
 include_ebs_csi_driver_addon = true
 include_efs_csi_driver_addon = true
 include_k8s_app_module = true
+include_kubecost_module = true
 
 
 #EKS Worker Nodes config

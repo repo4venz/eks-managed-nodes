@@ -71,9 +71,9 @@ resource "helm_release" "fluentbit" {
   repository       = "https://fluent.github.io/helm-charts"
   chart            = "fluent-bit"
   version          = var.fluentbit_chart_version # Latest as of July 2025
-  atomic           = true
-  cleanup_on_fail  = true
-  timeout    = 900
+ # atomic           = true
+ # cleanup_on_fail  = true
+ # timeout    = 900
 
   values = [
     yamlencode({
