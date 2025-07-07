@@ -49,8 +49,6 @@ resource "helm_release" "docker_2048" {
 
 
 
-
-
 /*
 resource "null_resource" "create_namespace_if_not_exists" {
   provisioner "local-exec" {
