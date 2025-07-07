@@ -15,7 +15,7 @@ variable "cluster_name" {
 variable "app_namespace" {
    description      =   "Kubernetes namespace name in which the application will be deployed "
    type = string
-   default = null
+   default = "myapps1"
 }
 
 variable "create_namespace" {
@@ -28,9 +28,7 @@ variable "create_namespace" {
 # -------------------
 # VARIABLES
 # -------------------
-variable "namespace" {
-  default = var.app_namespace
-}
+ 
 
 variable "image" {
   default = "alexwhen/docker-2048:latest"

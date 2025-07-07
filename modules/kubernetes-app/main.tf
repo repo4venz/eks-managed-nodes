@@ -14,23 +14,24 @@ resource "null_resource" "create_namespace_if_not_exists" {
 
 # Terraform module to deploy docker-2048 to EKS using NGINX Ingress
 
-
+/*
 # -------------------
 # NAMESPACE
 # -------------------
 resource "kubernetes_namespace" "this" {
   metadata {
-    name = var.namespace
+    name = var.app_namespace
   }
+   depends_on = [null_resource.create_namespace_if_not_exists]
 }
-
+*/
 # -------------------
 # DEPLOYMENT
 # -------------------
 resource "kubernetes_deployment" "this" {
   metadata {
     name      = "game-2048"
-    namespace = var.namespace
+    namespace = var.app_namespace
     labels = {
       app = "game-2048"
     }
@@ -73,7 +74,7 @@ resource "kubernetes_deployment" "this" {
 resource "kubernetes_service" "this" {
   metadata {
     name      = "game-2048-svc"
-    namespace = var.namespace
+    namespace = var.app_namespace
   }
 
   spec {
@@ -97,7 +98,7 @@ resource "kubernetes_service" "this" {
 resource "kubernetes_ingress_v1" "this" {
   metadata {
     name      = "game-2048-ingress"
-    namespace = var.namespace
+    namespace = var.app_namespace
     annotations = {
       "kubernetes.io/ingress.class" : "nginx"
     }
