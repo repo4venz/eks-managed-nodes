@@ -97,6 +97,7 @@ resource "helm_release" "fluentbit" {
   version          = var.fluentbit_chart_version # Latest as of July 2025
   atomic           = true
   cleanup_on_fail  = true
+  create_namespace = true
   timeout    = 900
 
   values = [
