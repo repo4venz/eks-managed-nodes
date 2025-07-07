@@ -11,5 +11,5 @@ variable "k8s_namespace" {
 variable "kubecost_chart_version" {
   type        = string
   description = "Helm chart version for kube-cost"
-  default     = "1.82.2"
+  default     = "2.8.0"
 }

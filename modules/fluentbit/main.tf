@@ -65,15 +65,15 @@ resource "aws_cloudwatch_log_group" "fluentbit" {
 */
  
 resource "helm_release" "fluentbit" {
-  name             = "fluent-bit"
+  name             = "aws-fluent-bit"
   namespace        = var.k8s_namespace
   create_namespace = true
-  repository       = "https://fluent.github.io/helm-charts"
-  chart            = "fluent-bit"
+  repository       = "https://aws.github.io/eks-charts" # "https://fluent.github.io/helm-charts"
+  chart            = "aws-for-fluent-bit" #"fluent-bit"
   version          = var.fluentbit_chart_version # Latest as of July 2025
- # atomic           = true
- # cleanup_on_fail  = true
- # timeout    = 900
+  atomic           = true
+  cleanup_on_fail  = true
+  timeout    = 900
 
   values = [
     yamlencode({
@@ -87,24 +87,32 @@ resource "helm_release" "fluentbit" {
 
       cloudWatch = {
         enabled     = true
-        region      = "eu-west-2" #data.aws_region.current.id
-        logGroupName = "/aws/eks/fluentbit/logs" # aws_cloudwatch_log_group.fluentbit.name
+        region      = data.aws_region.current.id
+        logGroupName = "/aws/eks/${data.aws_eks_cluster.this.name}/fluentbit/logs" # aws_cloudwatch_log_group.fluentbit.name
         logStreamPrefix = "fluentbit-"
+        logRetentionDays = 7
         autoCreateGroup = true
       }
 
-      output = {
-        cloudwatch = {
-          enabled = true
-        }
+      firehose = {
+        enabled = false
       }
 
-      input = {
-        kubernetes = {
-          enabled = true
-        }
+      kinesis = {
+        enabled = false
       }
-      logLevel = "debug"
+
+      elasticsearch = {
+        enabled = false
+      }
+
+      kubernetes = {
+        enabled = true
+      }
+
+      logs = {
+        level = "debug"
+      }
     })
   ]
 

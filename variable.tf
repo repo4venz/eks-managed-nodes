@@ -214,5 +214,5 @@ variable "ebs_volume_type" {
 variable "kubecost_chart_version" {
   type        = string
   description = "Helm chart version for kube-cost"
-  default     = "1.82.2"
+  default     = "2.8.0"
 }
