@@ -1,11 +1,11 @@
  
-resource "aws_iam_role" "fluentbit" {
+resource "aws_iam_role" "fluentbit_role" {
   name  = substr("${var.k8s_cluster_name}-fluentbit-irsa-role",0,64)
   description = "IAM Role for FluentBit for CloudWatch"
   assume_role_policy = data.aws_iam_policy_document.fluentbit_assume.json
 }
 
-
+/*
  resource "aws_iam_policy" "fluentbit" {
   name   = substr("${var.k8s_cluster_name}-fluentbit-cloudwatch-policy",0,64)
   description = "IAM policy for FluentBit for CloudWatch"
@@ -26,10 +26,35 @@ resource "aws_iam_role" "fluentbit" {
     ]
   })
 }
+*/
+
+resource "aws_iam_policy" "fluentbit_policy" {
+  name   = substr("${var.k8s_cluster_name}-fluentbit-cloudwatch-policy",0,64)
+  description = "IAM policy for FluentBit for CloudWatch"
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action =  [
+				"logs:CreateLogGroup",
+				"logs:CreateLogStream",
+				"logs:PutLogEvents",
+				"logs:DescribeLogStreams",
+				"logs:DescribeLogGroups",
+				"logs:*",
+				"cloudwatch:*"
+			],
+        Resource = "*"
+      }
+    ]
+  })
+}
+
 
 resource "aws_iam_role_policy_attachment" "fluentbit_attach" {
-  role       = aws_iam_role.fluentbit.name
-  policy_arn = aws_iam_policy.fluentbit.arn
+  role       = aws_iam_role.fluentbit_role.name
+  policy_arn = aws_iam_policy.fluentbit_policy.arn
 }
 
 /*
@@ -94,7 +119,7 @@ resource "helm_release" "fluentbit" {
   namespace        = var.k8s_namespace
   repository       = "https://fluent.github.io/helm-charts"
   chart            = "fluent-bit"
- # version          = var.fluentbit_chart_version # Latest as of July 2025
+  version          = var.fluentbit_chart_version # Latest as of July 2025
   atomic           = true
   cleanup_on_fail  = true
   create_namespace = true
@@ -102,14 +127,15 @@ resource "helm_release" "fluentbit" {
 
   values = [
     templatefile("${path.module}/fluentbit-config-values.yaml", {
-      region      = data.aws_region.current.id
+      region      = "eu-west-2" #data.aws_region.current.id
       log_group   = "/aws/eks/fluentbit/logs" #aws_cloudwatch_log_group.fluentbit.name
       role_arn    = aws_iam_role.fluentbit.arn
     })
   ]
 
-  depends_on = [aws_iam_role_policy_attachment.fluentbit_attach,
-  aws_iam_role.fluentbit #,
+  depends_on = [
+  aws_iam_role_policy_attachment.fluentbit_attach,
+  aws_iam_role.fluentbit_role #,
   #aws_cloudwatch_log_group.fluentbit
   ]
 
