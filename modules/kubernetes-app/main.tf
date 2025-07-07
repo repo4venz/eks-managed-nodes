@@ -1,5 +1,56 @@
 
 
+
+# -------------------
+# HELM RELEASE FOR docker-2048
+# -------------------
+resource "helm_release" "docker_2048" {
+  name       = "docker-2048"
+  namespace  = var.app_namespace
+  chart      = "./charts/docker-2048"
+  create_namespace = true
+  atomic           = true
+  cleanup_on_fail  = true
+  timeout    = 900
+
+  values = [
+    yamlencode({
+      replicaCount = var.replicas
+      image = {
+        repository = split(":", var.image)[0]
+        tag        = split(":", var.image)[1]
+      }
+      ingress = {
+        enabled = true
+        className = "nginx"
+        hosts = [
+          {
+            host  = var.ingress_hostname
+            paths = [
+              {
+                path     = "/"
+                pathType = "Prefix"
+              }
+            ]
+          }
+        ]
+      }
+    })
+  ]
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/*
 resource "null_resource" "create_namespace_if_not_exists" {
   provisioner "local-exec" {
     command = <<EOT
@@ -24,7 +75,7 @@ resource "kubernetes_namespace" "this" {
   }
    depends_on = [null_resource.create_namespace_if_not_exists]
 }
-*/
+ 
 # -------------------
 # DEPLOYMENT
 # -------------------
@@ -132,7 +183,7 @@ resource "kubernetes_ingress_v1" "this" {
 
 
 
-/**
+/**  OLD CODE
 
 resource "kubernetes_deployment" "game-app" {
   metadata {
