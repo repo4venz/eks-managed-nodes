@@ -135,7 +135,6 @@ jobs:
         id: destroy_nginx_lb_controller_module
         run: TF_LOG=DEBUG terraform destroy -target=module.nginx_alb_controller -auto-approve -input=false -var-file=${{ matrix.environment }}/terraform.tfvars
 
-
         
   comment:
     runs-on: ubuntu-latest
