@@ -129,7 +129,7 @@ resource "helm_release" "fluentbit" {
     templatefile("${path.module}/fluentbit-config-values.yaml", {
       region      = "eu-west-2" #data.aws_region.current.id
       log_group   = "/aws/eks/fluentbit/logs" #aws_cloudwatch_log_group.fluentbit.name
-      role_arn    = aws_iam_role.fluentbit.arn
+      role_arn    = aws_iam_role.fluentbit_role.arn
     })
   ]
 
