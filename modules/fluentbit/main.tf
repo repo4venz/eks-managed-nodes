@@ -108,7 +108,8 @@ resource "helm_release" "fluentbit" {
   ]
 
   depends_on = [aws_iam_role_policy_attachment.fluentbit_attach,
-  aws_iam_role.fluentbit,
-  aws_cloudwatch_log_group.fluentbit]
+  aws_iam_role.fluentbit #,
+  #aws_cloudwatch_log_group.fluentbit
+  ]
 
 }
