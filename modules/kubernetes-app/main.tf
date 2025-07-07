@@ -101,6 +101,7 @@ resource "kubernetes_ingress_v1" "this" {
     namespace = var.app_namespace
     annotations = {
       "kubernetes.io/ingress.class" : "nginx"
+      "external-dns.alpha.kubernetes.io/hostname" = "game-app.suvendu.public-dns.aws"
     }
   }
 
