@@ -133,7 +133,7 @@ variable "nginx_ingress_chart_version" {
 variable "fluentbit_chart_version" {
   type        = string
   description = "Helm chart version for Ingress nginx LB controller"
-  default     = "0.50.0"
+  default     = "0.1.35"
 }
 
 variable "metrics_server_chart_version" {

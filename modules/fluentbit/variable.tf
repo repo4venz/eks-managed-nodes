@@ -10,5 +10,5 @@ variable "k8s_namespace" {
 variable "fluentbit_chart_version" {
   type        = string
   description = "Helm chart version for kube-fluentbit-stack"
-  default     = "0.50.0"
+  default     = "0.1.35"
 }
