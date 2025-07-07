@@ -94,7 +94,7 @@ resource "helm_release" "fluentbit" {
   namespace        = var.k8s_namespace
   repository       = "https://fluent.github.io/helm-charts"
   chart            = "fluent-bit"
-  version          = var.fluentbit_chart_version # Latest as of July 2025
+ # version          = var.fluentbit_chart_version # Latest as of July 2025
   atomic           = true
   cleanup_on_fail  = true
   create_namespace = true
@@ -103,7 +103,7 @@ resource "helm_release" "fluentbit" {
   values = [
     templatefile("${path.module}/fluentbit-config-values.yaml", {
       region      = data.aws_region.current.id
-      log_group   = "/aws/eks/${data.aws_eks_cluster.this.name}/fluentbit/logs" #aws_cloudwatch_log_group.fluentbit.name
+      log_group   = "/aws/eks/fluentbit/logs" #aws_cloudwatch_log_group.fluentbit.name
       role_arn    = aws_iam_role.fluentbit.arn
     })
   ]
