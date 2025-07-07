@@ -8,12 +8,12 @@ resource "aws_iam_role" "metrics_server" {
     Statement = [{
       Effect = "Allow",
       Principal = {
-        Federated = data.aws_iam_openid_connect_provider.this.arn
+        Federated = data.aws_iam_openid_connect_provider.oidc.arn
       },
       Action = "sts:AssumeRoleWithWebIdentity",
       Condition = {
         StringEquals = {
-          "${replace(data.aws_iam_openid_connect_provider.this.url, "https://", "")}:sub" = "system:serviceaccount:${var.k8s_namespace}:metrics-server"
+          "${replace(data.aws_iam_openid_connect_provider.oidc.url, "https://", "")}:sub" = "system:serviceaccount:${var.k8s_namespace}:metrics-server"
         }
       }
     }]

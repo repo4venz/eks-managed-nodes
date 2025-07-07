@@ -9,7 +9,7 @@ data "aws_iam_policy_document" "prometheus_assume_role" {
 
     condition {
       test     = "StringEquals"
-      variable = "${replace(data.aws_eks_cluster.eks.identity[0].oidc[0].issuer, "https://", "")}:sub"
+      variable = "${replace(data.aws_iam_openid_connect_provider.oidc.url, "https://", "")}:sub"
       values   = ["system:serviceaccount:${var.k8s_namespace}:prometheus-sa"]
     }
   }

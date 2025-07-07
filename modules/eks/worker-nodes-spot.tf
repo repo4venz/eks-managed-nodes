@@ -72,6 +72,10 @@ resource "aws_launch_template" "eks_worker_nodes_spot" {
       kms_key_id  = var.eks_kms_secret_encryption_key_arn
     }
   }
+  
+  lifecycle {
+    create_before_destroy = true
+  }
  
   tag_specifications {
     resource_type = "instance"

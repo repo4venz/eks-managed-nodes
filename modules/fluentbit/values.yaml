@@ -1,0 +1,36 @@
+serviceAccount:
+  create: true
+  name: fluent-bit
+  annotations:
+    eks.amazonaws.com/role-arn: "${role_arn}"
+
+cloudWatch:
+  enabled: true
+  region: "${region}"
+  logGroupName: "${log_group}"
+  logStreamPrefix: fluentbit-
+  autoCreateGroup: false
+
+input:
+  tail:
+    path: /var/log/containers/*.log
+    parser: docker
+    tag: kube.*
+    docker_mode: On
+    mem_buf_limit: 5MB
+    skip_long_lines: On
+
+filter:
+  kubernetes:
+    enabled: true
+    match: kube.*
+    labels: true
+    annotations: true
+
+output:
+  cloudwatch:
+    region: "${region}"
+    log_group_name: "${log_group}"
+    log_stream_prefix: fluentbit-
+    auto_create_group: false
+    log_key: log
