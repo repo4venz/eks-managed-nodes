@@ -120,6 +120,14 @@ module "kube-cost" {
 }
 
 
+module "cert-manager" {
+  count = var.include_cert_manager_module ? 1 : 0
+  source                                        = "./modules/cert-manager"
+  certmanager_chart_version                     =  var.certmanager_chart_version
+
+  depends_on = [module.eks]
+}
+
 module "kubernetes_app" {
     count = var.include_k8s_app_module ? 1 : 0
     source                      =  "./modules/kubernetes-app"

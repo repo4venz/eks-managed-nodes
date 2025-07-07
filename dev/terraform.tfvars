@@ -23,6 +23,8 @@ fluentbit_chart_version      = "0.1.35"
 metrics_server_chart_version = "3.12.1"
 prometheus_chart_version     = "55.5.0"
 kubecost_chart_version       = "2.8.0"
+certmanager_chart_version    = "1.18.2"
+
 
 
 app_namespace        =  ["myapps1", "myapps2"]
@@ -50,6 +52,7 @@ include_ebs_csi_driver_addon = true
 include_efs_csi_driver_addon = true
 include_k8s_app_module = true
 include_kubecost_module = false
+include_cert_manager_module = true
 
 
 #EKS Worker Nodes config

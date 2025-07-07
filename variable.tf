@@ -216,3 +216,17 @@ variable "kubecost_chart_version" {
   description = "Helm chart version for kube-cost"
   default     = "2.8.0"
 }
+
+variable "certmanager_chart_version" {
+  type        = string
+  description = "Helm chart version for kube-cost"
+  default     = "1.18.2"
+}
+
+
+variable "include_cert_manager_module" {
+  type        = bool
+  default     = true
+  description = "Execute module or not. true = execute and false = don't execute"
+}
+
