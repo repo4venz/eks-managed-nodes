@@ -79,7 +79,7 @@ resource "helm_release" "fluentbit" {
     yamlencode({
       serviceAccount = {
         create = true
-        name   = "fluent-bit"
+        name   = "aws-for-fluent-bit"
         annotations = {
           "eks.amazonaws.com/role-arn" = aws_iam_role.fluentbit_role.arn
         }

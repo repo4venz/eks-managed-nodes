@@ -49,7 +49,7 @@ include_prometheus_module = true
 include_ebs_csi_driver_addon = true
 include_efs_csi_driver_addon = true
 include_k8s_app_module = true
-include_kubecost_module = true
+include_kubecost_module = false
 
 
 #EKS Worker Nodes config

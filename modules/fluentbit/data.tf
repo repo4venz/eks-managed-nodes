@@ -30,7 +30,7 @@ data "aws_iam_policy_document" "fluentbit_assume" {
     condition {
       test     = "StringEquals"
       variable = "${replace(data.aws_iam_openid_connect_provider.oidc.url, "https://", "")}:sub"
-      values   = ["system:serviceaccount:${var.k8s_namespace}:fluent-bit"]
+      values   = ["system:serviceaccount:${var.k8s_namespace}:aws-for-fluent-bit"]
     }
   }
 }
