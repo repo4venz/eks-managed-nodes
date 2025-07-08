@@ -35,7 +35,7 @@ variable "k8s_cluster_name" {
 variable "route53_zone_id" {
   description = "The ID of the Route53 hosted zone"
   type        = string
-  default = "Z00719261GUBMEJWEC48W"
+  default = "Z00719261GUBMEJWEC48W"   # AWS Route 553 Public Hosted Zone -- Zone ID
 }
 
 variable "environment" {

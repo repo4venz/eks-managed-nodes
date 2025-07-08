@@ -106,7 +106,7 @@ resource "kubernetes_ingress_v1" "this" {
       host = var.ingress_hostname
       http {
         path {
-          path     = "/*"
+          path     = "/"
           path_type = "Prefix"
 
           backend {
