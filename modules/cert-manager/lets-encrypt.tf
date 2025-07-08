@@ -1,8 +1,8 @@
 # -------------------
 # LET'S ENCRYPT CLUSTERISSUER
 # -------------------
-/**resource "kubernetes_manifest" "letsencrypt_clusterissuer" {
-  count = var.enable_lets_encrypt_ca ? 1 : 0
+resource "kubernetes_manifest" "letsencrypt_clusterissuer" {
+  #count = var.enable_lets_encrypt_ca ? 1 : 0
   
   manifest = {
     apiVersion = "cert-manager.io/v1"
@@ -33,4 +33,3 @@
     helm_release.cert_manager
   ]
 }
-*/
