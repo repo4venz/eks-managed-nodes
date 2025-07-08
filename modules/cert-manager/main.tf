@@ -19,13 +19,14 @@ resource "null_resource" "create_namespace_if_not_exists" {
 
 resource "aws_iam_role" "cert_manager_role" {
   name = "cert-manager-irsa-role"
+  description = "IAM Role for Cert Manager for Staging on DNS01 for Route53"
   assume_role_policy = data.aws_iam_policy_document.cert_manager_assume_role_policy.json
 }
 
 
 resource "aws_iam_policy" "cert_manager_policy_dns01" {
   name   = substr("${var.k8s_cluster_name}-cert-manager-dns1-policy",0,64)
-  description = "IAM policy for Cert Manager Policy for Staging on DNS01 for Route53"
+  description = "IAM policy for Cert Manager for Staging on DNS01 for Route53"
   policy = jsonencode({
     Version = "2012-10-17",
     Statement = [
@@ -35,7 +36,7 @@ resource "aws_iam_policy" "cert_manager_policy_dns01" {
           "route53:GetChange",
           "route53:ChangeResourceRecordSets",
           "route53:ListResourceRecordSets",
-          "route53:ListHostedZones",
+          "route53:ListHostedZones"
 			],
         Resource = "*"
       }
