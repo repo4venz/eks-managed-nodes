@@ -52,8 +52,8 @@ include_efs_csi_driver_addon = true
 include_k8s_app_module = true
 include_k8s_app_module_secured = true
 include_kubecost_module = false
-include_cert_manager_module = true
-enable_lets_encrypt_ca = true
+include_cert_manager_module = false
+enable_lets_encrypt_ca = false
 
 
 
