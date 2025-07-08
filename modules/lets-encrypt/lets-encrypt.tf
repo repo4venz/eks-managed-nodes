@@ -12,8 +12,7 @@ resource "null_resource" "wait_for_cert_manager_crds" {
       exit 1
     EOT
   }
-
-  depends_on = [helm_release.cert_manager]
+ 
 }
 
 
@@ -92,7 +91,6 @@ resource "kubernetes_manifest" "letsencrypt_clusterissuer_dns01" {
     }
   }
   depends_on = [
-    helm_release.cert_manager,
     null_resource.wait_for_cert_manager_crds
   ]
 }

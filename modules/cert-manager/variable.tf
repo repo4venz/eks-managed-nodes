@@ -1,3 +1,7 @@
+variable "k8s_cluster_name" {
+  description = "the name of your stack, e.g. \"demo\""
+}
+
 
 variable "namespace" {
   type        = string
@@ -13,50 +17,3 @@ variable "certmanager_chart_version" {
   default = "1.18.2"
   description = "Version of cert-manager Helm chart to install"
 }
-
-variable "email" {
-  description = "Email address for Let's Encrypt notifications"
-  type        = string
-  default     = "suvendu.mandal@gmail.com"
-}
-
-variable "enable_lets_encrypt_ca" {
-  type        = bool
-  default     = true
-  description = "Execute module or not. true = execute and false = don't execute"
-}
-
-
-variable "k8s_cluster_name" {
-  description = "the name of your stack, e.g. \"demo\""
-}
-
- 
-variable "route53_zone_id" {
-  description = "The ID of the Route53 hosted zone"
-  type        = string
-  default = "Z00719261GUBMEJWEC48W"   # AWS Route 553 Public Hosted Zone -- Zone ID
-}
-
-variable "environment" {
-  description = "Environemnt of Lets Encrypt"
-  type        = string
-  default = "test"
-}
-
-/*
-variable "lets_encrypt_server_url" {
-  description = "Environemnt of Lets Encrypt"
-  type        = string
-  default =  "https://acme-staging-v02.api.letsencrypt.org/directory"
-  }
-*/
-
-locals{
-  lets_encrypt_server_url = var.environment == "prod" ? "https://acme-v02.api.letsencrypt.org/directory"  : "https://acme-staging-v02.api.letsencrypt.org/directory"
-}
-
- 
-
- 
-

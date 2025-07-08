@@ -17,9 +17,4 @@ output "cert_manager_release_name" {
 
 
 
-/*
-output "letsencrypt_issuer" {
-  value       = try(kubernetes_manifest.letsencrypt_clusterissuer[0].manifest["metadata"]["name"], "")
-  description = "Name of the Let's Encrypt ClusterIssuer."
-}
-*/
+ 

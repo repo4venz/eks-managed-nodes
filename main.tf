@@ -86,7 +86,7 @@ module "external-dns" {
   k8s_cluster_name                              =  "${var.cluster_name}-${var.environment}" #module.eks.eks_cluster_name
   k8s_namespace                                 = "kube-system"
 
-  depends_on = [module.eks]
+  depends_on = [module.eks, module.nginx_alb_controller]
 }
 
 
@@ -124,12 +124,21 @@ module "cert-manager" {
   count = var.include_cert_manager_module ? 1 : 0
   source                                        = "./modules/cert-manager"
   certmanager_chart_version                     =  var.certmanager_chart_version
-  enable_lets_encrypt_ca                        =  var.enable_lets_encrypt_ca
   k8s_cluster_name                              =  "${var.cluster_name}-${var.environment}" #module.eks.eks_cluster_name
   environment                                   =  var.environment
   
-  depends_on = [module.eks]
+  depends_on = [module.eks, module.nginx_alb_controller]
 }
+
+
+module "lets-encrypt" {
+  count = var.enable_lets_encrypt_ca ? 1 : 0
+  source                                        = "./modules/lets-encrypt"
+  environment                                   =  var.environment
+  
+  depends_on = [module.eks, module.nginx_alb_controller]
+}
+
 
 module "kubernetes_app" {
     count = var.include_k8s_app_module ? 1 : 0
@@ -145,6 +154,6 @@ module "kubernetes_app_secured" {
     app_namespace               =  var.app_namespace[1]
     environment                 =  var.environment
 
-  depends_on = [module.eks, module.nginx_alb_controller, module.cert-manager]
+  depends_on = [module.eks, module.nginx_alb_controller, module.cert-manager, module.lets-encrypt]
 }
  
