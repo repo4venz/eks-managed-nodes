@@ -90,7 +90,7 @@ resource "kubernetes_ingress_v1" "this" {
     namespace = var.app_namespace
 
     annotations = {
-      "cert-manager.io/cluster-issuer"                 = "letsencrypt-${var.environment}"
+      "cert-manager.io/cluster-issuer"                 = "letsencrypt-${var.environment}-dns"
       "nginx.ingress.kubernetes.io/force-ssl-redirect" = "true"
       "nginx.ingress.kubernetes.io/rewrite-target"     = "/"
       "external-dns.alpha.kubernetes.io/hostname"      = var.ingress_hostname
@@ -98,7 +98,7 @@ resource "kubernetes_ingress_v1" "this" {
   }
 
   spec {
-    ingress_class_name = "nginx"  
+    ingress_class_name = "nginx"  #  
 
     tls {
       hosts       = [var.ingress_hostname]
@@ -111,7 +111,7 @@ resource "kubernetes_ingress_v1" "this" {
       http {
         path {
           path      = "/"
-          path_type = "Prefix"   
+          path_type = "Prefix"  #  
 
           backend {
             service {

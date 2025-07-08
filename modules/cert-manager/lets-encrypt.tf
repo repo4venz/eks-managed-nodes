@@ -21,21 +21,25 @@ resource "null_resource" "wait_for_cert_manager_crds" {
 # -------------------
 # LET'S ENCRYPT CLUSTERISSUER
 # -------------------
-resource "kubernetes_manifest" "letsencrypt_clusterissuer" {
+
+
+#### Using NGINX Ingress ########
+
+resource "kubernetes_manifest" "letsencrypt_clusterissuer_http01" {
   count = var.enable_lets_encrypt_ca ? 1 : 0
   
   manifest = {
     apiVersion = "cert-manager.io/v1"
     kind       = "ClusterIssuer"
     metadata = {
-      name   = "letsencrypt-${var.environment}"  #prod: "letsencrypt-prod"
+      name   = "letsencrypt-${var.environment}-http"  #prod: "letsencrypt-prod"
     }
     spec = {
       acme = {
         server =  "${local.lets_encrypt_server_url}"
         email  = var.email
         privateKeySecretRef = {
-          name = "letsencrypt-${var.environment}" 
+          name = "letsencrypt-${var.environment}-http" 
         }
         solvers = [
           {
@@ -56,18 +60,24 @@ resource "kubernetes_manifest" "letsencrypt_clusterissuer" {
 }
 
 
+#### Using Route53 DNS ########
 
-
-        /*solvers = [
-          {
-            http01 = {
-              ingress = {
-                class = "nginx"
-              }
-            }
-          }
-        ]*/
-/*
+resource "kubernetes_manifest" "letsencrypt_clusterissuer_dns01" {
+  count = var.enable_lets_encrypt_ca ? 1 : 0
+  
+  manifest = {
+    apiVersion = "cert-manager.io/v1"
+    kind       = "ClusterIssuer"
+    metadata = {
+      name   = "letsencrypt-${var.environment}-dns"  #prod: "letsencrypt-prod"
+    }
+    spec = {
+      acme = {
+        server =  "${local.lets_encrypt_server_url}"
+        email  = var.email
+        privateKeySecretRef = {
+          name = "letsencrypt-${var.environment}-dns" 
+        }
         solvers = [
           {
             dns01 = {
@@ -78,5 +88,12 @@ resource "kubernetes_manifest" "letsencrypt_clusterissuer" {
             }
           }
         ]
-
-        */
+      }
+    }
+  }
+  depends_on = [
+    helm_release.cert_manager,
+    null_resource.wait_for_cert_manager_crds
+  ]
+}
+ 
