@@ -16,7 +16,7 @@ module "vpc" {
 
 module kms_aws {
     source                              =  "./modules/kms-aws"
-    cluster_name                        =  var.cluster_name
+    cluster_name                        =  "${var.cluster_name}-${var.environment}"
     environment                         =  var.environment
 
     depends_on = [module.vpc]
@@ -24,7 +24,7 @@ module kms_aws {
 
 module "eks" {
     source                                        =  "./modules/eks"
-    cluster_name                                  =  var.cluster_name
+    cluster_name                                  =  "${var.cluster_name}-${var.environment}" #var.cluster_name
     cluster_version                               =  var.cluster_version
     environment                                   =  var.environment
     private_subnets                               =  module.vpc.aws_subnets_private    
@@ -124,7 +124,8 @@ module "cert-manager" {
   count = var.include_cert_manager_module ? 1 : 0
   source                                        = "./modules/cert-manager"
   certmanager_chart_version                     =  var.certmanager_chart_version
-  enable_lets_encrypt_ca                        =  var.enable_lets_encrypt_ca 
+  enable_lets_encrypt_ca                        =  var.enable_lets_encrypt_ca
+  k8s_cluster_name                              =  "${var.cluster_name}-${var.environment}" #module.eks.eks_cluster_name
 
   depends_on = [module.eks]
 }
@@ -137,3 +138,10 @@ module "kubernetes_app" {
   depends_on = [module.eks, module.nginx_alb_controller]
 }
 
+module "kubernetes_app_secured" {
+    count = var.include_k8s_app_module_secured ? 1 : 0
+    source                      =  "./modules/kubernetes-app-secured"
+    app_namespace               =  var.app_namespace[1]
+
+  depends_on = [module.eks, module.nginx_alb_controller, module.cert-manager]
+}

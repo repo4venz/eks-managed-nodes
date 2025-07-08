@@ -6,7 +6,7 @@ resource "aws_eks_node_group" "demo_eks_nodegroup_ondemand" {
   count = var.required_ondemand_instances ? 1 : 0
 
   cluster_name    = aws_eks_cluster.demo_eks_cluster.name
-  node_group_name = substr("${var.cluster_name}-${var.environment}-workernodes-group-ondemand",0,64)  
+  node_group_name = substr("${var.cluster_name}-workernodes-group-ondemand",0,64)  
   node_role_arn   = aws_iam_role.eks_worker_nodes_role.arn
 
   subnet_ids =  var.private_subnets
@@ -31,7 +31,7 @@ resource "aws_eks_node_group" "demo_eks_nodegroup_ondemand" {
   }
 
   labels = {
-    node = substr("${var.cluster_name}-${var.environment}-ondemand-worker-node",0,64) 
+    node = substr("${var.cluster_name}-ondemand-worker-node",0,64) 
     lifecycle = "ondemand"
     type      = "ondemand-node" 
   }

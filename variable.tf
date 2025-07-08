@@ -236,4 +236,9 @@ variable "enable_lets_encrypt_ca" {
   description = "Execute module or not. true = execute and false = don't execute"
 }
 
+variable "include_k8s_app_module_secured" {
+  type        = bool
+  default     = true
+  description = "Execute module or not. true = execute and false = don't execute"
+}
     

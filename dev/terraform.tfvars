@@ -26,7 +26,6 @@ kubecost_chart_version       = "2.8.0"
 certmanager_chart_version    = "1.18.2"
 
 
-
 app_namespace        =  ["myapps1", "myapps2"]
 aws_sm_secrets               = [
                                     {
@@ -51,9 +50,12 @@ include_prometheus_module = true
 include_ebs_csi_driver_addon = true
 include_efs_csi_driver_addon = true
 include_k8s_app_module = true
+include_k8s_app_module_secured = true
 include_kubecost_module = false
 include_cert_manager_module = true
 enable_lets_encrypt_ca = true
+
+
 
 
 #EKS Worker Nodes config

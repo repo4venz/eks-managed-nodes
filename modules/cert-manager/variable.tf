@@ -1,5 +1,6 @@
 
 variable "namespace" {
+  type        = string
   default = "cert-manager"
 }
 
@@ -25,4 +26,15 @@ variable "enable_lets_encrypt_ca" {
   description = "Execute module or not. true = execute and false = don't execute"
 }
 
+
+variable "k8s_cluster_name" {
+  description = "the name of your stack, e.g. \"demo\""
+}
+
+
+variable "route53_zone_id" {
+  description = "The ID of the Route53 hosted zone"
+  type        = string
+  default = "Z00719261GUBMEJWEC48W"
+}
     

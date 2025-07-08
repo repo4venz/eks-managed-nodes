@@ -28,5 +28,5 @@ variable "replicas" {
 variable "ingress_hostname" {
   description = "The DNS name to access the app via Ingress (e.g., 2048.example.com)"
   type        = string
-  default = "game-notsecured.suvendupublicdomain.fun"
+  default = "game-secured.suvendupublicdomain.fun"
 }

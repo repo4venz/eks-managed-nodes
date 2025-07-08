@@ -2,7 +2,7 @@
 
 # Creating CloudWatch Log Group for EKS Cluster
 resource "aws_cloudwatch_log_group" "cloudwatch_log_group" {
-  name              = "/aws/eks/${var.cluster_name}-${var.environment}/cluster"
+  name              = "/aws/eks/${var.cluster_name}/cluster"
   retention_in_days = 7
   kms_key_id = var.eks_kms_cloudwatch_logs_encryption_alias_arn
 
@@ -19,7 +19,7 @@ Creating IAM Policies for EKS Cluster
 
 # AWS IAM Policy for CloudWatch. Required for EKS to generrate Control Plane logs.
 resource "aws_iam_policy" "AmazonEKSClusterCloudWatchMetricsPolicy" {
-  name   = substr("${var.cluster_name}-${var.environment}-AmazonEKSClusterCloudWatchMetricsPolicy",0,64)
+  name   = substr("${var.cluster_name}-AmazonEKSClusterCloudWatchMetricsPolicy",0,64)
   policy = <<EOF
 {
     "Version": "2012-10-17",
@@ -42,7 +42,7 @@ Creating IAM Role for EKS Cluster
 =====================================*/
 
 resource "aws_iam_role" "eks_cluster_role" {
-  name = substr("${var.cluster_name}-${var.environment}-cluster-role",0,64)
+  name = substr("${var.cluster_name}-cluster-role",0,64)
   description = "Allow cluster to manage node groups, managed nodes and cloudwatch logs"
   force_detach_policies = true
   assume_role_policy = <<POLICY
@@ -101,7 +101,7 @@ resource "aws_iam_role_policy_attachment" "eks_kms_usage" {
 Creating EKS Cluster 
 ========================*/
 resource "aws_eks_cluster" "demo_eks_cluster" {
-  name     = "${var.cluster_name}-${var.environment}"
+  name     = var.cluster_name
    
   role_arn = aws_iam_role.eks_cluster_role.arn
   enabled_cluster_log_types = ["api", "audit", "authenticator", "controllerManager", "scheduler"]

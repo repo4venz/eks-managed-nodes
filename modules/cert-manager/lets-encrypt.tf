@@ -8,20 +8,30 @@ resource "kubernetes_manifest" "letsencrypt_clusterissuer" {
     apiVersion = "cert-manager.io/v1"
     kind       = "ClusterIssuer"
     metadata = {
-      name = "letsencrypt-prod"
+      name =  "letsencrypt-staging"    #prod: "letsencrypt-prod"
     }
     spec = {
       acme = {
-        server = "https://acme-v02.api.letsencrypt.org/directory"
+        server =  "https://acme-staging-v02.api.letsencrypt.org/directory"            # prod url: "https://acme-v02.api.letsencrypt.org/directory"
         email  = var.email
         privateKeySecretRef = {
-          name = "letsencrypt-prod"
+          name = "letsencrypt-staging"     #"letsencrypt-prod"
         }
-        solvers = [
+        /*solvers = [
           {
             http01 = {
               ingress = {
                 class = "nginx"
+              }
+            }
+          }
+        ]*/
+        solvers = [
+          {
+            dns01 = {
+              route53 = {
+              region     = data.region.current.id
+              hostedZoneID = var.route53_zone_id
               }
             }
           }

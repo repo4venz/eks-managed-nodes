@@ -19,10 +19,10 @@ resource "null_resource" "create_namespace_if_not_exists" {
 # -------------------
 resource "kubernetes_deployment" "this" {
   metadata {
-    name      = "game-2048"
+    name      = "game-2048-secured"
     namespace = var.app_namespace
     labels = {
-      app = "game-2048"
+      app = "game-2048-secured"
     }
   }
 
@@ -31,20 +31,20 @@ resource "kubernetes_deployment" "this" {
 
     selector {
       match_labels = {
-        app = "game-2048"
+        app = "game-2048-secured"
       }
     }
 
     template {
       metadata {
         labels = {
-          app = "game-2048"
+          app = "game-2048-secured"
         }
       }
 
       spec {
         container {
-          name  = "game-2048"
+          name  = "game-2048-secured"
           image = var.image
 
           port {
@@ -62,13 +62,13 @@ resource "kubernetes_deployment" "this" {
 # -------------------
 resource "kubernetes_service" "this" {
   metadata {
-    name      = "game-2048-svc"
+    name      = "game-2048-svc-secured"
     namespace = var.app_namespace
   }
 
   spec {
     selector = {
-      app = "game-2048"
+      app = "game-2048-secured"
     }
 
     port {
@@ -86,19 +86,27 @@ resource "kubernetes_service" "this" {
 # -------------------
 resource "kubernetes_ingress_v1" "this" {
   metadata {
-    name      = "game-2048-ingress"
+    name      = "game-2048-ingress-secured"
     namespace = var.app_namespace
     annotations = {
-      "kubernetes.io/ingress.class" : "nginx"
+      "kubernetes.io/ingress.class"                    = "nginx"
+      "cert-manager.io/cluster-issuer"                 = "letsencrypt-staging"
+      "nginx.ingress.kubernetes.io/force-ssl-redirect" = "true"
+      "nginx.ingress.kubernetes.io/rewrite-target"     = "/"
       "external-dns.alpha.kubernetes.io/hostname" = var.ingress_hostname
     }
   }
 
   spec {
+    tls {
+      hosts      = [var.ingress_hostname]
+      secret_name = "${var.app_namespace}-tls-2048-cert"
+    }
     rule {
+      host = var.ingress_hostname
       http {
         path {
-          path     = "/"
+          path     = "/*"
           path_type = "Prefix"
 
           backend {

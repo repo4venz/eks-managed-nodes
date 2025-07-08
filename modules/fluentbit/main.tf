@@ -5,28 +5,7 @@ resource "aws_iam_role" "fluentbit_role" {
   assume_role_policy = data.aws_iam_policy_document.fluentbit_assume.json
 }
 
-/*
- resource "aws_iam_policy" "fluentbit" {
-  name   = substr("${var.k8s_cluster_name}-fluentbit-cloudwatch-policy",0,64)
-  description = "IAM policy for FluentBit for CloudWatch"
-  policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [
-      {
-        Effect = "Allow",
-        Action = [
-          "logs:CreateLogGroup",
-          "logs:CreateLogStream",
-          "logs:PutLogEvents",
-          "logs:DescribeLogStreams",
-          "logs:DescribeLogGroups"
-        ],
-        Resource = "*"
-      }
-    ]
-  })
-}
-*/
+ 
 
 resource "aws_iam_policy" "fluentbit_policy" {
   name   = substr("${var.k8s_cluster_name}-fluentbit-cloudwatch-policy",0,64)
@@ -41,9 +20,7 @@ resource "aws_iam_policy" "fluentbit_policy" {
 				"logs:CreateLogStream",
 				"logs:PutLogEvents",
 				"logs:DescribeLogStreams",
-				"logs:DescribeLogGroups",
-				"logs:*",
-				"cloudwatch:*"
+				"logs:DescribeLogGroups"
 			],
         Resource = "*"
       }
