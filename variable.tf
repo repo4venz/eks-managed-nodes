@@ -230,13 +230,13 @@ variable "include_cert_manager_module" {
   description = "Execute module or not. true = execute and false = don't execute"
 }
 
-variable "enable_lets_encrypt_ca" {
+variable "include_lets_encrypt_ca_module" {
   type        = bool
   default     = false
   description = "Execute module or not. true = execute and false = don't execute"
 }
 
-variable "include_k8s_app_module_secured" {
+variable "include_k8s_app_secured_module" {
   type        = bool
   default     = false
   description = "Execute module or not. true = execute and false = don't execute"

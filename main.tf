@@ -131,7 +131,7 @@ module "cert-manager" {
 
 
 module "lets-encrypt" {
-  count = var.enable_lets_encrypt_ca ? 1 : 0
+  count = var.include_lets_encrypt_ca_module ? 1 : 0
   source                                        = "./modules/lets-encrypt"
   environment                                   =  var.environment
   
@@ -148,7 +148,7 @@ module "kubernetes_app" {
 }
 
 module "kubernetes_app_secured" {
-    count = var.include_k8s_app_module_secured ? 1 : 0
+    count = var.include_k8s_app_secured_module ? 1 : 0
     source                      =  "./modules/kubernetes-app-secured"
     app_namespace               =  var.app_namespace[1]
     environment                 =  var.environment
