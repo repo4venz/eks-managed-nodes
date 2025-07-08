@@ -1,5 +1,5 @@
 
-
+/*
 resource "null_resource" "wait_for_cert_manager_crds" {
   provisioner "local-exec" {
     command = <<EOT
@@ -54,7 +54,7 @@ resource "kubernetes_manifest" "letsencrypt_clusterissuer" {
     null_resource.wait_for_cert_manager_crds
   ]
 }
-
+*/
 
 
 
