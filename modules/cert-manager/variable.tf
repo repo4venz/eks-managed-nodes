@@ -50,12 +50,19 @@ variable "environment" {
   default = "test"
 }
 
-
+/*
 variable "lets_encrypt_server_url" {
   description = "Environemnt of Lets Encrypt"
   type        = string
-  default = var.environment == "prod" ? "https://acme-v02.api.letsencrypt.org/directory" : "https://acme-staging-v02.api.letsencrypt.org/directory"
+  default =  "https://acme-staging-v02.api.letsencrypt.org/directory"
+  }
+*/
+
+locals{
+  lets_encrypt_server_url = var.environment == "prod" ? "https://acme-v02.api.letsencrypt.org/directory"  : "https://acme-staging-v02.api.letsencrypt.org/directory"
 }
+
+ 
 
  
 

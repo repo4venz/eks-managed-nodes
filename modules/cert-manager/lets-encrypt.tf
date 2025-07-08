@@ -12,7 +12,7 @@ resource "kubernetes_manifest" "letsencrypt_clusterissuer" {
     }
     spec = {
       acme = {
-        server =  "${var.lets_encrypt_server_url}"
+        server =  "${local.lets_encrypt_server_url}"
         email  = var.email
         privateKeySecretRef = {
           name = "letsencrypt-${var.environment}" 
