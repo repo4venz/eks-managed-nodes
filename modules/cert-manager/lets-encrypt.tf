@@ -1,3 +1,23 @@
+
+
+resource "null_resource" "wait_for_cert_manager_crds" {
+  provisioner "local-exec" {
+    command = <<EOT
+      for i in $(seq 1 10); do
+        kubectl get crd clusterissuers.cert-manager.io && exit 0
+        echo "Waiting for cert-manager CRDs to be ready..."
+        sleep 6
+      done
+      echo "CRD not found" >&2
+      exit 1
+    EOT
+  }
+
+  depends_on = [helm_release.cert_manager]
+}
+
+
+
 # -------------------
 # LET'S ENCRYPT CLUSTERISSUER
 # -------------------
@@ -31,7 +51,8 @@ resource "kubernetes_manifest" "letsencrypt_clusterissuer" {
     }
   }
   depends_on = [
-    helm_release.cert_manager
+    helm_release.cert_manager,
+    null_resource.wait_for_cert_manager_crds
   ]
 }
 
