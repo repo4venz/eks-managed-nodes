@@ -39,10 +39,9 @@ resource "kubernetes_manifest" "letsencrypt_clusterissuer" {
         }
         solvers = [
           {
-            dns01 = {
-              route53 = {
-              region     = data.aws_region.current.id
-              hostedZoneID = var.route53_zone_id
+            http01 = {
+              ingress = {
+                class = "nginx"
               }
             }
           }
@@ -57,7 +56,7 @@ resource "kubernetes_manifest" "letsencrypt_clusterissuer" {
 }
 
 
-/*
+
 
         /*solvers = [
           {
@@ -68,5 +67,16 @@ resource "kubernetes_manifest" "letsencrypt_clusterissuer" {
             }
           }
         ]*/
+/*
+        solvers = [
+          {
+            dns01 = {
+              route53 = {
+              region     = data.aws_region.current.id
+              hostedZoneID = var.route53_zone_id
+              }
+            }
+          }
+        ]
 
-        
+        */
