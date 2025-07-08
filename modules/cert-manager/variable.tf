@@ -37,4 +37,25 @@ variable "route53_zone_id" {
   type        = string
   default = "Z00719261GUBMEJWEC48W"
 }
-    
+
+variable "route53_zone_id" {
+  description = "The ID of the Route53 hosted zone"
+  type        = string
+  default = "Z00719261GUBMEJWEC48W"
+}
+
+variable "environment" {
+  description = "Environemnt of Lets Encrypt"
+  type        = string
+  default = "test"
+}
+
+
+variable "lets_encrypt_server_url" {
+  description = "Environemnt of Lets Encrypt"
+  type        = string
+  default = var.environment == "prod" ? "https://acme-v02.api.letsencrypt.org/directory" : "https://acme-staging-v02.api.letsencrypt.org/directory"
+}
+
+ 
+

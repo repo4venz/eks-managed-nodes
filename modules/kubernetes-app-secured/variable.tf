@@ -30,3 +30,10 @@ variable "ingress_hostname" {
   type        = string
   default = "game-secured.suvendupublicdomain.fun"
 }
+
+
+variable "environment" {
+  description = "Environemnt of Lets Encrypt"
+  type        = string
+  default = "test"
+}

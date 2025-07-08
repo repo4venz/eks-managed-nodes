@@ -126,7 +126,8 @@ module "cert-manager" {
   certmanager_chart_version                     =  var.certmanager_chart_version
   enable_lets_encrypt_ca                        =  var.enable_lets_encrypt_ca
   k8s_cluster_name                              =  "${var.cluster_name}-${var.environment}" #module.eks.eks_cluster_name
-
+  environment                                   =  var.environment
+  
   depends_on = [module.eks]
 }
 
@@ -142,6 +143,8 @@ module "kubernetes_app_secured" {
     count = var.include_k8s_app_module_secured ? 1 : 0
     source                      =  "./modules/kubernetes-app-secured"
     app_namespace               =  var.app_namespace[1]
+    environment                 =  var.environment
 
   depends_on = [module.eks, module.nginx_alb_controller, module.cert-manager]
 }
+ 
