@@ -53,7 +53,6 @@ resource "kubernetes_manifest" "letsencrypt_clusterissuer_http01" {
     }
   }
   depends_on = [
-    helm_release.cert_manager,
     null_resource.wait_for_cert_manager_crds
   ]
 }
