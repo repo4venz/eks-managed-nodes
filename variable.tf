@@ -230,3 +230,10 @@ variable "include_cert_manager_module" {
   description = "Execute module or not. true = execute and false = don't execute"
 }
 
+variable "enable_lets_encrypt_ca" {
+  type        = bool
+  default     = true
+  description = "Execute module or not. true = execute and false = don't execute"
+}
+
+    

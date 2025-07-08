@@ -124,6 +124,7 @@ module "cert-manager" {
   count = var.include_cert_manager_module ? 1 : 0
   source                                        = "./modules/cert-manager"
   certmanager_chart_version                     =  var.certmanager_chart_version
+  enable_lets_encrypt_ca                        =  var.enable_lets_encrypt_ca 
 
   depends_on = [module.eks]
 }
