@@ -232,13 +232,13 @@ variable "include_cert_manager_module" {
 
 variable "enable_lets_encrypt_ca" {
   type        = bool
-  default     = true
+  default     = false
   description = "Execute module or not. true = execute and false = don't execute"
 }
 
 variable "include_k8s_app_module_secured" {
   type        = bool
-  default     = true
+  default     = false
   description = "Execute module or not. true = execute and false = don't execute"
 }
     
