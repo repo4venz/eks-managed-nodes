@@ -20,7 +20,8 @@ resource "aws_iam_policy" "fluentbit_policy" {
 				"logs:CreateLogStream",
 				"logs:PutLogEvents",
 				"logs:DescribeLogStreams",
-				"logs:DescribeLogGroups"
+				"logs:DescribeLogGroups",
+        "logs:PutRetentionPolicy"
 			],
         Resource = "*"
       }

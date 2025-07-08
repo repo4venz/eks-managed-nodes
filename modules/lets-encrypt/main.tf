@@ -22,29 +22,37 @@ resource "null_resource" "wait_for_cert_manager_crds" {
 # -------------------
 
 
-#### Using NGINX Ingress ########
+#### Using NGINX Ingress and Route53 DNS ########
 
-resource "kubernetes_manifest" "letsencrypt_clusterissuer_http01" {
+resource "kubernetes_manifest" "letsencrypt_clusterissuer" {
   count = var.enable_lets_encrypt_ca ? 1 : 0
   
   manifest = {
     apiVersion = "cert-manager.io/v1"
     kind       = "ClusterIssuer"
     metadata = {
-      name   = "letsencrypt-${var.environment}-http"  #prod: "letsencrypt-prod"
+      name   = "letsencrypt-${var.environment}"  #prod: "letsencrypt-prod"
     }
     spec = {
       acme = {
         server =  "${local.lets_encrypt_server_url}"
         email  = var.email
         privateKeySecretRef = {
-          name = "letsencrypt-${var.environment}-http" 
+          name = "letsencrypt-${var.environment}" 
         }
         solvers = [
           {
             http01 = {
               ingress = {
                 class = "nginx"
+              }
+            }
+          },
+          {
+            dns01 = {
+              route53 = {
+              region     = data.aws_region.current.id
+              hostedZoneID = var.route53_zone_id
               }
             }
           }
@@ -59,7 +67,7 @@ resource "kubernetes_manifest" "letsencrypt_clusterissuer_http01" {
 
 
 #### Using Route53 DNS ########
-
+/*
 resource "kubernetes_manifest" "letsencrypt_clusterissuer_dns01" {
   count = var.enable_lets_encrypt_ca ? 1 : 0
   
@@ -93,4 +101,5 @@ resource "kubernetes_manifest" "letsencrypt_clusterissuer_dns01" {
     null_resource.wait_for_cert_manager_crds
   ]
 }
+*/
  

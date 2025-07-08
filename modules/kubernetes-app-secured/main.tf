@@ -90,7 +90,7 @@ resource "kubernetes_ingress_v1" "this" {
     namespace = var.app_namespace
 
     annotations = {
-      "cert-manager.io/cluster-issuer"                 = "letsencrypt-${var.environment}-dns"
+      "cert-manager.io/cluster-issuer"                 = "letsencrypt-${var.environment}"
       "nginx.ingress.kubernetes.io/force-ssl-redirect" = "true"
       "nginx.ingress.kubernetes.io/rewrite-target"     = "/"
       "external-dns.alpha.kubernetes.io/hostname"      = var.ingress_hostname
