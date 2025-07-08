@@ -6,7 +6,7 @@
  
 
 output "cert_manager_namespace" {
-  value       = kubernetes_namespace.cert_manager.metadata[0].name
+  value       = var.namespace
   description = "Namespace where cert-manager is installed."
 }
 
