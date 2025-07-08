@@ -125,7 +125,6 @@ module "cert-manager" {
   source                                        = "./modules/cert-manager"
   certmanager_chart_version                     =  var.certmanager_chart_version
   k8s_cluster_name                              =  "${var.cluster_name}-${var.environment}" #module.eks.eks_cluster_name
-  environment                                   =  var.environment
   
   depends_on = [module.eks, module.nginx_alb_controller]
 }

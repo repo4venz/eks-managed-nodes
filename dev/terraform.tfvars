@@ -2,7 +2,7 @@
 environment                  =  "dev"
 #user_profile                 =  "AWS_741032333307_User"
 user_os                      =  "linux"
-cluster_name                 =  "eks-managed-clstr01"
+cluster_name                 =  "eks-managed-clstr"
 cluster_version              =  "1.33"
 cluster_group                =  "eks-managed-nodes"
 vpc_cidr                     =  "192.168.0.0/16"
