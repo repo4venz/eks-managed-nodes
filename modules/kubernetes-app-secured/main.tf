@@ -88,26 +88,30 @@ resource "kubernetes_ingress_v1" "this" {
   metadata {
     name      = "game-2048-ingress-secured"
     namespace = var.app_namespace
+
     annotations = {
-      "kubernetes.io/ingress.class"                    = "nginx"
       "cert-manager.io/cluster-issuer"                 = "letsencrypt-${var.environment}"
       "nginx.ingress.kubernetes.io/force-ssl-redirect" = "true"
       "nginx.ingress.kubernetes.io/rewrite-target"     = "/"
-      "external-dns.alpha.kubernetes.io/hostname" = var.ingress_hostname
+      "external-dns.alpha.kubernetes.io/hostname"      = var.ingress_hostname
     }
   }
 
   spec {
+    ingress_class_name = "nginx"  
+
     tls {
-      hosts      = [var.ingress_hostname]
+      hosts       = [var.ingress_hostname]
       secret_name = "${var.app_namespace}-tls-2048-cert"
     }
+
     rule {
       host = var.ingress_hostname
+
       http {
         path {
-          path     = "/"
-          path_type = "Prefix"
+          path      = "/"
+          path_type = "Prefix"   
 
           backend {
             service {
@@ -121,8 +125,6 @@ resource "kubernetes_ingress_v1" "this" {
       }
     }
   }
-   depends_on = [null_resource.create_namespace_if_not_exists]
+
+  depends_on = [null_resource.create_namespace_if_not_exists]
 }
-
-
- 
