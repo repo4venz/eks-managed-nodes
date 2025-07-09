@@ -13,3 +13,10 @@ variable "kubecost_chart_version" {
   description = "Helm chart version for kube-cost"
   default     = "2.8.0"
 }
+
+
+variable "kubecost_hostname" {
+  description = "The DNS name Kuubecost"
+  type        = string
+  default = "kubecost.suvendupublicdomain.fun"
+}

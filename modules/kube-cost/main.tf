@@ -39,6 +39,7 @@ resource "aws_iam_role_policy_attachment" "kubecost_attach" {
 }
 
 
+  
 
 resource "helm_release" "kubecost" {
   name             = "kubecost"
@@ -49,41 +50,47 @@ resource "helm_release" "kubecost" {
   create_namespace = true
   atomic           = true
   cleanup_on_fail  = true
-  timeout    = 900
+  timeout          = 900
   wait             = true
 
   values = [
     yamlencode({
-      kubecostToken = "e92a4573-3e3a-4cf9-81e0-4b05dfba9cc3"
-      serviceAccount = {
-        create = true
-        name   = "kubecost-cost-analyzer"
-        annotations = {
-          "eks.amazonaws.com/role-arn" = aws_iam_role.kube_cost_role.arn
-        }
-      }
-
-      global = {
-        prometheus = {
-          enabled = true
-        }
-      }
-
-      kubecostFrontend = {
-        service = {
-          type = "LoadBalancer" # Expose via ALB/NLB for access
-        }
-      }
-
-      networkCosts = {
+    global = {
+      grafana = {
         enabled = true
       }
-
-      # Optional: Disable product analytics (if required)
-      productAnalytics = {
-        enabled = false
+      prometheus = {
+        kubeStateMetrics = {
+          enabled = true
+        }
+        nodeExporter = {
+          enabled = true
+        }
+        serviceAccounts = {
+          server = {
+            create = true
+            name   = "kubecost-cost-analyzer"
+            annotations = {
+                "eks.amazonaws.com/role-arn" = aws_iam_role.kube_cost_role.arn
+             }
+          }
+        }
       }
-    })
+    }
+
+    kubecostFrontend = {
+      ingress = {
+        enabled = true
+        annotations = {
+          "kubernetes.io/ingress.class" = "nginx"
+          "external-dns.alpha.kubernetes.io/hostname" = var.kubecost_hostname
+        }
+        hosts = [
+             var.kubecost_hostname
+        ]
+      }
+    }
+  })
   ]
 
     depends_on = [
@@ -91,3 +98,5 @@ resource "helm_release" "kubecost" {
     aws_iam_role_policy_attachment.kubecost_attach
   ]
 }
+
+
