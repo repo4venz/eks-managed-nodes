@@ -3,7 +3,7 @@
 
 # IAM Role for Kubecost Service Account (IRSA)
 resource "aws_iam_role" "kubecost" {
-  name               = "${var.k8s_cluster_name}-kubecost-irsa"
+  name               = "${var.k8s_cluster_name}-kubecost-irsa-role"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
@@ -62,11 +62,17 @@ resource "aws_iam_role_policy_attachment" "kubecost" {
     "arn:aws:iam::aws:policy/AmazonEC2ReadOnlyAccess",
     "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess",
     "arn:aws:iam::aws:policy/AWSResourceGroupsReadOnlyAccess",
-     aws_iam_policy.kube_cost_policy.arn,
+     ,
   ])
   role       = aws_iam_role.kubecost.name
   policy_arn = each.value
 }
+
+resource "aws_iam_role_policy_attachment" "kubecost_custom" {
+  role       = aws_iam_role.kubecost.name
+  policy_arn = aws_iam_policy.kubecost_policy.arn
+}
+
  
 
 # Kubecost Helm Release
@@ -133,7 +139,10 @@ resource "helm_release" "kubecost" {
     value = var.prometheus_retention
   }
 
-  depends_on = [aws_iam_role_policy_attachment.kubecost]
+  depends_on = [
+    aws_iam_role_policy_attachment.kubecost,
+    aws_iam_role_policy_attachment.kubecost_custom
+    ]
 }
 
 # Ingress with TLS
