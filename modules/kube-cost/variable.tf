@@ -34,7 +34,6 @@ variable "kubecost_iam_policies" {
   default = [
     "arn:aws:iam::aws:policy/AmazonEC2ReadOnlyAccess",
     "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess",
-    "arn:aws:iam::aws:policy/AWSResourceGroupsReadOnlyAccess",
-    "arn:aws:iam::aws:policy/CostExplorerReadOnlyAccess",
+    "arn:aws:iam::aws:policy/AWSResourceGroupsReadOnlyAccess"
   ]
 }

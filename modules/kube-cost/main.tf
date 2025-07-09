@@ -19,13 +19,17 @@ resource "aws_iam_policy" "kube_cost_policy" {
                     "ce:GetSavingsPlansUtilization",
                     "ce:GetTags",
                     "ce:GetRightsizingRecommendation",
+                    "ce:Get*",
+                    "ce:Describe*",
+                    "ce:List*",
                     "ec2:Describe*",
                     "pricing:GetProducts",
                     "s3:Get*",
                     "s3:List*",
                     "organizations:Describe*",
                     "organizations:List*",
-                    "cur:DescribeReportDefinitions"
+                    "cur:DescribeReportDefinitions",
+                    "ce:UntagResource"
 			],
         Resource = "*"
       }
