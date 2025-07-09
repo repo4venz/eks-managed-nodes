@@ -19,21 +19,27 @@ variable "route53_zone_id" {
 }
 
 variable "environment" {
-  description = "Environemnt of Lets Encrypt"
+  description = "Environment of EKS Cluster"
   type        = string
-  default = "test"
+  default = "dev"
+}
+
+variable "acme_environment" {
+  description = "Environment of CME Lets Encrypt for certificate"
+  type        = string
+  default = "prod"
 }
 
 /*
 variable "lets_encrypt_server_url" {
-  description = "Environemnt of Lets Encrypt"
+  description = "Environment of Lets Encrypt"
   type        = string
   default =  "https://acme-staging-v02.api.letsencrypt.org/directory"
   }
 */
 
 locals{
-  lets_encrypt_server_url = var.environment == "prod" ? "https://acme-v02.api.letsencrypt.org/directory"  : "https://acme-staging-v02.api.letsencrypt.org/directory"
+  lets_encrypt_server_url = var.acme_environment == "prod" ? "https://acme-v02.api.letsencrypt.org/directory"  : "https://acme-staging-v02.api.letsencrypt.org/directory"
 }
 
  

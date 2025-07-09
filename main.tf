@@ -132,8 +132,9 @@ module "cert-manager" {
 
 module "lets-encrypt" {
   count = var.include_lets_encrypt_ca_module ? 1 : 0
-  source                                        = "./modules/lets-encrypt"
-  environment                                   =  var.environment
+  source             = "./modules/lets-encrypt"
+  environment        =  var.environment
+  acme_environment   = "prod"                             
   
   depends_on = [module.eks, module.nginx_alb_controller]
 }

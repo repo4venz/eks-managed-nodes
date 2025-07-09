@@ -241,4 +241,5 @@ variable "include_k8s_app_secured_module" {
   default     = false
   description = "Execute module or not. true = execute and false = don't execute"
 }
-    
+
+variable acme_environment {}
