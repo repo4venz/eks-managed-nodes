@@ -166,3 +166,5 @@ module "kubernetes_app_secured" {
   depends_on = [module.eks, module.nginx_alb_controller, module.cert-manager, module.lets-encrypt]
 }
  
+
+ 
