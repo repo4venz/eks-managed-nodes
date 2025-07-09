@@ -70,10 +70,10 @@ locals {
         ingress = {
           enabled = true
           annotations = {
-            "kubernetes.io/ingress.class"                     = "nginx"
+            "kubernetes.io/ingress.class"                    = "nginx"
             "nginx.ingress.kubernetes.io/force-ssl-redirect" = "true"
             "nginx.ingress.kubernetes.io/rewrite-target"     = "/"
-            "cert-manager.io/cluster-issuer"                 = "letsencrypt-dev"
+            "cert-manager.io/cluster-issuer"                 = "letsencrypt-${var.environment}"
             "external-dns.alpha.kubernetes.io/hostname"      = var.kubecost_hostname
           }
           hosts = [{

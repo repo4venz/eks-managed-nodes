@@ -140,9 +140,10 @@ module "lets-encrypt" {
 
 module "kube-cost" {
   count = var.include_kubecost_module ? 1 : 0
-  source                                        = "./modules/kube-cost"
-  k8s_cluster_name                              =  "${var.cluster_name}-${var.environment}" #module.eks.eks_cluster_name
-  kubecost_chart_version                        =  var.kubecost_chart_version
+  source                    = "./modules/kube-cost"
+  k8s_cluster_name          =  "${var.cluster_name}-${var.environment}" #module.eks.eks_cluster_name
+  kubecost_chart_version    =  var.kubecost_chart_version
+  environment                =  var.environment
 
   depends_on = [module.eks, module.nginx_alb_controller, module.external-dns, module.lets-encrypt]
 }

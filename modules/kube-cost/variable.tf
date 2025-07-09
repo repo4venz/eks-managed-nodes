@@ -20,3 +20,10 @@ variable "kubecost_hostname" {
   type        = string
   default = "kubecost.suvendupublicdomain.fun"
 }
+
+
+variable "environment" {
+  description = "Environemnt of Kube-Cost"
+  type        = string
+  default = "dev"
+}
