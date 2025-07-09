@@ -50,7 +50,7 @@ locals {
         server = {
           persistentVolume = {
             enabled        = true
-            storageClass   = "gp2"
+            storageClass   = "ebs-csi-default-sc" #"gp2"
             size           = "10Gi"
           }
         }
