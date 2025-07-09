@@ -65,3 +65,6 @@ resource "aws_eks_addon" "ebs_csi" {
     aws_iam_role.ebs_csi_driver_role
   ]
 }
+
+
+
