@@ -4,3 +4,8 @@ output "kubecost_lb_hostname" {
   description = "DNS name to access Kubecost UI"
 }
 **/
+
+output "kubecost_url" {
+  value = "https://${var.kubecost_hostname}"
+   description = "DNS name to access Kubecost UI"
+}

@@ -38,6 +38,46 @@ resource "aws_iam_role_policy_attachment" "kubecost_attach" {
   policy_arn = aws_iam_policy.kube_cost_policy.arn
 }
 
+locals {
+  kubecost_values = yamlencode({
+    global = {
+      grafana = {
+        enabled = true
+      }
+      prometheus = {
+        kubeStateMetrics = { enabled = true }
+        nodeExporter     = { enabled = true }
+        server = {
+          persistentVolume = {
+            enabled        = true
+            storageClass   = "gp2"
+            size           = "10Gi"
+          }
+        }
+        serviceAccounts = {
+          server = {
+            create = true
+            name   = "kubecost-cost-analyzer"
+            annotations = {
+              "eks.amazonaws.com/role-arn" = aws_iam_role.kube_cost_role.arn
+            }
+          }
+        }
+      }
+    }
+
+    kubecostFrontend = {
+      ingress = {
+        enabled = true
+        annotations = {
+          "kubernetes.io/ingress.class"                         = "nginx"
+          "external-dns.alpha.kubernetes.io/hostname"           = var.kubecost_hostname
+        }
+        hosts = [var.kubecost_hostname]
+      }
+    }
+  })
+}
 
   
 
@@ -53,45 +93,7 @@ resource "helm_release" "kubecost" {
   timeout          = 900
   wait             = true
 
-  values = [
-    yamlencode({
-    global = {
-      grafana = {
-        enabled = true
-      }
-      prometheus = {
-        kubeStateMetrics = {
-          enabled = true
-        }
-        nodeExporter = {
-          enabled = true
-        }
-        serviceAccounts = {
-          server = {
-            create = true
-            name   = "kubecost-cost-analyzer"
-            annotations = {
-                "eks.amazonaws.com/role-arn" = aws_iam_role.kube_cost_role.arn
-             }
-          }
-        }
-      }
-    }
-
-    kubecostFrontend = {
-      ingress = {
-        enabled = true
-        annotations = {
-          "kubernetes.io/ingress.class" = "nginx"
-          "external-dns.alpha.kubernetes.io/hostname" = var.kubecost_hostname
-        }
-        hosts = [
-             var.kubecost_hostname
-        ]
-      }
-    }
-  })
-  ]
+ values = [ local.kubecost_values  ]
 
     depends_on = [
     aws_iam_role.kube_cost_role,
