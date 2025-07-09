@@ -82,62 +82,38 @@ resource "helm_release" "kubecost" {
   version    = var.kubecost_chart_version
   namespace  = var.namespace
 
-  set {
-    name  = "global.clusterName"
-    value = var.k8s_cluster_name
-  }
-
-  set {
-    name  = "serviceAccount.create"
-    value = "true"
-  }
-
-  set {
-    name  = "serviceAccount.name"
-    value = var.service_account_name
-  }
-
-  set {
-    name  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
-    value = aws_iam_role.kubecost.arn
-  }
-
-  set {
-    name  = "kubecostProductConfigs.clusterName"
-    value = var.k8s_cluster_name
-  }
-
-  set {
-    name  = "kubecostProductConfigs.awsAthenaProjectID"
-    value = data.aws_caller_identity.current.account_id
-  }
-
-  set {
-    name  = "kubecostProductConfigs.awsRegion"
-    value = data.aws_region.current.id
-  }
-
-  # Persistent Volume Configuration
-  set {
-    name  = "prometheus.server.persistentVolume.enabled"
-    value = "true"
-  }
-
-  set {
-    name  = "prometheus.server.persistentVolume.storageClass"
-    value = var.storage_class
-  }
-
-  set {
-    name  = "prometheus.server.persistentVolume.size"
-    value = var.storage_size
-  }
-
-  set {
-    name  = "prometheus.server.retention"
-    value = var.prometheus_retention
-  }
-
+values = [
+  yamlencode({
+    global = {
+      clusterName = var.k8s_cluster_name
+    }
+    
+    serviceAccount = {
+      create = true
+      name   = var.service_account_name
+      annotations = {
+        "eks.amazonaws.com/role-arn" = aws_iam_role.kubecost.arn
+      }
+    }
+    
+    kubecostProductConfigs = {
+      clusterName       = var.k8s_cluster_name
+      awsAthenaProjectID = data.aws_caller_identity.current.account_id
+      awsRegion        = data.aws_region.current.id
+    }
+    
+    prometheus = {
+      server = {
+        persistentVolume = {
+          enabled      = true
+          storageClass = var.storage_class
+          size         = var.storage_size
+        }
+        retention = var.prometheus_retention
+      }
+    }
+  })
+]
   depends_on = [
     aws_iam_role_policy_attachment.kubecost,
     aws_iam_role_policy_attachment.kubecost_custom
@@ -154,6 +130,8 @@ resource "kubernetes_ingress_v1" "kubecost" {
       "nginx.ingress.kubernetes.io/backend-protocol" = "HTTP"
       "cert-manager.io/cluster-issuer"               = "letsencrypt-${var.environment}"
       "external-dns.alpha.kubernetes.io/hostname"    = var.ingress_host
+      "nginx.ingress.kubernetes.io/force-ssl-redirect" = "true"
+      "nginx.ingress.kubernetes.io/rewrite-target"     = "/"
     }
   }
 
