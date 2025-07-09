@@ -8,7 +8,7 @@ resource "aws_iam_role" "vpc_cni_irsa_role" {
  
  
 resource "aws_iam_role_policy_attachment" "vpc_cni_attach" {
-  role       = aws_iam_role.vpc_cni_role.name
+  role       = aws_iam_role.vpc_cni_irsa_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
 }
 
