@@ -15,6 +15,5 @@ resource "aws_iam_openid_connect_provider" "oidc_provider" {
 
   tags = {  Name  = "${var.cluster_name}-${var.environment}-eks-irsa-oidc" }
 
-depends_on = [ aws_eks_cluster.demo_eks_cluster  ]
 }
 
