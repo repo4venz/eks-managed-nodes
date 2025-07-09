@@ -28,7 +28,7 @@ resource "aws_iam_role" "ebs_csi_driver_role" {
 
  
 # 1. Required IAM policy (EBS CSI needs this for the node group role)
-resource "aws_iam_role_policy_attachment" "ebs_csi_policy" {
+resource "aws_iam_role_policy_attachment" "ebs_csi_iam_policy" {
   count = var.include_ebs_csi_driver_addon ? 1 : 0
 
   role       = aws_iam_role.ebs_csi_driver_role[0].name
