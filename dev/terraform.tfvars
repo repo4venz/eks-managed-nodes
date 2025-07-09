@@ -40,7 +40,7 @@ aws_sm_secrets               = [
                                     }
                                 ]
 
-
+include_vpc_cni_addon_module = true
 include_nginx_controller_module = true
 include_eks_cluster_autoscaler_module = true
 include_external_dns_module = true
@@ -68,15 +68,15 @@ ebs_volume_size_in_gb        =  20
 ebs_volume_type              =  "gp3"
 
 scaling_config_spot = {
-  desired_size = 3
-  max_size     = 10
-  min_size     = 1
+  desired_size = 5
+  max_size     = 15
+  min_size     = 2
 }
 
 scaling_config_ondemand = {
-  desired_size = 2
-  max_size     = 6
-  min_size     = 1
+  desired_size = 5
+  max_size     = 10
+  min_size     = 2
 }
 
  

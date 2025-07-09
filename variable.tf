@@ -247,3 +247,10 @@ variable "acme_environment" {
   type        = string
   default = "prod"
 }
+
+variable "include_vpc_cni_addon_module" {
+  type        = bool
+  default     = true
+  description = "Execute module or not. true = execute and false = don't execute"
+}
+

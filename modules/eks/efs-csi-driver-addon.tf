@@ -45,7 +45,7 @@ resource "aws_eks_addon" "efs_csi_driver" {
 
     tags = {
     Name = "EFS CSI Driver Addon"
-    Desc = "EBS CSI Driver Addon for EKS Worker Nodes"
+    Desc = "EFS CSI Driver Addon for EKS Worker Nodes"
   }
 
   depends_on = [

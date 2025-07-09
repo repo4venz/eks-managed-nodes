@@ -69,6 +69,13 @@ module "nginx_alb_controller" {
   depends_on = [module.eks]
 }
 
+module "vpc-cni-addon" {
+  count = var.include_vpc_cni_addon_module ? 1 : 0
+  source                                        = "./modules/vpc-cni"
+  k8s_cluster_name                              =  "${var.cluster_name}-${var.environment}" #module.eks.eks_cluster_name
+
+  depends_on = [module.eks]
+}
 
 module "eks-cluster-autoscaler" {
   count = var.include_eks_cluster_autoscaler_module ? 1 : 0
