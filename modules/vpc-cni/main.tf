@@ -17,7 +17,7 @@ resource "aws_iam_role_policy_attachment" "vpc_cni_attach" {
 resource "aws_eks_addon" "vpc_cni" {
 
   cluster_name                = data.aws_eks_cluster.this.name
-  addon_name                  = data.aws_eks_addon_version.vpc_cni.addon_name
+  addon_name                  = data.aws_eks_addon_version.vpc_cni.version
   addon_version               = data.aws_eks_addon_version.vpc_cni.kubernetes_version # optional (e.g. "v1.16.0-eksbuild.1")
   resolve_conflicts_on_create = "OVERWRITE"
   resolve_conflicts_on_update = "OVERWRITE"

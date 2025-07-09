@@ -15,6 +15,7 @@ data "aws_eks_cluster_auth" "this" {
 data "aws_eks_addon_version" "vpc_cni" {
   addon_name   = "vpc-cni"
   kubernetes_version = data.aws_eks_cluster.this.version
+  most_recent        = true
 }
 
 data "aws_iam_openid_connect_provider" "oidc" {
