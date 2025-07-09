@@ -45,6 +45,7 @@ resource "kubernetes_manifest" "letsencrypt_clusterissuer" {
             http01 = {
               ingress = {
                 class = "nginx"
+                pathType = "Prefix"
               }
             }
           },
