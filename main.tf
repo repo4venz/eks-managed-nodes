@@ -134,7 +134,7 @@ module "lets-encrypt" {
   count = var.include_lets_encrypt_ca_module ? 1 : 0
   source             = "./modules/lets-encrypt"
   environment        =  var.environment
-  acme_environment   = "prod"                             
+  acme_environment   = "prod"    # Let's Encrypt ACME env = prod is required for valid ssl certs in browser                         
   
   depends_on = [module.eks, module.nginx_alb_controller]
 }
