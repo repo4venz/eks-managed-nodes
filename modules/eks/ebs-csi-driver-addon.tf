@@ -28,15 +28,12 @@ resource "aws_iam_role" "ebs_csi_driver_role" {
 
  
 # 1. Required IAM policy (EBS CSI needs this for the node group role)
-resource "aws_iam_policy_attachment" "ebs_csi_iam_policy" {
+resource "aws_iam_role_policy_attachment" "ebs_csi_policy" {
   count = var.include_ebs_csi_driver_addon ? 1 : 0
 
-  name       = substr("${aws_eks_cluster.demo_eks_cluster.name}-ebs-csi-driver-policy",0,64)  
-  roles      = aws_iam_role.ebs_csi_driver_role[0].name   # adjust if needed
+  role       = aws_iam_role.ebs_csi_driver_role[0].name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
 }
- 
-
    
 
 # 2. Enable the EBS CSI Driver as an EKS add-on
@@ -50,6 +47,12 @@ resource "aws_eks_addon" "ebs_csi" {
 
   resolve_conflicts_on_create = "OVERWRITE"
   resolve_conflicts_on_update = "OVERWRITE"
+
+  configuration_values = jsonencode({
+      defaultStorageClass = {
+        enabled = true
+      }
+    })
 
     tags = {
       Name = "EBS CSI Driver Addon"
