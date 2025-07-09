@@ -77,7 +77,7 @@ locals {
             "external-dns.alpha.kubernetes.io/hostname"      = var.kubecost_hostname
           }
           hosts = [{
-            host = "var.kubecost_hostname"
+            host = var.kubecost_hostname
             paths = [{
               path     = "/"
               pathType = "Prefix"
