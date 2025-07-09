@@ -66,17 +66,72 @@ locals {
       }
     }
 
-    kubecostFrontend = {
-      ingress = {
-        enabled = true
-        annotations = {
-          "kubernetes.io/ingress.class"                         = "nginx"
-          "external-dns.alpha.kubernetes.io/hostname"           = var.kubecost_hostname
+      kubecostFrontend = {
+        ingress = {
+          enabled = true
+          annotations = {
+            "kubernetes.io/ingress.class"                     = "nginx"
+            "nginx.ingress.kubernetes.io/force-ssl-redirect" = "true"
+            "nginx.ingress.kubernetes.io/rewrite-target"     = "/"
+            "cert-manager.io/cluster-issuer"                 = "letsencrypt-dev"
+            "external-dns.alpha.kubernetes.io/hostname"      = var.kubecost_hostname
+          }
+          hosts = [{
+            host = "var.kubecost_hostname"
+            paths = [{
+              path     = "/"
+              pathType = "Prefix"
+            }]
+          }]
+          tls = [{
+            hosts      = [var.kubecost_hostname]
+            secretName = "kubecost-tls"
+          }]
         }
-        hosts = [var.kubecost_hostname]
       }
-    }
   })
+}
+
+
+resource "helm_release" "kubecost" {
+  name             = "kubecost"
+  namespace        = "kubecost"
+  create_namespace = true
+  repository       = "https://kubecost.github.io/cost-analyzer"
+  chart            = "cost-analyzer"
+  version          = "1.110.0"
+
+  values = [
+    yamlencode({
+      global = {
+        grafana = {
+          enabled = true
+        }
+        prometheus = {
+          enabled = true
+        }
+      }
+      ingress = {
+        enabled    = true
+        className  = "nginx"
+        annotations = {
+          "kubernetes.io/ingress.class"                    = "nginx"
+          "cert-manager.io/cluster-issuer"                 = "letsencrypt-prod"
+        }
+        hosts = [{
+          host = "kubecost.example.com"
+          paths = [{
+            path     = "/"
+            pathType = "Prefix"
+          }]
+        }]
+        tls = [{
+          hosts      = ["kubecost.example.com"]
+          secretName = "kubecost-tls"
+        }]
+      }
+    })
+  ]
 }
 
   
