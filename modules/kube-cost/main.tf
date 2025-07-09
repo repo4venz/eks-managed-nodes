@@ -41,7 +41,7 @@ resource "aws_iam_role_policy_attachment" "kubecost_attach" {
 
 resource "aws_iam_role_policy_attachment" "kubecost_irsa" {
   for_each   = toset(var.kubecost_iam_policies)
-  role       = aws_iam_role.kubecost_irsa.name
+  role       = aws_iam_role.kube_cost_role.name
   policy_arn = each.value
 }
 
