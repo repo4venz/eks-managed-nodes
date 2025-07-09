@@ -114,7 +114,7 @@ module "prometheus" {
   k8s_namespace                                 =  var.k8s_observability_namespace
   prometheus_chart_version                       =  var.prometheus_chart_version
 
-  depends_on = [module.eks]
+  depends_on = [module.eks, module.nginx_alb_controller, module.external-dns]
 }
 
 module "kube-cost" {
@@ -123,7 +123,7 @@ module "kube-cost" {
   k8s_cluster_name                              =  "${var.cluster_name}-${var.environment}" #module.eks.eks_cluster_name
   kubecost_chart_version                        =  var.kubecost_chart_version
 
-  depends_on = [module.eks]
+  depends_on = [module.eks, module.nginx_alb_controller, module.external-dns, module.lets-encrypt]
 }
 
 
