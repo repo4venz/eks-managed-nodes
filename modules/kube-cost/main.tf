@@ -62,7 +62,6 @@ resource "aws_iam_role_policy_attachment" "kubecost" {
     "arn:aws:iam::aws:policy/AmazonEC2ReadOnlyAccess",
     "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess",
     "arn:aws:iam::aws:policy/AWSResourceGroupsReadOnlyAccess",
-     ,
   ])
   role       = aws_iam_role.kubecost.name
   policy_arn = each.value
