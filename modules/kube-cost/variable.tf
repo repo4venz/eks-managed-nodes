@@ -27,3 +27,14 @@ variable "environment" {
   type        = string
   default = "dev"
 }
+
+variable "kubecost_iam_policies" {
+  description = "List of IAM policy ARNs to attach to the Kubecost IAM role"
+  type        = list(string)
+  default = [
+    "arn:aws:iam::aws:policy/AmazonEC2ReadOnlyAccess",
+    "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess",
+    "arn:aws:iam::aws:policy/AWSResourceGroupsReadOnlyAccess",
+    "arn:aws:iam::aws:policy/CostExplorerReadOnlyAccess",
+  ]
+}

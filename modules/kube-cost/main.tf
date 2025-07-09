@@ -38,12 +38,19 @@ resource "aws_iam_role_policy_attachment" "kubecost_attach" {
   policy_arn = aws_iam_policy.kube_cost_policy.arn
 }
 
+
+resource "aws_iam_role_policy_attachment" "kubecost_irsa" {
+  for_each   = toset(var.kubecost_iam_policies)
+  role       = aws_iam_role.kubecost_irsa.name
+  policy_arn = each.value
+}
+
+ 
+
 locals {
   kubecost_values = yamlencode({
     global = {
-      grafana = {
-        enabled = true
-      }
+      grafana = { enabled = true  }
       prometheus = {
         kubeStateMetrics = { enabled = true }
         nodeExporter     = { enabled = true }
@@ -93,6 +100,8 @@ locals {
 }
  
 
+
+ 
   
 
 resource "helm_release" "kubecost" {
@@ -116,3 +125,4 @@ resource "helm_release" "kubecost" {
 }
 
 
+ 

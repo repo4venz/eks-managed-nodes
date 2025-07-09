@@ -30,7 +30,7 @@ data "aws_iam_policy_document" "kube_cost_assume" {
     condition {
       test     = "StringEquals"
       variable = "${replace(data.aws_iam_openid_connect_provider.oidc.url, "https://", "")}:sub"
-      values   = ["system:serviceaccount:${var.k8s_namespace}:kubecost-cost-analyzer"]
+      values   = ["system:serviceaccount:kubecost:kubecost-cost-analyzer"]
     }
   }
 }
