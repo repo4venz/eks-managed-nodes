@@ -7,9 +7,7 @@ data "aws_iam_policy_document" "efs_csi_assume_role_policy" {
       type        = "Federated"
       identifiers = [aws_iam_openid_connect_provider.oidc_provider.arn]
     }
-
     actions = ["sts:AssumeRoleWithWebIdentity"]
-
     condition {
       test     = "StringEquals"
       variable = "${replace(aws_iam_openid_connect_provider.oidc_provider.url, "https://", "")}:sub"
@@ -20,8 +18,9 @@ data "aws_iam_policy_document" "efs_csi_assume_role_policy" {
 
 resource "aws_iam_role" "efs_csi_driver_role" {
   count = var.include_efs_csi_driver_addon ? 1 : 0
-
+  
   name = substr("${data.aws_eks_cluster.this.name}-efs-csi-driver-role", 0, 64)
+  description = "IAM Role for EFS CSI Driver to create EFS volumes for EC2"
   assume_role_policy = data.aws_iam_policy_document.efs_csi_assume_role_policy[0].json
 }
 

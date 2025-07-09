@@ -14,4 +14,7 @@ resource "aws_iam_openid_connect_provider" "oidc_provider" {
   url             = aws_eks_cluster.demo_eks_cluster.identity[0].oidc[0].issuer
 
   tags = {  Name  = "${var.cluster_name}-${var.environment}-eks-irsa-oidc" }
+
+depends_on = [ aws_eks_cluster.demo_eks_cluster  ]
 }
+

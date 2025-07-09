@@ -6,23 +6,24 @@ data "aws_iam_policy_document" "ebs_csi_assume_role_policy" {
     effect = "Allow"
     principals {
       type        = "Federated"
-      identifiers = [aws_iam_openid_connect_provider.oidc_provider.arn]
+      identifiers = [data.aws_iam_openid_connect_provider.oidc.arn]
     }
-
     actions = ["sts:AssumeRoleWithWebIdentity"]
-
     condition {
       test     = "StringEquals"
-      variable = "${replace(aws_iam_openid_connect_provider.oidc_provider.url, "https://", "")}:sub"
+      variable = "${replace(data.aws_iam_openid_connect_provider.oidc.url, "https://", "")}:sub"
       values   = ["system:serviceaccount:kube-system:ebs-csi-controller-sa"]
     }
   }
 }
+  
+ 
 
 resource "aws_iam_role" "ebs_csi_driver_role" {
   count = var.include_ebs_csi_driver_addon ? 1 : 0
 
   name = substr("${data.aws_eks_cluster.this.name}-ebs-csi-driver-role", 0, 64)
+  description = "IAM Role for EBS CSI Driver to create EBS volumes for EC2"
   assume_role_policy = data.aws_iam_policy_document.ebs_csi_assume_role_policy[0].json
 }
 
@@ -30,7 +31,7 @@ resource "aws_iam_role" "ebs_csi_driver_role" {
 # 1. Required IAM policy (EBS CSI needs this for the node group role)
 resource "aws_iam_role_policy_attachment" "ebs_csi_iam_policy" {
   count = var.include_ebs_csi_driver_addon ? 1 : 0
-
+ 
   role       = aws_iam_role.ebs_csi_driver_role[0].name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
 }
