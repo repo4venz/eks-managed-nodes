@@ -91,48 +91,7 @@ locals {
       }
   })
 }
-
-
-resource "helm_release" "kubecost" {
-  name             = "kubecost"
-  namespace        = "kubecost"
-  create_namespace = true
-  repository       = "https://kubecost.github.io/cost-analyzer"
-  chart            = "cost-analyzer"
-  version          = "1.110.0"
-
-  values = [
-    yamlencode({
-      global = {
-        grafana = {
-          enabled = true
-        }
-        prometheus = {
-          enabled = true
-        }
-      }
-      ingress = {
-        enabled    = true
-        className  = "nginx"
-        annotations = {
-          "kubernetes.io/ingress.class"                    = "nginx"
-          "cert-manager.io/cluster-issuer"                 = "letsencrypt-prod"
-        }
-        hosts = [{
-          host = "kubecost.example.com"
-          paths = [{
-            path     = "/"
-            pathType = "Prefix"
-          }]
-        }]
-        tls = [{
-          hosts      = ["kubecost.example.com"]
-          secretName = "kubecost-tls"
-        }]
-      }
-    })
-  ]
-}
+ 
 
   
 
