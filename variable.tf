@@ -242,4 +242,8 @@ variable "include_k8s_app_secured_module" {
   description = "Execute module or not. true = execute and false = don't execute"
 }
 
-variable acme_environment {}
+variable "acme_environment" {
+  description = "Environment of CME Lets Encrypt for certificate"
+  type        = string
+  default = "prod"
+}
