@@ -117,15 +117,6 @@ module "prometheus" {
   depends_on = [module.eks, module.nginx_alb_controller, module.external-dns]
 }
 
-module "kube-cost" {
-  count = var.include_kubecost_module ? 1 : 0
-  source                                        = "./modules/kube-cost"
-  k8s_cluster_name                              =  "${var.cluster_name}-${var.environment}" #module.eks.eks_cluster_name
-  kubecost_chart_version                        =  var.kubecost_chart_version
-
-  depends_on = [module.eks, module.nginx_alb_controller, module.external-dns, module.lets-encrypt]
-}
-
 
 module "cert-manager" {
   count = var.include_cert_manager_module ? 1 : 0
@@ -143,7 +134,17 @@ module "lets-encrypt" {
   environment        =  var.environment
   acme_environment   = "prod"    # Let's Encrypt ACME env = prod is required for valid ssl certs in browser                         
   
-  depends_on = [module.eks, module.nginx_alb_controller]
+  depends_on = [module.eks, module.cert-manager]
+}
+
+
+module "kube-cost" {
+  count = var.include_kubecost_module ? 1 : 0
+  source                                        = "./modules/kube-cost"
+  k8s_cluster_name                              =  "${var.cluster_name}-${var.environment}" #module.eks.eks_cluster_name
+  kubecost_chart_version                        =  var.kubecost_chart_version
+
+  depends_on = [module.eks, module.nginx_alb_controller, module.external-dns, module.lets-encrypt]
 }
 
 

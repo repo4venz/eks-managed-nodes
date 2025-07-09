@@ -50,9 +50,9 @@ include_prometheus_module = true
 include_ebs_csi_driver_addon = true
 include_efs_csi_driver_addon = true
 include_cert_manager_module = true
-include_lets_encrypt_ca_module = false
+include_lets_encrypt_ca_module = true
 include_k8s_app_module = false
-include_k8s_app_secured_module = false
+include_k8s_app_secured_module = true
 include_kubecost_module = true
 
 
