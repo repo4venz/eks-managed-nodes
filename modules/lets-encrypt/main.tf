@@ -42,18 +42,20 @@ resource "kubernetes_manifest" "letsencrypt_clusterissuer" {
         }
         solvers = [
           {
-            http01 = {
-              ingress = {
-                class = "nginx"
-                pathType = "Prefix"
-              }
-            }
-          },
-          {
+            // DNS-01 (for wildcard or DNS-based challenges)
             dns01 = {
               route53 = {
               region     = data.aws_region.current.id
               hostedZoneID = var.route53_zone_id
+              }
+            }
+          },
+          // HTTP-01 (for basic domains via Ingress)
+          {
+            http01 = {
+              ingress = {
+                class = "nginx"
+                pathType = "Prefix"
               }
             }
           }
