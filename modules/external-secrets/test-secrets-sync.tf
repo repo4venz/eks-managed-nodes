@@ -1,4 +1,18 @@
- 
+resource "null_resource" "create_namespaces" {
+  for_each = { for idx, secret in var.aws_test_secrets : idx => secret.application_namespace }
+
+  provisioner "local-exec" {
+    command = <<EOT
+      if ! kubectl get namespace ${each.value} >/dev/null 2>&1; then
+        kubectl create namespace ${each.value}
+        echo "Created namespace: ${each.value}"
+      else
+        echo "Namespace ${each.value} already exists"
+      fi
+    EOT
+  }
+}
+
 
 resource "time_sleep" "wait_60_seconds_for_external_secret_controller" {
   create_duration = "60s"
