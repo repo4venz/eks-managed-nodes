@@ -41,7 +41,7 @@ spec:
         jwt:
           serviceAccountRef:
             name: "${var.service_account_name}-${count.index}" 
-            namespace: ${each.value.application_namespace}
+            namespace: ${var.aws_test_secrets[count.index].application_namespace}
 YAML
 
 depends_on = [   
@@ -56,10 +56,10 @@ depends_on = [
 resource "kubernetes_service_account" "external_secrets_sa" {
   #for_each = { for idx, secret in var.aws_test_secrets : idx => secret }
   count = length(var.aws_test_secrets) 
-  
+
   metadata {
     name      = "${var.service_account_name}-${count.index}" 
-    namespace = each.value.application_namespace
+    namespace =  var.aws_test_secrets[count.index].application_namespace
     annotations = {
       "eks.amazonaws.com/role-arn" = aws_iam_role.external_secrets_irsa.arn  # Your IRSA role ARN
     }
