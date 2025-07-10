@@ -24,6 +24,7 @@ metrics_server_chart_version = "3.12.1"
 prometheus_chart_version     = "55.5.0"
 kubecost_chart_version       = "2.8.0"
 certmanager_chart_version    = "1.18.2"
+external_secret_chart_version = "0.18.2"
 
 
 app_namespace        =  ["myapps1", "myapps2"]
@@ -50,10 +51,11 @@ include_prometheus_module = true
 include_ebs_csi_driver_addon = true
 include_efs_csi_driver_addon = true
 include_cert_manager_module = true
-include_lets_encrypt_ca_module = true
+include_lets_encrypt_ca_module = false  # Run as post build
 include_k8s_app_module = false
-include_k8s_app_secured_module = true
-include_kubecost_module = true
+include_k8s_app_secured_module = false  # Run as post build
+include_kubecost_module = false   # Run as post build
+include_external_secrets_module = true
 
 
 

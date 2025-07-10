@@ -3,7 +3,7 @@
 
 # IAM Role for Kubecost Service Account (IRSA)
 resource "aws_iam_role" "kubecost" {
-  name               = "${var.k8s_cluster_name}-kubecost-irsa-role"
+  name  = "${var.k8s_cluster_name}-kubecost-irsa-role"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{

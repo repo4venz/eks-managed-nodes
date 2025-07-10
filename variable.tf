@@ -259,3 +259,16 @@ variable "public_domain_name" {
   type        = string
   default = ""
 }
+
+
+variable "external_secret_chart_version" {
+  type        = string
+  description = "Helm chart version for external-secrets"
+  default     = "0.18.2"
+}
+
+variable "include_external_secrets_module" {
+  type        = bool
+  default     = true
+  description = "Execute module or not. true = execute and false = don't execute"
+}
