@@ -40,11 +40,27 @@ spec:
       auth:
         jwt:
           serviceAccountRef:
-            name: ${var.service_account_name}
+            name: "${var.service_account_name}-${count.index}" 
+            namespace: ${each.value.application_namespace}
 YAML
 
 depends_on = [   
                 helm_release.external_secrets,
-                time_sleep.wait_60_seconds_for_external_secret_controller  
+                time_sleep.wait_60_seconds_for_external_secret_controller,
+                kubernetes_service_account.external_secrets_sa  
                 ]
+}
+
+
+#Create the ServiceAccount in Each Namespace
+resource "kubernetes_service_account" "external_secrets_sa" {
+  for_each = { for idx, secret in var.aws_test_secrets : idx => secret }
+
+  metadata {
+    name      = "${var.service_account_name}-${count.index}" 
+    namespace = each.value.application_namespace
+    annotations = {
+      "eks.amazonaws.com/role-arn" = aws_iam_role.external_secrets_irsa.arn  # Your IRSA role ARN
+    }
+  }
 }

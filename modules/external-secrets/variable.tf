@@ -6,19 +6,19 @@ variable "k8s_cluster_name" {
 }
 
 variable "namespace" {
-  description = "Namespace to deploy External Secret"
+  description = "Namespace to deploy External Secrets"
   type        = string
   default     = "external-secrets"
 }
 
 variable "service_account_name" {
-  description = "Name of the External Secret service account"
+  description = "Name of the External Secrets service account"
   type        = string
-  default     = "external-secret-sa"
+  default     = "external-secrets-sa"
 }
  
 variable "external_secret_chart_version" {
-  description = "External Secret Helm chart version"
+  description = "External Secrets Helm chart version"
   type        = string
   default     = "0.18.2"
 }
@@ -26,7 +26,7 @@ variable "external_secret_chart_version" {
 
 variable "aws_test_secrets" {
   type = list(object({
-     secret_name           = string
+    secret_name           = string
     application_namespace = string
     k8s_secret_store_name = string
   }))
