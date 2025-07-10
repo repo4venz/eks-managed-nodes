@@ -54,8 +54,9 @@ depends_on = [
 
 #Create the ServiceAccount in Each Namespace
 resource "kubernetes_service_account" "external_secrets_sa" {
-  for_each = { for idx, secret in var.aws_test_secrets : idx => secret }
-
+  #for_each = { for idx, secret in var.aws_test_secrets : idx => secret }
+  count = length(var.aws_test_secrets) 
+  
   metadata {
     name      = "${var.service_account_name}-${count.index}" 
     namespace = each.value.application_namespace
