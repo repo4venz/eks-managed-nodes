@@ -21,7 +21,7 @@ variable aws_admin_user_name {
 }
 
 variable "app_namespace" {
-  description = "Create IAM users with these names"
+  description = "Business Application Namespaces"
   type        = list(string)
   default     = ["myapps1", "myapps2"]
 }
@@ -271,4 +271,11 @@ variable "include_external_secrets_module" {
   type        = bool
   default     = true
   description = "Execute module or not. true = execute and false = don't execute"
+}
+
+
+variable "aws_test_secrets" {
+  type        = list
+  default     = []
+  description = "List of Secrets of AWS Secrets Manager and Kubernetes Application Namespace. It will map the which secrets will be accessed from which namespace"
 }

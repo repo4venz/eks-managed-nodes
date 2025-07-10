@@ -23,4 +23,12 @@ variable "external_secret_chart_version" {
   default     = "0.18.2"
 }
 
+
+variable "aws_test_secrets" {
+  type        = list
+  default     = []
+  description = "List of Secrets of AWS Secrets Manager and Kubernetes Application Namespace. It will map the which secrets will be accessed from which namespace"
+}
+
+
  

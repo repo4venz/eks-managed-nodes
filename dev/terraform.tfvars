@@ -28,15 +28,15 @@ external_secret_chart_version = "0.18.2"
 
 
 app_namespace        =  ["myapps1", "myapps2"]
-aws_sm_secrets               = [
+aws_test_secrets               = [
                                     {
-                                        secret_name = "test/application1/credentials",          # Reference to the secret of AWS Secret Manager 
-                                        application_namespace = "ns-application"                # K8s namespace in EKS where the AWS Secret will sync
+                                        secret_name = "test/application3/credentials",          # Reference to the secret of AWS Secret Manager 
+                                        application_namespace = "myapps1"                # K8s namespace in EKS where the AWS Secret will sync
                                         k8s_secret_store_name = "application1-secret-store"     # K8s Secret Store name which will be created in EKS to sync the AWS Secrets
                                     },
                                     {
-                                        secret_name = "test/application2/credentials",
-                                        application_namespace = "ns-application"
+                                        secret_name = "test/application4/credentials",
+                                        application_namespace = "myapps2"
                                         k8s_secret_store_name = "application2-secret-store" 
                                     }
                                 ]
@@ -65,7 +65,7 @@ include_external_secrets_module = true
 spot_instance_types          =  ["t3.medium", "t3.large", "t3.xlarge", "t3.2xlarge"]
 ondemand_instance_types      =  ["t3.medium", "m5.large", "t3.xlarge"]
 required_spot_instances      =  true   # either spot or ondemand or both instance types provision for eks worker nodes
-required_ondemand_instances  =  false   # either spot or ondemand or both instance types provision for eks worker nodes
+required_ondemand_instances  =  true   # either spot or ondemand or both instance types provision for eks worker nodes
 ebs_volume_size_in_gb        =  20
 ebs_volume_type              =  "gp3"
 
