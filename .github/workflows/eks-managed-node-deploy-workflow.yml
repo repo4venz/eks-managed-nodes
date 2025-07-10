@@ -145,6 +145,11 @@ jobs:
         id: destroy_kube_cost
         run: TF_LOG=DEBUG terraform destroy -target=module.kube-cost -auto-approve -input=false -var-file=${{ matrix.environment }}/terraform.tfvars
 
+      - name: Terraform Destroy (external-secrets)
+        if: "contains(github.event.head_commit.message, 'destroy external secrets')"
+        id: destroy_external_secrets
+        run: TF_LOG=DEBUG terraform destroy -target=module.external-secrets -auto-approve -input=false -var-file=${{ matrix.environment }}/terraform.tfvars
+
         
   comment:
     runs-on: ubuntu-latest
