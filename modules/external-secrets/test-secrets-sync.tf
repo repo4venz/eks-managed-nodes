@@ -27,7 +27,7 @@ resource "kubectl_manifest" "kubernetes-secret-store" {
 
     wait = true
     yaml_body = <<YAML
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: SecretStore
 metadata:
   name: ${var.aws_test_secrets[count.index].k8s_secret_store_name}
