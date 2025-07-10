@@ -28,7 +28,4 @@ data "aws_eks_cluster_auth" "aws_iam_authenticator" {
   name = aws_eks_cluster.demo_eks_cluster.name
 }
 
-
-data "aws_iam_openid_connect_provider" "oidc" {
-  url = data.aws_eks_cluster.this.identity[0].oidc[0].issuer
-}
+ 

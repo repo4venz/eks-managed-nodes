@@ -12,7 +12,7 @@ variable "namespace" {
 }
 
 variable "service_account_name" {
-  description = "Name of the Kubecost service account"
+  description = "Name of the External Secret service account"
   type        = string
   default     = "external-secret-sa"
 }
