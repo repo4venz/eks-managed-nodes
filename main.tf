@@ -144,6 +144,7 @@ module "kube-cost" {
   k8s_cluster_name          =  "${var.cluster_name}-${var.environment}" #module.eks.eks_cluster_name
   kubecost_chart_version    =  var.kubecost_chart_version
   environment               =  var.environment
+  ingress_host              =  "kubecost.${var.public_domain_name}"
 
   depends_on = [module.eks, module.nginx_alb_controller, module.external-dns, module.lets-encrypt]
 }
@@ -153,6 +154,7 @@ module "kubernetes_app" {
     count = var.include_k8s_app_module ? 1 : 0
     source                      =  "./modules/kubernetes-app"
     app_namespace               =  var.app_namespace[0]
+    ingress_hostname            =  "game.${var.public_domain_name}"
 
   depends_on = [module.eks, module.nginx_alb_controller]
 }
@@ -162,6 +164,7 @@ module "kubernetes_app_secured" {
     source                      =  "./modules/kubernetes-app-secured"
     app_namespace               =  var.app_namespace[1]
     environment                 =  var.environment
+    ingress_hostname            =  "game-secured.${var.public_domain_name}"
 
   depends_on = [module.eks, module.nginx_alb_controller, module.cert-manager, module.lets-encrypt]
 }
