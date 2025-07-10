@@ -76,7 +76,7 @@ resource "kubernetes_service" "this" {
       target_port = 80
     }
 
-    type = "NodePort"
+   # type = "NodePort"
   }
    depends_on = [null_resource.create_namespace_if_not_exists]
 }

@@ -79,4 +79,4 @@ scaling_config_ondemand = {
   min_size     = 2
 }
 
- 
+public_domain_name = "suvendupublicdomain.fun"
