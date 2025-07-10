@@ -149,7 +149,12 @@ jobs:
         if: "contains(github.event.head_commit.message, 'destroy external secrets')"
         id: destroy_external_secrets
         run: TF_LOG=DEBUG terraform destroy -target=module.external-secrets -auto-approve -input=false -var-file=${{ matrix.environment }}/terraform.tfvars
-
+      
+      - name: Terraform Destroy (EKS and VPC)
+        if: "contains(github.event.head_commit.message, 'destroy cluster')"
+        id: destroy_eks_vpc
+        run: TF_LOG=DEBUG terraform destroy -target=module.eks -target=module.vpc -auto-approve -input=false -var-file=${{ matrix.environment }}/terraform.tfvars
+        
         
   comment:
     runs-on: ubuntu-latest
