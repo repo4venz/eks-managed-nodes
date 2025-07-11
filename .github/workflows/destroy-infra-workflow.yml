@@ -1,4 +1,4 @@
-name: Terraform Destroy - Post Build Only
+name: Terraform Destroy - Infra Only
 on:
   workflow_dispatch:  # Manual trigger via GitHub UI
 
@@ -60,17 +60,13 @@ jobs:
       - uses: hashicorp/setup-terraform@v3
         with:
           terraform_wrapper: false
-
-
-      - name: Terraform Init (Post Build Only)
-        id: init_post_build
-        run: terraform -chdir=post-build init
-
-      - name: Terraform Destroy (Post Build Only)
-        id: destroy_post_build
-        run: TF_LOG=DEBUG terraform -chdir=post-build destroy -auto-approve -input=false -var-file=$(pwd)/${{ matrix.environment }}/terraform.tfvars   
  
-      - name: Terraform Statefile Remove Module (External Secrets)
-        if: "contains(github.event.head_commit.message, 'remove external secrets')"
-        id: remove_ext_sect
-        run: terraform -chdir=post-build state rm module.external-secrets
+      - name: Terraform Init (Infra Only)
+        id: init_infra
+        run: terraform -chdir=infra init
+
+      - name: Terraform Destroy (Infra Only)
+        id: destroy_infra
+        run: TF_LOG=DEBUG terraform -chdir=infra destroy -auto-approve -input=false -var-file=$(pwd)/${{ matrix.environment }}/terraform.tfvars   
+
+
