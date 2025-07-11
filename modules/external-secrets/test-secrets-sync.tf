@@ -42,6 +42,7 @@ resource "kubernetes_service_account" "external_secrets_sa" {
 # Creating Kubernetes SecretStore in the cluster so that Secrets can synchronise from AWS Secrets Manager
 # Once Secrets are synchronised Pods can use the secrets within the cluster
 
+/*
 resource "kubectl_manifest" "kubernetes-secret-store" {
     count = length(var.aws_test_secrets) 
 
@@ -73,4 +74,41 @@ depends_on = [
               ]
 }
 
+*/
+
+resource "kubernetes_manifest" "secret_store" {
+  for_each = { for idx, secret in var.aws_test_secrets : idx => secret }
+
+  manifest = {
+    apiVersion = "external-secrets.io/v1beta1"  # Updated API version
+    kind       = "SecretStore"
+    metadata = {
+      name      = each.value.k8s_secret_store_name
+      namespace = each.value.application_namespace
+    }
+    spec = {
+      provider = {
+        aws = {
+          service = "SecretsManager"
+          region  = data.aws_region.current.id
+          auth = {
+            jwt = {
+              serviceAccountRef = {
+                name      = var.service_account_name
+                namespace = each.value.application_namespace
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  depends_on = [
+                helm_release.external_secrets,
+                time_sleep.wait_60_seconds_for_external_secret_controller,
+                kubernetes_service_account.external_secrets_sa,
+                null_resource.create_namespaces 
+  ]
+}
 
