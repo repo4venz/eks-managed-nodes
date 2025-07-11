@@ -162,8 +162,8 @@ jobs:
 
       - name: Terraform Statefile Remove Module (EKS)
         if: "contains(github.event.head_commit.message, 'remove eks')"
-        id: remove_ext_sect
-        run: terraform state rm module.external-secrets
+        id: remove_eks
+        run: terraform state rm module.eks
          
 
   comment:
