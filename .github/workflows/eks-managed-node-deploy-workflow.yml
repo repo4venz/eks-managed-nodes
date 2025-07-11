@@ -108,18 +108,14 @@ jobs:
 
       - name: Terraform Plan
         #if: always()
-        if: | 
-        "!contains(github.event.head_commit.message, 'destroy')" && 
-        "!contains(github.event.head_commit.message, 'remove')"
+        if: "!contains(github.event.head_commit.message, 'destroy') && !contains(github.event.head_commit.message, 'remove')"
         id: plan
         run: TF_LOG=DEBUG terraform plan -input=false -var-file=${{ matrix.environment }}/terraform.tfvars -no-color
 
       - name: Terraform Apply
        #if: always()
        #if: github.ref == 'refs/heads/master'
-        if: | 
-        "!contains(github.event.head_commit.message, 'destroy')" && 
-        "!contains(github.event.head_commit.message, 'remove')"
+        if: "!contains(github.event.head_commit.message, 'destroy') &&  !contains(github.event.head_commit.message, 'remove')"
         id: apply
         run: TF_LOG=DEBUG terraform apply -auto-approve -input=false -var-file=${{matrix.environment }}/terraform.tfvars
 
