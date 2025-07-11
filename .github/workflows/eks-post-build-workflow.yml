@@ -4,17 +4,9 @@ on:
   push:
     paths:
       - 'post-build/**'
-      - 'modules/vpc/**'
-      - 'modules/eks/**'
-      - 'modules/kms-aws/**'
-      - 'modules/cert-manager/**'
-      - 'modules/eks-cluster-autoscaler/**'
-      - 'modules/external-dns/**'
-      - 'modules/fluentbit/**'
-      - 'modules/metrics-server/**'
-      - 'modules/nginx-lb-controller/**'
-      - 'modules/vpc-cni/**'
-      - 'modules/prometheus/**'
+      - 'modules/lets-encrypt/**'
+      - 'modules/external-secrets/**'
+      - 'modules/kube-cost/**'
   pull_request:
     branches: [ main ] # input your banch name here
 
