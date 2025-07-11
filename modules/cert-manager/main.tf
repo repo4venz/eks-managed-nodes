@@ -18,7 +18,7 @@ resource "null_resource" "create_namespace_if_not_exists" {
 
 
 resource "aws_iam_role" "cert_manager_role" {
-  name = "cert-manager-irsa-role"
+  name = "${k8s_cluster_name}-cert-manager-irsa-role"
   description = "IAM Role for Cert Manager for Staging on DNS01 for Route53"
   assume_role_policy = data.aws_iam_policy_document.cert_manager_assume_role_policy.json
 }
