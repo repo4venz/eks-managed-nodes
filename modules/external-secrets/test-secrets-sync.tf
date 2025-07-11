@@ -74,7 +74,7 @@ depends_on = [
               ]
 }
 
-*/
+ 
 
 resource "kubernetes_manifest" "secret_store" {
   for_each = { for idx, secret in var.aws_test_secrets : idx => secret }
@@ -111,4 +111,4 @@ resource "kubernetes_manifest" "secret_store" {
                 null_resource.create_namespaces 
   ]
 }
-
+*/
