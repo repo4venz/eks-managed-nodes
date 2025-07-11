@@ -128,3 +128,5 @@ resource "kubernetes_ingress_v1" "this" {
 
   depends_on = [null_resource.create_namespace_if_not_exists]
 }
+
+
