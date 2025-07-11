@@ -169,6 +169,13 @@ jobs:
         if: "contains(github.event.head_commit.message, 'remove lets-encrypt')"
         id: remove_encrypt
         run: terraform state rm module.lets-encrypt
+  
+      - name: Terraform Statefile Remove Module (Game Apps)
+        if: "contains(github.event.head_commit.message, 'remove game app')"
+        id: remove_game_app
+        run: |
+            terraform state rm module.kubernetes_app
+            terraform state rm module.kubernetes_app_secured
          
 
   comment:
