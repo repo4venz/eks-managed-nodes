@@ -12,7 +12,7 @@ on:
 
 jobs:
   terraform-infra:
-    name:   ${{matrix.runner}} - ${{matrix.environment }}
+    name:   ${{matrix.runner}} - ${{matrix.environment }} - Post Build Deploy
     runs-on: [ '${{ matrix.runner }}']
     strategy:
       max-parallel: 1

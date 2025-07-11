@@ -4,7 +4,7 @@ on:
 
 jobs:
   terraform-destroy:
-    name:   ${{matrix.runner}} - ${{matrix.environment }} - Destroy All
+    name:   ${{matrix.runner}} - ${{matrix.environment }} - Destroy Post Build
     runs-on: [ '${{ matrix.runner }}']
     strategy:
       max-parallel: 1
