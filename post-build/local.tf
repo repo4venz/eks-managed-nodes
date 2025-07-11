@@ -1,5 +1,4 @@
 locals {
-  addon_context = {
     aws_caller_identity_account_id = data.aws_caller_identity.current.account_id
     aws_caller_identity_arn        = data.aws_caller_identity.current.arn
     aws_eks_cluster_endpoint       = data.aws_eks_cluster.this.endpoint
@@ -10,5 +9,4 @@ locals {
     eks_oidc_provider_arn          = "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:oidc-provider/${data.aws_eks_cluster.this.identity[0].oidc[0].issuer}"
     eks_certificate_authority_data = try(base64decode(data.aws_eks_cluster.this.certificate_authority[0].data), "")
     tags                           = var.tags
-  }
 }

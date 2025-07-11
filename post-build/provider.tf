@@ -44,9 +44,7 @@ provider "helm" {
 
  
   provider "kubectl" {
-  # Configuration options
     host                   = local.aws_eks_cluster_endpoint
     token                  = data.aws_eks_cluster_auth.aws_iam_authenticator.token
     cluster_ca_certificate = local.eks_certificate_authority_data
 }
- 
