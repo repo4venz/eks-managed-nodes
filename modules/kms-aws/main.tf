@@ -2,6 +2,10 @@
 	KMS Key encryption
 	=======================================================================*/
 
+	resource "random_integer" "key_index" {
+  		min = 1
+  		max = 10000
+	}
 
    # Generate KMS Master Key for EKS Cluster to encrypt the cluster and secrets
 
@@ -13,12 +17,10 @@
 	}
 	
 	resource "aws_kms_alias" "eks_kms_secret_alias" {
-	  name          = substr("alias/${var.cluster_name}-kms-eks-cluster-${var.environment}",0,64)
+	  name          = substr("alias/${var.cluster_name}-kms-eks-cluster-${var.environment}-${random_integer.key_index.result}",0,64)
 	  target_key_id = aws_kms_key.eks_kms_secret_encryption.key_id
+	  depends_on = [random_integer.key_index]
 	}
-
-
-
 
    # Generate KMS Master Key for CloudWatch Logs for EKS Cluster
 
@@ -30,8 +32,9 @@
 	}
 
 	resource "aws_kms_alias" "eks_kms_cloudwatch_logs_alias" {
-	  name          = substr("alias/${var.cluster_name}-kms-cloudwatch-${var.environment}",0,64)
+	  name          = substr("alias/${var.cluster_name}-kms-cloudwatch-${var.environment}-${random_integer.key_index.result}",0,64)
 	  target_key_id = aws_kms_key.eks_kms_cloudwatch_logs_encryption.key_id
+	  depends_on = [random_integer.key_index]
 	}
 
 
