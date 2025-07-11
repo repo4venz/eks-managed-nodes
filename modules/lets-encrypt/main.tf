@@ -69,6 +69,8 @@ resource "kubernetes_manifest" "letsencrypt_clusterissuer" {
 }
 
 
+
+
 #### Using Route53 DNS ########
 /*
 resource "kubernetes_manifest" "letsencrypt_clusterissuer_dns01" {

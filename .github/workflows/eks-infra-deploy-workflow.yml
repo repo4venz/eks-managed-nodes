@@ -6,6 +6,7 @@ on:
       - 'infra/**'
       - 'modules/vpc/**'
       - 'modules/eks/**'
+      - 'modules/kms-aws/**'
       - 'modules/cert-manager/**'
       - 'modules/eks-cluster-autoscaler/**'
       - 'modules/external-dns/**'
