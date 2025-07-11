@@ -44,6 +44,15 @@ spec:
             namespace: ${var.aws_test_secrets[count.index].application_namespace}
 YAML
 
+  provisioner "local-exec" {
+    when    = destroy
+    command = <<-EOT
+      if kubectl get secretstore ${self.name} -n ${self.namespace} 2>/dev/null; then
+        kubectl delete secretstore ${self.name} -n ${self.namespace}
+      fi
+    EOT
+  }
+
 depends_on = [   
                 helm_release.external_secrets,
                 time_sleep.wait_60_seconds_for_external_secret_controller,
