@@ -18,6 +18,7 @@ module "kubernetes_app_secured" {
     ingress_hostname            =  "game-secured.${var.public_domain_name}"
 
   #depends_on = [module.lets-encrypt]
+  
 }
  
 
