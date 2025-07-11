@@ -1,4 +1,4 @@
-name: "Terraform Infra Deployment"
+name: "Terraform Post Build Deployment"
 on:
   workflow_dispatch:
   push:
