@@ -160,7 +160,7 @@ module "external-secrets" {
   #depends_on = [module.eks, module.nginx_alb_controller]
 }
 
- /*
+ 
 
 module "kubernetes_app" {
     count = var.include_k8s_app_module ? 1 : 0
@@ -180,4 +180,6 @@ module "kubernetes_app_secured" {
 
   depends_on = [module.lets-encrypt]
 }
- */
+ 
+
+ 
