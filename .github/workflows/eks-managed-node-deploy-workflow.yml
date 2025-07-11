@@ -168,7 +168,7 @@ jobs:
       - name: Terraform Statefile Remove Module (Let's Encrypt)
         if: "contains(github.event.head_commit.message, 'remove lets-encrypt')"
         id: remove_encrypt
-        run: terraform state rm module.eks
+        run: terraform state rm module.lets-encrypt
          
 
   comment:
