@@ -104,7 +104,7 @@ jobs:
            terraform init -upgrade
 
       - name: Terraform Validate
-        run: terraform validate
+        run: terraform -chdir=infra validate
 
       - name: Terraform Plan (Infra only)
         #if: always()
