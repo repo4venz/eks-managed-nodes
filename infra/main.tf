@@ -52,7 +52,7 @@ module "eks" {
 
 module "metrics_server" {
   count = var.include_metrics_server_module ? 1 : 0
-  source             = "./modules/metrics-server"
+  source             = "../modules/metrics-server"
   k8s_cluster_name   = "${var.cluster_name}-${var.environment}" #module.eks.eks_cluster_name
   k8s_namespace  = "kube-system"
   metrics_server_chart_version = var.metrics_server_chart_version
@@ -182,5 +182,7 @@ module "kubernetes_app_secured" {
   depends_on = [module.eks, module.nginx_alb_controller, module.cert-manager, module.lets-encrypt]
 }
  */
+
+
 
  
