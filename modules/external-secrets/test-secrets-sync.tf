@@ -26,7 +26,7 @@ resource "kubernetes_service_account" "external_secrets_sa" {
   count = length(var.aws_test_secrets) 
 
   metadata {
-    name      = "${var.service_account_name}-${count.index}" 
+    name      = "${var.service_account_name}" 
     namespace =  var.aws_test_secrets[count.index].application_namespace
     annotations = {
       "eks.amazonaws.com/role-arn" = aws_iam_role.external_secrets_irsa.arn  # Your IRSA role ARN
