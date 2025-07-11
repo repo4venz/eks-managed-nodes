@@ -95,13 +95,13 @@ jobs:
           terraform_wrapper: false
 
       - name: Format Terraform
-        run: terraform fmt
+        run: terraform -chdir=infra fmt
 
       - name: Terraform Init 
         id: init
         run: |
            rm -rf .terraform
-           terraform init -upgrade
+           terraform -chdir=infra init -upgrade
 
       - name: Terraform Validate
         run: terraform -chdir=infra validate
