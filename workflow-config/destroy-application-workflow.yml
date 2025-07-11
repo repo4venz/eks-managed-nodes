@@ -1,0 +1,71 @@
+name: Terraform Destroy - Application Only
+on:
+  workflow_dispatch:  # Manual trigger via GitHub UI
+
+jobs:
+  terraform-destroy:
+    name:   ${{matrix.runner}} - ${{matrix.environment }} - Destroy Application
+    runs-on: [ '${{ matrix.runner }}']
+    strategy:
+      max-parallel: 1
+      matrix:
+         include:
+           - environment: dev
+             runner: ubuntu-latest
+    env:
+         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+    steps:
+      - name: Checkout Code 
+        uses: actions/checkout@v2
+
+      - name: Read EKS cluster name from config yaml action
+        id: yaml
+        uses: actions-tools/yaml-outputs@v2     
+        with:
+          file-path: './workflow-config/github-workflow-config.yaml' 
+    
+      - name: Display Config values from YAML
+        id: display-yaml
+        run: |
+          echo "Environment Name: ${{ steps.yaml.outputs.EKSConfig__envName }}"
+          echo "EKS cluster Name: ${{ steps.yaml.outputs.EKSConfig__clusterName }}"
+          echo "EKS Cluster Region: ${{ steps.yaml.outputs.EKSConfig__clusterRegion }}" 
+          echo "S3 Bucket Name - TF State: ${{ steps.yaml.outputs.TerraformConfig__s3NameTFstate }}" 
+          echo "Setting Env variable with EKS cluster name...."
+          echo "AWS_EKS_CLUSTER_NAME=$(echo "${{ steps.yaml.outputs.EKSConfig__clusterName }}")" >> $GITHUB_ENV
+          echo "Setting Env variable with EKS cluster AWS Region...."
+          echo "AWS_DEFAULT_REGION=$(echo "${{ steps.yaml.outputs.EKSConfig__clusterRegion }}")" >> $GITHUB_ENV
+          echo "Setting Env variable with S3 Bucket Name for TF State...."
+          echo "S3_NAME_TF_STATE=$(echo "${{ steps.yaml.outputs.TerraformConfig__s3NameTFstate }}")" >> $GITHUB_ENV
+
+      - name: Checking the GitHub Env variable values
+        id: Test-Cluster-name-Env-Var
+        run: |
+          echo "AWS_EKS_CLUSTER_NAME: ${AWS_EKS_CLUSTER_NAME}" 
+          echo "AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION}"
+          echo "S3_NAME_TF_STATE: ${S3_NAME_TF_STATE}"
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_DEFAULT_REGION }}
+      
+      - name: Verify AWS credentials
+        run: aws sts get-caller-identity
+        
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_wrapper: false
+
+      - name: Terraform Init (Application Only)
+        id: init_application
+        run: terraform -chdir=application-build init
+
+      - name: Terraform Destroy (Application Only)
+        id: destroy_application
+        run: TF_LOG=DEBUG terraform -chdir=application-build destroy -auto-approve -input=false -var-file=$(pwd)/${{ matrix.environment }}/terraform.tfvars   
+ 
