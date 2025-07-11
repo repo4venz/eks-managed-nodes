@@ -81,7 +81,11 @@ resource "helm_release" "kubecost" {
   chart      = "cost-analyzer"
   version    = var.kubecost_chart_version
   namespace  = var.namespace
-
+  create_namespace = true
+  atomic           = true
+  cleanup_on_fail  = true
+  timeout    = 900
+  
 values = [
   yamlencode({
     global = {

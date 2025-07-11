@@ -19,6 +19,26 @@ resource "time_sleep" "wait_60_seconds_for_external_secret_controller" {
   depends_on = [helm_release.external_secrets]
 }
 
+
+#Create the ServiceAccount in Each Namespace
+resource "kubernetes_service_account" "external_secrets_sa" {
+  #for_each = { for idx, secret in var.aws_test_secrets : idx => secret }
+  count = length(var.aws_test_secrets) 
+
+  metadata {
+    name      = "${var.service_account_name}-${count.index}" 
+    namespace =  var.aws_test_secrets[count.index].application_namespace
+    annotations = {
+      "eks.amazonaws.com/role-arn" = aws_iam_role.external_secrets_irsa.arn  # Your IRSA role ARN
+    }
+  }
+  depends_on = [   
+                helm_release.external_secrets,
+                time_sleep.wait_60_seconds_for_external_secret_controller,
+                null_resource.create_namespaces 
+              ]
+}
+
 # Creating Kubernetes SecretStore in the cluster so that Secrets can synchronise from AWS Secrets Manager
 # Once Secrets are synchronised Pods can use the secrets within the cluster
 
@@ -48,21 +68,9 @@ YAML
 depends_on = [   
                 helm_release.external_secrets,
                 time_sleep.wait_60_seconds_for_external_secret_controller,
-                kubernetes_service_account.external_secrets_sa  
-                ]
+                kubernetes_service_account.external_secrets_sa,
+                null_resource.create_namespaces 
+              ]
 }
 
 
-#Create the ServiceAccount in Each Namespace
-resource "kubernetes_service_account" "external_secrets_sa" {
-  #for_each = { for idx, secret in var.aws_test_secrets : idx => secret }
-  count = length(var.aws_test_secrets) 
-
-  metadata {
-    name      = "${var.service_account_name}-${count.index}" 
-    namespace =  var.aws_test_secrets[count.index].application_namespace
-    annotations = {
-      "eks.amazonaws.com/role-arn" = aws_iam_role.external_secrets_irsa.arn  # Your IRSA role ARN
-    }
-  }
-}
