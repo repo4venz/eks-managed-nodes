@@ -15,8 +15,6 @@ resource "null_resource" "create_namespace_if_not_exists" {
 
 
 # Terraform module to deploy cert-manager to EKS using Helm
-
-
 resource "aws_iam_role" "cert_manager_role" {
   name = "${var.k8s_cluster_name}-cert-manager-irsa-role"
   description = "IAM Role for Cert Manager for Staging on DNS01 for Route53"

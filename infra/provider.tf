@@ -28,6 +28,32 @@ provider "aws" {
  
 
 provider "kubernetes" {
+  host                   = local.aws_eks_cluster_endpoint
+  token                  = data.aws_eks_cluster_auth.aws_iam_authenticator.token
+  cluster_ca_certificate = local.eks_certificate_authority_data
+}
+
+
+provider "helm" {
+  kubernetes = {
+    host                   = local.aws_eks_cluster_endpoint
+    token                  = data.aws_eks_cluster_auth.aws_iam_authenticator.token
+    cluster_ca_certificate = local.eks_certificate_authority_data
+  }
+}
+
+ 
+  provider "kubectl" {
+  # Configuration options
+    host                   = local.aws_eks_cluster_endpoint
+    token                  = data.aws_eks_cluster_auth.aws_iam_authenticator.token
+    cluster_ca_certificate = local.eks_certificate_authority_data
+}
+ 
+
+
+/*
+provider "kubernetes" {
   host                   = module.eks.eks_cluster_endpoint
   token                  = data.aws_eks_cluster_auth.aws_iam_authenticator.token
   cluster_ca_certificate = module.eks.eks_cluster_certificate_authority_data
@@ -49,4 +75,4 @@ provider "helm" {
     token                  = data.aws_eks_cluster_auth.aws_iam_authenticator.token
     cluster_ca_certificate = module.eks.eks_cluster_certificate_authority_data
 }
- 
+ */

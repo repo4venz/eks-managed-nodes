@@ -20,7 +20,7 @@ provider "aws" {
  terraform {
   backend "s3" {
     bucket = "suvendu-terraform-state-all" #var.s3_bucket_name
-    key    = "eks/terraform.tfstate" #var.tfstate_file_path
+    key    = "eks-postbuild/postbuild.tfstate" #var.tfstate_file_path
     region = "eu-west-2" #var.region_name   ### Mentioned fixed region for s3 bucket
     encrypt= true
   }
@@ -28,25 +28,25 @@ provider "aws" {
  
 
 provider "kubernetes" {
-  host                   = module.eks.eks_cluster_endpoint
+  host                   = local.aws_eks_cluster_endpoint
   token                  = data.aws_eks_cluster_auth.aws_iam_authenticator.token
-  cluster_ca_certificate = module.eks.eks_cluster_certificate_authority_data
+  cluster_ca_certificate = local.eks_certificate_authority_data
 }
 
 
 provider "helm" {
   kubernetes = {
-    host                   = module.eks.eks_cluster_endpoint
+    host                   = local.aws_eks_cluster_endpoint
     token                  = data.aws_eks_cluster_auth.aws_iam_authenticator.token
-    cluster_ca_certificate = module.eks.eks_cluster_certificate_authority_data
+    cluster_ca_certificate = local.eks_certificate_authority_data
   }
 }
 
  
   provider "kubectl" {
   # Configuration options
-    host                   = module.eks.eks_cluster_endpoint
+    host                   = local.aws_eks_cluster_endpoint
     token                  = data.aws_eks_cluster_auth.aws_iam_authenticator.token
-    cluster_ca_certificate = module.eks.eks_cluster_certificate_authority_data
+    cluster_ca_certificate = local.eks_certificate_authority_data
 }
  
