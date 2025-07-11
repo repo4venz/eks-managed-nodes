@@ -106,18 +106,24 @@ jobs:
       - name: Terraform Validate
         run: terraform validate
 
-      - name: Terraform Plan
+      - name: Terraform Plan (Infra only)
         #if: always()
         if: "!contains(github.event.head_commit.message, 'destroy') && !contains(github.event.head_commit.message, 'remove')"
         id: plan
-        run: TF_LOG=DEBUG terraform plan -input=false -var-file=${{ matrix.environment }}/terraform.tfvars -no-color
+        run: TF_LOG=DEBUG terraform -chdir=infra plan -input=false -var-file=${{ matrix.environment }}/terraform.tfvars -no-color
 
-      - name: Terraform Apply
+      - name: Terraform Apply (Infra only)
        #if: always()
        #if: github.ref == 'refs/heads/master'
         if: "!contains(github.event.head_commit.message, 'destroy') &&  !contains(github.event.head_commit.message, 'remove')"
         id: apply
-        run: TF_LOG=DEBUG terraform apply -auto-approve -input=false -var-file=${{matrix.environment }}/terraform.tfvars
+        run: TF_LOG=DEBUG terraform -chdir=infra apply -auto-approve -input=false -var-file=${{matrix.environment }}/terraform.tfvars
+
+      - name: Terraform Destroy (Infra Only)
+        #if: github.ref == 'refs/heads/master'
+        if: "contains(github.event.head_commit.message, 'destroy infra')"
+        id: destroy_infra
+        run: TF_LOG=DEBUG terraform -chdir=infra destroy -auto-approve -input=false -var-file=${{ matrix.environment }}/terraform.tfvars
 
       - name: Terraform Destroy (All)
         #if: github.ref == 'refs/heads/master'
