@@ -155,7 +155,12 @@ jobs:
         id: destroy_eks_vpc
         run: TF_LOG=DEBUG terraform destroy -target=module.eks -target=module.vpc -auto-approve -input=false -var-file=${{ matrix.environment }}/terraform.tfvars
         
-        
+      - name: Terraform Remove Module (EKS and External Secrets)
+        if: "contains(github.event.head_commit.message, 'remove external secrets')"
+        id: remove_ext_sect
+        run: terraform state rm module.external_secrets
+         
+
   comment:
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
