@@ -42,6 +42,7 @@ aws_test_secrets               = [
                                 ]
 
 include_vpc_cni_addon_module = true
+include_calico_module = true
 include_nginx_controller_module = true
 include_eks_cluster_autoscaler_module = true
 include_external_dns_module = true
@@ -53,9 +54,9 @@ include_efs_csi_driver_addon = true
 include_cert_manager_module = true
 include_lets_encrypt_ca_module = true  # Run as post build
 include_k8s_app_module = true
-include_k8s_app_secured_module = true  # Run as post build
+include_k8s_app_secured_module = true  
 include_kubecost_module = true   # Run as post build
-include_external_secrets_module = true
+include_external_secrets_module = true # Run as post build
 
 
 

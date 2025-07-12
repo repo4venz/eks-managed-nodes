@@ -47,17 +47,7 @@ resource "aws_iam_role_policy_attachment" "cert_manager_attach" {
   policy_arn = aws_iam_policy.cert_manager_policy_dns01.arn
 }
 
-
-/*
-resource "kubernetes_namespace" "cert_manager" {
-  metadata {
-    name = var.namespace
-    labels = {
-      "cert-manager.io/managed" = "true"
-    }
-  }
-}
-*/
+ 
 
 resource "helm_release" "cert_manager" {
   name       = "cert-manager"

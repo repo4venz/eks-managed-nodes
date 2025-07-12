@@ -114,6 +114,13 @@ variable "include_kubecost_module" {
   description = "Execute module or not. true = execute and false = don't execute"
 }
 
+
+variable "include_calico_module" {
+  type        = bool
+  default     = true
+  description = "Execute module or not. true = execute and false = don't execute"
+}
+
 variable "k8s_namespace" {
   type    = string
   default = "kube-system"
@@ -147,6 +154,14 @@ variable "prometheus_chart_version" {
   description = "Helm chart version for kube-prometheus-stack"
   default     = "55.5.0"
 }
+
+variable "calico_chart_version" {
+  type        = string
+  description = "Helm chart version for Calico"
+  default     = "3.30.2"
+}
+
+
 
 variable "spot_instance_types" {
   description = "EKS worker nodes Spot instance types"

@@ -16,12 +16,9 @@ data "aws_eks_cluster_auth" "this" {
 
 data "aws_iam_openid_connect_provider" "oidc" {
   url = data.aws_eks_cluster.this.identity[0].oidc[0].issuer
-}
+} 
 
-
- 
-
-data "aws_iam_policy_document" "cert_manager_assume_role_policy" {
+data "aws_iam_policy_document" "calico_assume_role_policy" {
   statement {
     effect = "Allow"
     principals {
@@ -32,7 +29,7 @@ data "aws_iam_policy_document" "cert_manager_assume_role_policy" {
     condition {
       test     = "StringEquals"
       variable = "${replace(data.aws_iam_openid_connect_provider.oidc.url, "https://", "")}:sub"
-      values   = ["system:serviceaccount:${var.namespace}:cert-manager"]
+      values   = ["system:serviceaccount:${var.namespace}:calico-sa"]
     }
   }
 }
