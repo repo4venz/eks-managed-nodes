@@ -143,15 +143,22 @@ resource "aws_launch_template" "eks_worker_nodes_spot_high_pod" {
   */
 
    # Correct user data encoding
-  user_data = base64encode(<<-EOT
-    #!/bin/bash
-    set -ex
-    /etc/eks/bootstrap.sh ${var.cluster_name} \
+user_data = base64encode(<<-EOF
+      MIME-Version: 1.0
+      Content-Type: multipart/mixed; boundary="==BOUNDARY=="
+
+                --==BOUNDARY==
+      Content-Type: text/x-shellscript; charset="us-ascii"
+
+      #!/bin/bash
+      set -ex
+      /etc/eks/bootstrap.sh ${var.cluster_name} \
       --use-max-pods false \
       --kubelet-extra-args "--max-pods=${each.value.max_pods}"
-  EOT
-  )
-
+                --==BOUNDARY==--
+      EOF
+    )
+    
   block_device_mappings {
     #device_name = var.use_bottlerocket ? "/dev/xvda" : "/dev/xvdb"
     device_name = "/dev/xvda"
@@ -179,3 +186,5 @@ resource "aws_launch_template" "eks_worker_nodes_spot_high_pod" {
 }
 
  
+
+
