@@ -49,7 +49,7 @@ resource "kubernetes_manifest" "secret_store" {
   for_each = { for idx, secret in var.aws_test_secrets : idx => secret }
 
   manifest = {
-    apiVersion = "external-secrets.io/v1beta1"  # Updated API version
+    apiVersion = "external-secrets.io/v1"  # Updated API version
     kind       = "SecretStore"
     metadata = {
       name      = each.value.k8s_secret_store_name
@@ -76,7 +76,7 @@ resource "kubernetes_manifest" "secret_store" {
   depends_on = [
                 helm_release.external_secrets,
                 time_sleep.wait_60_seconds_for_external_secret_controller,
-                kubernetes_service_account.external_secrets_sa,
+               # kubernetes_service_account.external_secrets_sa,
                 null_resource.create_namespaces 
   ]
 }
