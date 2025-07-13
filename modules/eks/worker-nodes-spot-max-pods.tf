@@ -5,7 +5,7 @@
 
 resource "aws_eks_node_group" "demo_eks_nodegroup_spot_high_pod" {
  
-  for_each = var.required_spot_instances_max_pods ? var.spot_instance_types : {}
+  for_each = var.required_spot_instances_max_pods ? toset(var.spot_instance_types) : toset([])
   #If var.create_instances is true, use var.instance_map (create instances)
   #If var.create_instances is false, use an empty map {} (don't create any instances)
 
