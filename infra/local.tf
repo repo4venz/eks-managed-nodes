@@ -41,11 +41,16 @@ locals {
   } 
 
 
+  # Then validate and ensure max_pods exists
   validated_max_pods = {
     for k, v in local.spot_node_groups_max_pods :
     k => merge(v, {
-      max_pods = try(v.max_pods, local.max_pods[k], 
-        error("Missing max_pods for instance type ${k}"))
+      max_pods = try(
+        v.max_pods,                       # First try the override
+        var.max_pods[k],                  # Then try the variable
+        local.max_pods[k],           # Then try local base map
+        error("No max_pods found for ${k}") # Final fallback
+      )
     })
   }
 }
