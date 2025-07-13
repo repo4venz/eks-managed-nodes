@@ -30,7 +30,7 @@ module "prometheus" {
 }
 
 
-/*
+
 module "lets-encrypt" {
   count = var.include_lets_encrypt_ca_module ? 1 : 0
   source             = "../modules/lets-encrypt"
@@ -39,7 +39,7 @@ module "lets-encrypt" {
   
   depends_on = [module.external-dns, module.cert-manager]
 }
-*/
+
 
 
 /*
