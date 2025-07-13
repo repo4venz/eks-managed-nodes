@@ -41,6 +41,7 @@ module "eks" {
     ondemand_instance_types                       =  var.ondemand_instance_types
     required_spot_instances                       =  var.required_spot_instances
     required_spot_instances_max_pods              =  var.required_spot_instances_max_pods
+    spot_node_groups_max_pods                     =  local.spot_node_groups_max_pods
     required_ondemand_instances                   =  var.required_ondemand_instances
     scaling_config_spot                           =  var.scaling_config_spot
     scaling_config_ondemand                       =  var.scaling_config_ondemand

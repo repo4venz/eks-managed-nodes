@@ -151,3 +151,5 @@ variable "custom_kubelet_args" {
   default     = ""
 }
  
+
+ variable spot_node_groups_max_pods {}

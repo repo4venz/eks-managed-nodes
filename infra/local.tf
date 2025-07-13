@@ -27,7 +27,7 @@ locals {
  
 
     # Calculate final max_pods with overrides
-  node_groups_max_pods = {
+  spot_node_groups_max_pods = {
     for instance_type in var.spot_instance_types :
     instance_type => {
       instance_type = instance_type
