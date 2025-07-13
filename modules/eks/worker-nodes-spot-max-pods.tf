@@ -11,7 +11,7 @@ resource "aws_eks_node_group" "demo_eks_nodegroup_spot_high_pod" {
 
 
   cluster_name    = aws_eks_cluster.demo_eks_cluster.name
-  node_group_name =  "${var.cluster_name}-${var.environment}-${each.key}-nodes-group-spot-high-pods"  
+  node_group_name = "${var.cluster_name}-${var.environment}-${replace(each.key, ".", "")}-nodes-group-spot-high-pods" 
   node_role_arn   = aws_iam_role.eks_worker_nodes_role.arn
 
   subnet_ids =  var.private_subnets
@@ -87,7 +87,7 @@ locals {
 resource "aws_launch_template" "eks_worker_nodes_spot_high_pod" {
   for_each = toset(var.spot_instance_types)
 
-  name_prefix = substr("${aws_eks_cluster.demo_eks_cluster.name}-high-pod-${each.key}-",0,64)
+  name_prefix = "${aws_eks_cluster.demo_eks_cluster.name}-high-pod-${replace(each.key, ".", "")}-" 
 
   instance_type = each.value
 
