@@ -85,13 +85,13 @@ locals {
 
  # Launch Template for High-Pod-Density Nodes
 resource "aws_launch_template" "eks_worker_nodes_spot_high_pod" {
-  for_each = var.spot_instance_types
+  for_each = toset(var.spot_instance_types)
 
   name_prefix = substr("${aws_eks_cluster.demo_eks_cluster.name}-high-pod-${each.key}-",0,64)
 
   instance_type = each.value.instance_type
 
-  user_data = base64encode(templatefile("${path.module}/templates/userdata.tftpl", {
+  user_data = base64encode(templatefile("${path.module}/templates/worker-node-userdata.tftpl", {
     cluster_name     = var.cluster_name
     max_pods         = local.max_pods_map[each.key]
     bottlerocket     = var.use_bottlerocket
