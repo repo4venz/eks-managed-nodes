@@ -140,10 +140,10 @@ resource "aws_launch_template" "eks_worker_nodes_spot_high_pod" {
    # bottlerocket     = var.use_bottlerocket
     custom_kubelet_args = "--node-labels=group=${each.key}-spot"  #var.custom_kubelet_args
   })) 
-  */
+  
 
    # Correct user data encoding
-user_data = base64encode(<<-EOF
+  user_data = base64encode(<<-EOF
       MIME-Version: 1.0
       Content-Type: multipart/mixed; boundary="==BOUNDARY=="
 
@@ -158,6 +158,8 @@ user_data = base64encode(<<-EOF
                 --==BOUNDARY==--
       EOF
     )
+*/
+    user_data = data.template_cloudinit_config.eks_user_data[each.key].rendered
     
   block_device_mappings {
     #device_name = var.use_bottlerocket ? "/dev/xvda" : "/dev/xvdb"
@@ -167,6 +169,7 @@ user_data = base64encode(<<-EOF
       volume_type = var.ebs_volume_type 
       encrypted   = true
       kms_key_id  = var.eks_kms_secret_encryption_key_arn
+      delete_on_termination = true  # Recommended for EKS nodes
     }
   }
   
@@ -188,3 +191,20 @@ user_data = base64encode(<<-EOF
  
 
 
+data "template_cloudinit_config" "eks_user_data" {
+  for_each = var.spot_node_groups_max_pods
+  gzip          = false
+  base64_encode = true
+
+  part {
+    filename     = "bootstrap.sh"
+    content_type = "text/x-shellscript"
+    content      = <<-EOF
+      #!/bin/bash
+      set -ex
+      /etc/eks/bootstrap.sh ${var.cluster_name} \
+        --use-max-pods false \
+        --kubelet-extra-args '--max-pods=${each.value.max_pods}'
+    EOF
+  }
+}
