@@ -1,5 +1,13 @@
+resource "time_sleep" "wait_120_seconds" {
+  create_duration = "120s"  # 2 minutes
 
+  depends_on = [
+    # Resources that must complete before waiting
+    module.cert_manager.cert_manager_release_name.example
+  ]
+}
 
+/*
 resource "null_resource" "wait_for_cert_manager_crds" {
   provisioner "local-exec" {
     command = <<EOT
@@ -14,7 +22,7 @@ resource "null_resource" "wait_for_cert_manager_crds" {
   }
  
 }
-
+*/
 
 
 # -------------------
@@ -64,7 +72,8 @@ resource "kubernetes_manifest" "letsencrypt_clusterissuer" {
     }
   }
   depends_on = [
-    null_resource.wait_for_cert_manager_crds
+    #null_resource.wait_for_cert_manager_crds
+    time_sleep.wait_120_seconds
   ]
 }
 
