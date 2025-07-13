@@ -85,21 +85,7 @@ scaling_config_ondemand = {
 }
 
 public_domain_name = "suvendupublicdomain.fun"
-
-  locals {
-  # Pre-calculated max pods based on AWS ENI limits
-  max_pods_map = {
-    "t3.large"    = 35
-    "t3.xlarge"   = 58
-    "t3.2xlarge"  = 58
-    "m5.large"    = 29
-    "m5.xlarge"   = 58
-    "m5.2xlarge"  = 58
-    "m5.4xlarge"  = 234  # With prefix delegation
-    "c5.4xlarge"  = 234
-    "r5.8xlarge"  = 234
-  }
-}
+ 
 
 /*
 
