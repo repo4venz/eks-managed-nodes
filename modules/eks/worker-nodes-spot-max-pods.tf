@@ -3,10 +3,12 @@
 # AWS EKS node group SPOT
 # The node groupd will work with AWS VPC CNI only
 
-resource "aws_eks_node_group" "demo_eks_nodegroup_spot" {
-  count = var.required_spot_instances_max_pods ? 1 : 0
+resource "aws_eks_node_group" "demo_eks_nodegroup_spot_high_pod" {
+ 
+  for_each = var.required_spot_instances_max_pods ? var.spot_instance_types : {}
+  #If var.create_instances is true, use var.instance_map (create instances)
+  #If var.create_instances is false, use an empty map {} (don't create any instances)
 
-  for_each = var.spot_instance_types
 
   cluster_name    = aws_eks_cluster.demo_eks_cluster.name
   node_group_name =  "${var.cluster_name}-${var.environment}-${each.key}-nodes-group-spot-high-pods"  
