@@ -4,11 +4,10 @@
 # The node groupd will work with AWS VPC CNI only
 
 resource "aws_eks_node_group" "demo_eks_nodegroup_spot_high_pod" {
- 
-  #for_each = var.required_spot_instances_max_pods ? toset(var.spot_instance_types) : null
+   #for_each = var.required_spot_instances_max_pods ? toset(var.spot_instance_types) : null
 
   for_each = var.required_spot_instances_max_pods ? {
-    for instance_type in var.spot_instance_types : instance_type => instance_type
+    for instance_type in var.spot_node_groups_max_pods : instance_type => instance_type
   } : {}
 
   #If var.create_instances is true, use var.instance_map (create instances)
@@ -31,9 +30,9 @@ resource "aws_eks_node_group" "demo_eks_nodegroup_spot_high_pod" {
   }
 
   scaling_config {
-    desired_size = var.scaling_config_spot.desired_size
-    max_size     = var.scaling_config_spot.max_size
-    min_size     = var.scaling_config_spot.min_size
+    desired_size =  each.value.desired_size  #var.scaling_config_spot.desired_size
+    max_size     =  each.value.min_size    #var.scaling_config_spot.max_size
+    min_size     =  each.value.max_size  #var.scaling_config_spot.min_size
   }
 
   update_config {
@@ -70,7 +69,7 @@ resource "aws_eks_node_group" "demo_eks_nodegroup_spot_high_pod" {
   ]
 }
 
-
+/*
 locals {
   # Pre-calculated max pods based on AWS ENI limits
   max_pods_map = {
@@ -85,7 +84,7 @@ locals {
     "r5.8xlarge"  = 234
   }
 }
-
+*/
 
  
 
@@ -94,18 +93,18 @@ resource "aws_launch_template" "eks_worker_nodes_spot_high_pod" {
   #for_each = var.required_spot_instances_max_pods ? toset(var.spot_instance_types) : null
 
   for_each = var.required_spot_instances_max_pods ? {
-    for instance_type in var.spot_instance_types : instance_type => instance_type
+    for instance_type in var.spot_node_groups_max_pods : instance_type => instance_type
   } : {}
 
-  name_prefix = "${aws_eks_cluster.demo_eks_cluster.name}-high-pod-${replace(each.key, ".", "")}-" 
+  name_prefix = "${aws_eks_cluster.demo_eks_cluster.name}-high-pod-${replace(each.value.instance_type , ".", "")}-" 
 
-  instance_type = each.value
+  instance_type = each.value.instance_type 
  
   user_data = base64encode(templatefile("${path.module}/worker-node-userdata.tftpl", {
     cluster_name     = var.cluster_name
-    max_pods         = local.max_pods_map[each.value]
-    bottlerocket     = var.use_bottlerocket
-    custom_kubelet_args = var.custom_kubelet_args
+    max_pods         = each.value.max_pods    #local.max_pods_map[each.value]
+   # bottlerocket     = var.use_bottlerocket
+    custom_kubelet_args = "--node-labels=group=${each.key}-spot"  #var.custom_kubelet_args
   })) 
  
 
@@ -129,8 +128,8 @@ resource "aws_launch_template" "eks_worker_nodes_spot_high_pod" {
     resource_type = "instance"
     tags = {
       NodeType = "eks-worker-node-spot-high-pods"
-      Name = substr("${aws_eks_cluster.demo_eks_cluster.name}-worker-node-${each.value}",0,64)
-      instance_type = "${each.value}"  
+      Name = substr("${aws_eks_cluster.demo_eks_cluster.name}-worker-node-${each.value.instance_type }",0,64)
+      instance_type = "${each.value.instance_type }"  
     }
   }
 }

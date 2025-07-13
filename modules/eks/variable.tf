@@ -151,5 +151,13 @@ variable "custom_kubelet_args" {
   default     = ""
 }
  
-
- variable spot_node_groups_max_pods {}
+ 
+ variable "spot_node_groups_max_pods" {
+  type = map(object({
+    desired_size = optional(number)
+    min_size     = optional(number)
+    max_size     = optional(number)
+    max_pods     = optional(number)
+  }))
+  default = {}
+}
