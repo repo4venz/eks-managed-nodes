@@ -91,7 +91,7 @@ resource "aws_launch_template" "eks_worker_nodes_spot_high_pod" {
 
   instance_type = each.value.instance_type
 
-  user_data = base64encode(templatefile("${path.module}/templates/worker-node-userdata.tftpl", {
+  user_data = base64encode(templatefile("${path.module}/worker-node-userdata.tftpl", {
     cluster_name     = var.cluster_name
     max_pods         = local.max_pods_map[each.key]
     bottlerocket     = var.use_bottlerocket
