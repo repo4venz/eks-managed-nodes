@@ -129,9 +129,9 @@ resource "aws_launch_template" "eks_worker_nodes_spot_high_pod" {
 
   for_each = var.spot_node_groups_max_pods
 
-  name_prefix = "${aws_eks_cluster.demo_eks_cluster.name}-high-pod-${replace(each.value.instance_type , ".", "")}-" 
+  name_prefix = "${aws_eks_cluster.demo_eks_cluster.name}-high-pod-${replace(each.key , ".", "")}-" 
 
-  instance_type = each.value.instance_type 
+  instance_type = each.key
  
   user_data = base64encode(templatefile("${path.module}/worker-node-userdata.tftpl", {
     cluster_name     = var.cluster_name
@@ -161,8 +161,8 @@ resource "aws_launch_template" "eks_worker_nodes_spot_high_pod" {
     resource_type = "instance"
     tags = {
       NodeType = "eks-worker-node-spot-high-pods"
-      Name = substr("${aws_eks_cluster.demo_eks_cluster.name}-worker-node-${each.value.instance_type }",0,64)
-      instance_type = "${each.value.instance_type }"  
+      Name = substr("${aws_eks_cluster.demo_eks_cluster.name}-worker-node-${each.key }",0,64)
+      instance_type = "${each.key}"  
     }
   }
 }

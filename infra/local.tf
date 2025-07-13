@@ -31,7 +31,7 @@ locals {
    for_each = var.required_spot_instances_max_pods ? {
     for instance_type in var.spot_instance_types :
     instance_type => {
-      instance_type = instance_type
+     # instance_type = instance_type
       desired_size = try(var.overrides_node_scale_config[instance_type].desired_size, var.scaling_config_spot.desired_size)
       min_size     = try(var.overrides_node_scale_config[instance_type].min_size, var.scaling_config_spot.min_size)
       max_size     = try(var.overrides_node_scale_config[instance_type].max_size, var.scaling_config_spot.max_size)
