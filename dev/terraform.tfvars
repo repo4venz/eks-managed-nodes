@@ -68,7 +68,7 @@ ondemand_instance_types      =  ["t3.medium", "m5.large", "t3.xlarge"]
 required_spot_instances      =  true   # either spot or ondemand or both instance types provision for eks worker nodes
 required_ondemand_instances  =  false   # either spot or ondemand or both instance types provision for eks worker nodes
 
-required_spot_instances_max_pods  =  true 
+required_spot_instances_max_pods  =  false 
 
 ebs_volume_size_in_gb        =  20
 ebs_volume_type              =  "gp3"
