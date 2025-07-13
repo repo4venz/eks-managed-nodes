@@ -39,8 +39,7 @@ locals {
 
       max_pods     = coalesce(
         try(var.overrides_node_scale_config[instance_type].max_pods, null),
-        lookup(local.max_pods, instance_type, null),
-        error("Missing max_pods value for instance type: ${instance_type}")
+        lookup(local.max_pods, instance_type) 
       )
     }
    } : {}
