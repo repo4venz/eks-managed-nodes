@@ -42,6 +42,8 @@ resource "aws_eks_node_group" "demo_eks_nodegroup_spot" {
     "k8s.io/cluster-autoscaler/enabled" = "true"
     "k8s.io/cluster-autoscaler/${aws_eks_cluster.demo_eks_cluster.name}" = "owned"
     "instance_capacity_type" = "SPOT"
+    "node-role.kubernetes.io/worker" = ""
+    "monitoring" = "enabled"  # Custom label
   }
 
   depends_on = [

@@ -42,6 +42,8 @@ resource "aws_eks_node_group" "demo_eks_nodegroup_ondemand" {
     "k8s.io/cluster-autoscaler/enabled" = "true"
     "k8s.io/cluster-autoscaler/${aws_eks_cluster.demo_eks_cluster.name}" = "owned"
     "instance_capacity_type" = "ON_DEMAND"
+    "node-role.kubernetes.io/worker" = ""
+    "monitoring" = "enabled"  # Custom label
   }
 
   depends_on = [

@@ -44,7 +44,7 @@ resource "kubernetes_service_account" "external_secrets_sa" {
 # Once Secrets are synchronised Pods can use the secrets within the cluster
 
 
-
+/*
 resource "kubernetes_manifest" "secret_store" {
   for_each = { for idx, secret in var.aws_test_secrets : idx => secret }
 
@@ -80,10 +80,10 @@ resource "kubernetes_manifest" "secret_store" {
                 null_resource.create_namespaces 
   ]
 }
+*/
 
 
 
-/*
 resource "kubectl_manifest" "kubernetes-secret-store" {
     count = length(var.aws_test_secrets) 
 
@@ -103,16 +103,14 @@ spec:
         jwt:
           serviceAccountRef:
             name: "${var.service_account_name}" 
-            namespace: ${var.aws_test_secrets[count.index].application_namespace}
+            namespace: "${var.namespace}" 
 YAML
 
 
 depends_on = [   
                 helm_release.external_secrets,
                 time_sleep.wait_60_seconds_for_external_secret_controller,
-                kubernetes_service_account.external_secrets_sa,
+                #kubernetes_service_account.external_secrets_sa,
                 null_resource.create_namespaces 
               ]
 }
-
- */
