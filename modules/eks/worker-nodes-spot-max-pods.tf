@@ -45,8 +45,8 @@ resource "aws_eks_node_group" "demo_eks_nodegroup_spot_high_pod" {
 
   scaling_config {
     desired_size =  each.value.desired_size  #var.scaling_config_spot.desired_size
-    max_size     =  each.value.min_size    #var.scaling_config_spot.max_size
-    min_size     =  each.value.max_size  #var.scaling_config_spot.min_size
+    max_size     =  each.value.max_size    #var.scaling_config_spot.max_size
+    min_size     =  each.value.min_size  #var.scaling_config_spot.min_size
   }
 
   update_config {
