@@ -3,7 +3,7 @@ resource "time_sleep" "wait_120_seconds" {
 
   depends_on = [
     # Resources that must complete before waiting
-    module.cert_manager.cert_manager_release_name.example
+    module.cert_manager.cert_manager_release_name
   ]
 }
 
