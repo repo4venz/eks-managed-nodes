@@ -35,24 +35,17 @@ locals {
       desired_size = try(var.overrides_node_scale_config[instance_type].desired_size, var.scaling_config_spot.desired_size)
       min_size     = try(var.overrides_node_scale_config[instance_type].min_size, var.scaling_config_spot.min_size)
       max_size     = try(var.overrides_node_scale_config[instance_type].max_size, var.scaling_config_spot.max_size)
-      max_pods     = try(var.overrides_node_scale_config[instance_type].max_pods, local.max_pods[instance_type])
+      #max_pods     = try(var.overrides_node_scale_config[instance_type].max_pods, local.max_pods[instance_type])
+
+      max_pods     = coalesce(
+        try(var.overrides_node_scale_config[instance_type].max_pods, null),
+        lookup(local.max_pods, instance_type, null),
+        error("Missing max_pods value for instance type: ${instance_type}")
+      )
     }
    } : {}
   } 
-
-
-  # Then validate and ensure max_pods exists
-  validated_max_pods = {
-    for k, v in local.spot_node_groups_max_pods :
-    k => merge(v, {
-      max_pods = try(
-        v.max_pods,                       # First try the override
-        var.max_pods[k],                  # Then try the variable
-        local.max_pods[k],           # Then try local base map
-        error("No max_pods found for ${k}") # Final fallback
-      )
-    })
-  }
+ 
 }
 
   
