@@ -166,7 +166,7 @@ variable "calico_chart_version" {
 variable "spot_instance_types" {
   description = "EKS worker nodes Spot instance types"
   type        = list(string)
-  default     = ["t3.medium", "t3.large", "t3.small"]
+  default     = [ "t3.large", "t3.xlarge", "t3.2xlarge" ]
 }
 
 variable "ondemand_instance_types" {
@@ -308,45 +308,42 @@ variable "aws_test_secrets" {
    
 }
 
-variable "node_groups_max_pod_config" {
-  description = "Configuration block for node groups and max pods per instance type."
-
-  type = object({
-    spot_instance_types = list(string)
-    node_groups = map(object({
-      instance_type = string
-      desired_size  = optional(number)
-      max_pods      = number
-      min_size      = optional(number)
-      max_size      = optional(number)
-    }))
-  })
+ 
+variable "max_pods" {
+  description = "Map of instance type to max pods"
+  type        = map(number)
 
   default = {
-    spot_instance_types = ["t3.xlarge", "t3.2xlarge"]
-
-    node_groups = {
-      general_large = {
-        instance_type = "t3.large"
-        max_pods      = 110
-        min_size      = 1
-        max_size      = 3
-      }
-      high_mem = {
-        instance_type = "r5.8xlarge"
-        desired_size  = 1
-        max_pods      = 234
-        min_size      = 1
-        max_size      = 3
-      }
-      high_cpu = {
-        instance_type = "c5.4xlarge"
-        desired_size  = 1
-        max_pods      = 234
-        min_size      = 1
-        max_size      = 3
-      }
-    }
+    "t3.large"    = 35
+    "t3.xlarge"   = 58
+    "t3.2xlarge"  = 58
+    "r5.8xlarge"  = 234
+    "c5.4xlarge"  = 234
+    "m5.large"    = 29
+    "m5.xlarge"   = 58
+    "m5.2xlarge"  = 110
+    "m5.4xlarge"  = 234
+    "m5.8xlarge"  = 234
   }
 }
 
+
+variable "overrides_node_scale_config" {
+  description = "Per-instance-type overrides"
+  type = map(object({
+    desired_size = optional(number)
+    min_size     = optional(number)
+    max_size     = optional(number)
+    max_pods     = optional(number)
+  }))
+  default = {
+    "t3.xlarge" = {
+      desired_size = 3
+    }
+    "c5.4xlarge" = {
+      desired_size = 1
+      max_size     = 5
+      max_pods     = 234
+    }
+  }
+}

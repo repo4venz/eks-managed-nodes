@@ -11,9 +11,12 @@ locals {
     tags                           = var.tags
 
  max_pods = {
-    "t3.large"    = 35
-    "t3.xlarge"   = 58
-    "t3.2xlarge"  = 110
+    # Max pods per instance type (using the AWS EKS formula: (ENIs * (IPs per ENI - 1)) + 2)
+    "t3.large"    = 35   # 3 ENIs * (10-1) + 2 = 29 (AWS default), but can be increased
+    "t3.xlarge"   = 58   # 4 ENIs * (15-1) + 2
+    "t3.2xlarge"  = 58   # 4 ENIs * (15-1) + 2
+    "r5.8xlarge"  = 234  # 8 ENIs * (30-1) + 2
+    "c5.4xlarge"  = 234  # 8 ENIs * (30-1) + 2
     "m5.large"    = 29
     "m5.xlarge"   = 58
     "m5.2xlarge"  = 110
@@ -22,6 +25,18 @@ locals {
     "c5.4xlarge"  = 234
     "r5.8xlarge"  = 234
   }
-
+ 
+  
+  node_groups_max_pods = {
+    for instance_type in var.spot_instance_types :
+    instance_type => merge(
+      var.scaling_config_spot,
+      {
+        instance_type = instance_type
+        max_pods      = lookup(var.overrides_node_scale_config[instance_type], "max_pods", local.max_pods[instance_type])
+      },
+      lookup(var.overrides_node_scale_config, instance_type, {})
+    )
+  }
+  
 }
-

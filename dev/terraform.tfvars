@@ -68,6 +68,7 @@ ondemand_instance_types      =  ["t3.medium", "m5.large", "t3.xlarge"]
 required_spot_instances      =  true   # either spot or ondemand or both instance types provision for eks worker nodes
 required_ondemand_instances  =  false   # either spot or ondemand or both instance types provision for eks worker nodes
 
+required_spot_instances_max_pods  =  false 
 
 ebs_volume_size_in_gb        =  20
 ebs_volume_type              =  "gp3"
@@ -88,33 +89,6 @@ public_domain_name = "suvendupublicdomain.fun"
  
 
  
-required_spot_instances_max_pods  =  false 
- node_groups_max_pod_config {
-  # Base configuration for all node groups
-  
-  # Spot instance types to include
-  spot_instance_types = ["t3.xlarge", "t3.2xlarge"]
 
-  # Generate node groups configuration
-  node_groups = merge(
-    # Static node groups (non-spot)
-    {
-      general_large = merge(var.scaling_config_spot, {
-        instance_type = "t3.large"
-        max_pods      = var.max_pods["t3.large"]
-      })
-      high_mem = merge(var.scaling_config_spot, {
-        instance_type = "t3.2xlarge"
-        desired_size  = 1   # This will override the base scaling config spot
-        max_pods      = local.max_pods["t3.2xlarge"]
-      })
-      high_cpu = merge(var.scaling_config_spot, {
-        instance_type = "c5.4xlarge"
-        desired_size  = 1
-        max_pods      = local.max_pods["c5.4xlarge"]
-      })
-    }
-  )
-}
 
  
