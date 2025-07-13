@@ -52,6 +52,16 @@ output "eks_cluster_primary_security_group_id" {
 }
 
 
+output "launch_template_configs" {
+  value = {
+    for k, v in aws_launch_template.eks_worker_nodes_spot_high_pod : 
+    k => {
+      instance_type = v.instance_type,
+      max_pods      = local.max_pods_map[v.instance_type]
+    }
+  }
+}
+
 
 ################################################################################
 # IRSA - OIDC

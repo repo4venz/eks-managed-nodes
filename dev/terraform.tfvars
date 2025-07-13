@@ -73,7 +73,7 @@ ebs_volume_size_in_gb        =  20
 ebs_volume_type              =  "gp3"
 
 scaling_config_spot = {
-  desired_size = 3
+  desired_size = 2
   max_size     = 20
   min_size     = 2
 }
@@ -86,44 +86,71 @@ scaling_config_ondemand = {
 
 public_domain_name = "suvendupublicdomain.fun"
 
-  /*
-
-  # Node group configurations (workes with VPC CNI only)
-  node_groups = {
-    general_large = {
-      instance_type = "t3.large"
-      desired_size  = 2
-      max_size     = 20
-      min_size     = 2
-      max_pods      = local.max_pods["t3.large"]
-    }
-    general_xlarge= {
-      instance_type = "t3.xlarge"
-      desired_size  = 2
-      max_size     = 20
-      min_size     = 2
-      max_pods      = local.max_pods["t3.xlarge"]
-    }
-    general_2xlarge= {
-      instance_type = "t3.2xlarge"
-      desired_size  = 2
-      max_size     = 20
-      min_size     = 2
-      max_pods      = local.max_pods["t3.2xlarge"]
-    }
-    high_mem = {
-      instance_type = "r5.8xlarge"
-      desired_size  = 1
-      max_size     = 20
-      min_size     = 2
-      max_pods      = local.max_pods["r5.8xlarge"]
-    }
-    high_cpu = {
-      instance_type = "c5.4xlarge"
-      desired_size  = 1
-      max_size     = 20
-      min_size     = 2
-      max_pods      = local.max_pods["c5.4xlarge"]
-    }
+  locals {
+  # Pre-calculated max pods based on AWS ENI limits
+  max_pods_map = {
+    "t3.large"    = 35
+    "t3.xlarge"   = 58
+    "t3.2xlarge"  = 58
+    "m5.large"    = 29
+    "m5.xlarge"   = 58
+    "m5.2xlarge"  = 58
+    "m5.4xlarge"  = 234  # With prefix delegation
+    "c5.4xlarge"  = 234
+    "r5.8xlarge"  = 234
   }
-  */
+}
+
+/*
+
+ locals {
+  # Max pods per instance type (using the AWS EKS formula: (ENIs * (IPs per ENI - 1)) + 2)
+  max_pods = {
+    "t3.large"    = 35   # 3 ENIs * (10-1) + 2 = 29 (AWS default), but can be increased
+    "t3.xlarge"   = 58   # 4 ENIs * (15-1) + 2
+    "t3.2xlarge"  = 58   # 4 ENIs * (15-1) + 2
+    "m5.large"    = 29
+    "m5.xlarge"   = 58
+    "m5.2xlarge"  = 58
+    "m5.4xlarge"  = 234  # With prefix delegation
+    "r5.8xlarge"  = 234  # 8 ENIs * (30-1) + 2
+    "c5.4xlarge"  = 234  # 8 ENIs * (30-1) + 2
+  }
+
+  # Base configuration for all node groups
+  
+  # Spot instance types to include
+  spot_instance_types = ["t3.xlarge", "t3.2xlarge"]
+
+  # Generate node groups configuration
+  node_groups = merge(
+    # Static node groups (non-spot)
+    {
+      general_large = merge(local.scaling_config_spot, {
+        instance_type = "t3.large"
+        max_pods      = local.max_pods["t3.large"]
+      })
+      high_mem = merge(local.scaling_config_spot, {
+        instance_type = "r5.8xlarge"
+        desired_size  = 1   # This will override the base scaling config spot
+        max_pods      = local.max_pods["r5.8xlarge"]
+      })
+      high_cpu = merge(local.scaling_config_spot, {
+        instance_type = "c5.4xlarge"
+        desired_size  = 1
+        max_pods      = local.max_pods["c5.4xlarge"]
+      })
+    } #,
+    # Dynamic spot node groups
+    /*{
+      for idx, instance_type in local.spot_instance_types : 
+      "spot_${replace(instance_type, ".", "_")}" => merge(local.scaling_config_spot, {
+        instance_type = instance_type
+        capacity_type = "SPOT"
+        max_pods      = local.max_pods[instance_type]
+      })
+    } 
+  )
+}
+
+*/

@@ -5,9 +5,10 @@
 
 resource "aws_eks_node_group" "demo_eks_nodegroup_spot_high_pod" {
  
-  for_each = var.required_spot_instances_max_pods ? toset(var.spot_instance_types) : toset([])
+  for_each = var.required_spot_instances_max_pods ? toset(var.spot_instance_types) : null
   #If var.create_instances is true, use var.instance_map (create instances)
-  #If var.create_instances is false, use an empty map {} (don't create any instances)
+  #If var.create_instances is false, use an empty map {} (don't create any instances but don't destroy if created)
+  #If var.create_instances is false, use null (don't create any instances and destroy is created)
 
 
   cluster_name    = aws_eks_cluster.demo_eks_cluster.name
@@ -85,7 +86,7 @@ locals {
 
  # Launch Template for High-Pod-Density Nodes
 resource "aws_launch_template" "eks_worker_nodes_spot_high_pod" {
-  for_each = toset(var.spot_instance_types)
+  for_each = var.required_spot_instances_max_pods ? toset(var.spot_instance_types) : null
 
   name_prefix = "${aws_eks_cluster.demo_eks_cluster.name}-high-pod-${replace(each.key, ".", "")}-" 
 
@@ -96,10 +97,8 @@ resource "aws_launch_template" "eks_worker_nodes_spot_high_pod" {
     max_pods         = local.max_pods_map[each.value]
     bottlerocket     = var.use_bottlerocket
     custom_kubelet_args = var.custom_kubelet_args
-  }))
+  })) 
  
-
-  
 
   block_device_mappings {
     #device_name = var.use_bottlerocket ? "/dev/xvda" : "/dev/xvdb"
