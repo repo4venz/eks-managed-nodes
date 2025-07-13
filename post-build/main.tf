@@ -30,7 +30,7 @@ module "prometheus" {
 }
 
 
-
+/*
 module "lets-encrypt" {
   count = var.include_lets_encrypt_ca_module ? 1 : 0
   source             = "../modules/lets-encrypt"
@@ -52,7 +52,7 @@ module "external-secrets" {
 
   depends_on = [module.cert-manager]
 }
-*/
+
 
 module "kube-cost" {
   count = var.include_kubecost_module ? 1 : 0
@@ -64,5 +64,5 @@ module "kube-cost" {
 
   depends_on = [module.lets-encrypt, module.external-dns, module.cert-manager]
 }
-
+*/
   

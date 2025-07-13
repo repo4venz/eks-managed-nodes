@@ -73,8 +73,8 @@ resource "kubernetes_manifest" "letsencrypt_clusterissuer" {
   }
   depends_on = [
     #null_resource.wait_for_cert_manager_crds
-    time_sleep.wait_120_seconds,
-    module.cert_manager.cert_manager_release_name
+    time_sleep.wait_120_seconds #,
+   # module.cert_manager.cert_manager_release_name
   ]
 }
 
