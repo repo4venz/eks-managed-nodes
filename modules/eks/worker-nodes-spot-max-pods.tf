@@ -5,15 +5,29 @@
 
 resource "aws_eks_node_group" "demo_eks_nodegroup_spot_high_pod" {
    #for_each = var.required_spot_instances_max_pods ? toset(var.spot_instance_types) : null
-
+  /*
   for_each = var.required_spot_instances_max_pods ? {
     for instance_type in var.spot_node_groups_max_pods : instance_type => instance_type
+  } : {} */
+
+   /* for_each = var.required_spot_instances_max_pods ? {
+    for instance_type, config in var.spot_node_groups_max_pods : 
+    "spot_${replace(instance_type, ".", "_")}" => {
+      instance_type = instance_type
+      max_pods      = config.max_pods
+      desired_size  = config.desired_size
+      min_size      = config.min_size
+      max_size      = config.max_size
+    }
   } : {}
+*/
 
   #If var.create_instances is true, use var.instance_map (create instances)
   #If var.create_instances is false, use an empty map {} (don't create any instances but don't destroy if created)
   #If var.create_instances is false, use another for (don't create any instances and destroy is created)
 
+
+  for_each = var.spot_node_groups_max_pods
 
   cluster_name    = aws_eks_cluster.demo_eks_cluster.name
   node_group_name = "${var.cluster_name}-${var.environment}-${replace(each.key, ".", "")}-nodes-group-spot-high-pods" 
@@ -90,11 +104,30 @@ locals {
 
  # Launch Template for High-Pod-Density Nodes
 resource "aws_launch_template" "eks_worker_nodes_spot_high_pod" {
-  #for_each = var.required_spot_instances_max_pods ? toset(var.spot_instance_types) : null
-
+   #for_each = var.required_spot_instances_max_pods ? toset(var.spot_instance_types) : null
+  /*
   for_each = var.required_spot_instances_max_pods ? {
     for instance_type in var.spot_node_groups_max_pods : instance_type => instance_type
+  } : {} */
+
+   /* for_each = var.required_spot_instances_max_pods ? {
+    for instance_type, config in var.spot_node_groups_max_pods : 
+    "spot_${replace(instance_type, ".", "_")}" => {
+      instance_type = instance_type
+      max_pods      = config.max_pods
+      desired_size  = config.desired_size
+      min_size      = config.min_size
+      max_size      = config.max_size
+    }
   } : {}
+*/
+
+  #If var.create_instances is true, use var.instance_map (create instances)
+  #If var.create_instances is false, use an empty map {} (don't create any instances but don't destroy if created)
+  #If var.create_instances is false, use another for (don't create any instances and destroy is created)
+
+
+  for_each = var.spot_node_groups_max_pods
 
   name_prefix = "${aws_eks_cluster.demo_eks_cluster.name}-high-pod-${replace(each.value.instance_type , ".", "")}-" 
 

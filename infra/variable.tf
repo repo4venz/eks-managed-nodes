@@ -337,13 +337,13 @@ variable "overrides_node_scale_config" {
     max_pods     = optional(number)
   }))
   default = {
-    "t3.xlarge" = {
+   /* "t3.xlarge" = {
       desired_size = 3
     }
     "c5.4xlarge" = {
       desired_size = 1
       max_size     = 5
       max_pods     = 234
-    }
+    }*/
   }
 }
