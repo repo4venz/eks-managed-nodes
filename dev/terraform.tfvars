@@ -76,7 +76,7 @@ ebs_volume_type              =  "gp3"
 scaling_config_spot = {
   desired_size = 2
   max_size     = 20
-  min_size     = 2
+  min_size     = 1
 }
 
 scaling_config_ondemand = {

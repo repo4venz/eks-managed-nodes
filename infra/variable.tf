@@ -329,7 +329,7 @@ variable "max_pods" {
 
 
 variable "overrides_node_scale_config" {
-  description = "Per-instance-type overrides"
+  description = "Per-instance-type overrides. Overrided local variable with different scaling configs."
   type = map(object({
     desired_size = optional(number)
     min_size     = optional(number)

@@ -22,21 +22,20 @@ locals {
     "m5.2xlarge"  = 110
     "m5.4xlarge"  = 234
     "m5.8xlarge"  = 234
-    "c5.4xlarge"  = 234
-    "r5.8xlarge"  = 234
   }
  
-  
+ 
+
+    # Calculate final max_pods with overrides
   node_groups_max_pods = {
     for instance_type in var.spot_instance_types :
-    instance_type => merge(
-      var.scaling_config_spot,
-      {
-        instance_type = instance_type
-        max_pods      = lookup(var.overrides_node_scale_config[instance_type], "max_pods", local.max_pods[instance_type])
-      },
-      lookup(var.overrides_node_scale_config, instance_type, {})
-    )
+    instance_type => {
+      instance_type = instance_type
+      desired_size = try(var.overrides_node_scale_config[instance_type].desired_size, var.scaling_config_spot.desired_size)
+      min_size     = try(var.overrides_node_scale_config[instance_type].min_size, var.scaling_config_spot.min_size)
+      max_size     = try(var.overrides_node_scale_config[instance_type].max_size, var.scaling_config_spot.max_size)
+      max_pods     = try(var.overrides_node_scale_config[instance_type].max_pods, local.max_pods[instance_type])
+    }
   }
-  
+ 
 }
