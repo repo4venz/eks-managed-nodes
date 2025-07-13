@@ -1,3 +1,15 @@
+prometheus-node-exporter:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:  # Hard requirement
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: kubernetes.io/os  # Only Linux nodes
+            operator: In
+            values: [linux]
+  tolerations:
+    - operator: Exists  # Tolerate all taints
+
 prometheus:
   prometheusSpec:
     serviceMonitorSelectorNilUsesHelmValues: false

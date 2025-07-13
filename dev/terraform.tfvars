@@ -71,15 +71,15 @@ ebs_volume_size_in_gb        =  20
 ebs_volume_type              =  "gp3"
 
 scaling_config_spot = {
-  desired_size = 5
-  max_size     = 15
+  desired_size = 10
+  max_size     = 20
   min_size     = 2
 }
 
 scaling_config_ondemand = {
   desired_size = 5
   max_size     = 10
-  min_size     = 2
+  min_size     = 1
 }
 
 public_domain_name = "suvendupublicdomain.fun"
