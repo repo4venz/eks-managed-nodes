@@ -1,10 +1,10 @@
 resource "time_sleep" "wait_120_seconds" {
   create_duration = "120s"  # 2 minutes
 
-  depends_on = [
+  #depends_on = [
     # Resources that must complete before waiting
-    module.cert_manager.cert_manager_release_name
-  ]
+   # module.cert_manager.cert_manager_release_name
+  #]
 }
 
 /*
