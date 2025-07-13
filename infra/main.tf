@@ -39,7 +39,8 @@ module "eks" {
     include_efs_csi_driver_addon                  =  var.include_efs_csi_driver_addon
     spot_instance_types                           =  var.spot_instance_types
     ondemand_instance_types                       =  var.ondemand_instance_types
-    required_spot_instances                       =  var.required_spot_instances 
+    required_spot_instances                       =  var.required_spot_instances
+    required_spot_instances_max_pods              =  var.required_spot_instances_max_pods
     required_ondemand_instances                   =  var.required_ondemand_instances
     scaling_config_spot                           =  var.scaling_config_spot
     scaling_config_ondemand                       =  var.scaling_config_ondemand
@@ -109,6 +110,14 @@ module "eks-cluster-autoscaler" {
   depends_on = [module.eks]
 }
 
+module "cert-manager" {
+  count = var.include_cert_manager_module ? 1 : 0
+  source                                        = "../modules/cert-manager"
+  certmanager_chart_version                     =  var.certmanager_chart_version
+  k8s_cluster_name                              =  "${var.cluster_name}-${var.environment}" #module.eks.eks_cluster_name
+  
+  depends_on = [module.eks, module.nginx_alb_controller]
+}
 
 /**
 module "external-dns" {
@@ -131,15 +140,8 @@ module "prometheus" {
 
   depends_on = [module.external-dns, module.cert-manager]
 }
-
- 
-module "cert-manager" {
-  count = var.include_cert_manager_module ? 1 : 0
-  source                                        = "../modules/cert-manager"
-  certmanager_chart_version                     =  var.certmanager_chart_version
-  k8s_cluster_name                              =  "${var.cluster_name}-${var.environment}" #module.eks.eks_cluster_name
-  
-  depends_on = [module.eks, module.nginx_alb_controller]
-}
 */
+ 
+
+
  

@@ -85,6 +85,13 @@ variable "required_spot_instances" {
   default     = true
 }
 
+variable "required_spot_instances_max_pods" {
+  description = "EKS worker nodes Spot instance types"
+  type        = bool
+  default     = false
+}
+
+
 variable "required_ondemand_instances" {
   description = "Execute module/feature or not. true = execute and false = don't execute"
   type        = bool
@@ -131,3 +138,16 @@ variable "ebs_volume_type" {
   description = "EKS Worker Node EBS Volume Type for SPOT and On_DEMAND instances"
   default     = "gp3"
 }
+
+variable "use_bottlerocket" {
+  description = "EKS worker nodes EC2 AMI Type"
+  type        = bool
+  default     = false
+}
+
+variable "custom_kubelet_args" {
+  type        = string
+  description = "EKS Worker Cuustom Kubelet Arguments"
+  default     = ""
+}
+ 

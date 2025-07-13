@@ -62,16 +62,18 @@ include_external_secrets_module = true # Run as post build
 
 
 
-#EKS Worker Nodes config
-spot_instance_types          =  ["t3.medium", "t3.large", "t3.xlarge", "t3.2xlarge"]
+#EKS Worker Nodes config (Geric Config for multiple type of instances)
+spot_instance_types          =  [ "t3.xlarge", "t3.2xlarge", "m5.2xlarge" ]
 ondemand_instance_types      =  ["t3.medium", "m5.large", "t3.xlarge"]
 required_spot_instances      =  true   # either spot or ondemand or both instance types provision for eks worker nodes
 required_ondemand_instances  =  false   # either spot or ondemand or both instance types provision for eks worker nodes
+required_spot_instances_max_pods      =  true 
+
 ebs_volume_size_in_gb        =  20
 ebs_volume_type              =  "gp3"
 
 scaling_config_spot = {
-  desired_size = 10
+  desired_size = 3
   max_size     = 20
   min_size     = 2
 }
@@ -83,3 +85,45 @@ scaling_config_ondemand = {
 }
 
 public_domain_name = "suvendupublicdomain.fun"
+
+  /*
+
+  # Node group configurations (workes with VPC CNI only)
+  node_groups = {
+    general_large = {
+      instance_type = "t3.large"
+      desired_size  = 2
+      max_size     = 20
+      min_size     = 2
+      max_pods      = local.max_pods["t3.large"]
+    }
+    general_xlarge= {
+      instance_type = "t3.xlarge"
+      desired_size  = 2
+      max_size     = 20
+      min_size     = 2
+      max_pods      = local.max_pods["t3.xlarge"]
+    }
+    general_2xlarge= {
+      instance_type = "t3.2xlarge"
+      desired_size  = 2
+      max_size     = 20
+      min_size     = 2
+      max_pods      = local.max_pods["t3.2xlarge"]
+    }
+    high_mem = {
+      instance_type = "r5.8xlarge"
+      desired_size  = 1
+      max_size     = 20
+      min_size     = 2
+      max_pods      = local.max_pods["r5.8xlarge"]
+    }
+    high_cpu = {
+      instance_type = "c5.4xlarge"
+      desired_size  = 1
+      max_size     = 20
+      min_size     = 2
+      max_pods      = local.max_pods["c5.4xlarge"]
+    }
+  }
+  */

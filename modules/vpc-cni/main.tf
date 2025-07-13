@@ -29,6 +29,7 @@ resource "aws_eks_addon" "vpc_cni" {
       ENABLE_PREFIX_DELEGATION = "true"
       WARM_IP_TARGET           = "3"
       WARM_ENI_TARGET          = "1"
+      WARM_PREFIX_TARGET       = "2"
     }
   })
 

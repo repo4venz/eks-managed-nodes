@@ -1,11 +1,3 @@
-module "cert-manager" {
-  count = var.include_cert_manager_module ? 1 : 0
-  source                                        = "../modules/cert-manager"
-  certmanager_chart_version                     =  var.certmanager_chart_version
-  k8s_cluster_name                              =  "${var.cluster_name}-${var.environment}" #module.eks.eks_cluster_name
-  
-  #depends_on = [module.eks, module.nginx_alb_controller]
-}
 
  
 module "external-dns" {

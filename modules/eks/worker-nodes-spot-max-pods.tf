@@ -1,21 +1,24 @@
 
  
 # AWS EKS node group SPOT
+# The node groupd will work with AWS VPC CNI only
 
 resource "aws_eks_node_group" "demo_eks_nodegroup_spot" {
-  count = var.required_spot_instances ? 1 : 0
+  count = var.required_spot_instances_max_pods ? 1 : 0
+
+  for_each = var.spot_instance_types
 
   cluster_name    = aws_eks_cluster.demo_eks_cluster.name
-  node_group_name = substr("${var.cluster_name}-${var.environment}-nodes-group-spot",0,64)  
+  node_group_name =  "${var.cluster_name}-${var.environment}-${each.key}-nodes-group-spot-high-pods"  
   node_role_arn   = aws_iam_role.eks_worker_nodes_role.arn
 
   subnet_ids =  var.private_subnets
 
   capacity_type = "SPOT"
-  instance_types  = var.spot_instance_types
+  #instance_types  = var.spot_instance_types[each.key]  # not needed as mentioned in launch template
 
   launch_template {
-    id      = aws_launch_template.eks_worker_nodes_spot.id
+    id      = aws_launch_template.eks_worker_nodes_spot_high_pod[each.key].id
     version = "$Latest"
   }
 
@@ -31,9 +34,10 @@ resource "aws_eks_node_group" "demo_eks_nodegroup_spot" {
   }
 
   labels = {
-    node = substr("${var.cluster_name}-${var.environment}-spot-worker-node",0,64) 
+    node = "${var.cluster_name}-${var.environment}-spot-worker-node-high-pods" 
     lifecycle = "spot"
-    type      = "spot-node"
+    type      = "spot-node-high-pods"
+    nodegroup = each.key
   }
 
   tags = {
@@ -59,16 +63,44 @@ resource "aws_eks_node_group" "demo_eks_nodegroup_spot" {
 }
 
 
+locals {
+  # Pre-calculated max pods based on AWS ENI limits
+  max_pods_map = {
+    "t3.large"    = 35
+    "t3.xlarge"   = 58
+    "t3.2xlarge"  = 58
+    "m5.large"    = 29
+    "m5.xlarge"   = 58
+    "m5.2xlarge"  = 58
+    "m5.4xlarge"  = 234  # With prefix delegation
+    "c5.4xlarge"  = 234
+    "r5.8xlarge"  = 234
+  }
+}
 
-resource "aws_launch_template" "eks_worker_nodes_spot" {
-  name_prefix   = "eks-node-template-spot"
- # image_id      = data.aws_ami.eks_worker_ami.id
 
-  #instance_type = "t2.medium"  # default/fallback
  
-  block_device_mappings {
-    device_name = "/dev/xvda"
 
+ # Launch Template for High-Pod-Density Nodes
+resource "aws_launch_template" "eks_worker_nodes_spot_high_pod" {
+  for_each = var.spot_instance_types
+
+  name_prefix = substr("${aws_eks_cluster.demo_eks_cluster.name}-high-pod-${each.key}-",0,64)
+
+  instance_type = each.value.instance_type
+
+  user_data = base64encode(templatefile("${path.module}/templates/userdata.tftpl", {
+    cluster_name     = var.cluster_name
+    max_pods         = local.max_pods_map[each.key]
+    bottlerocket     = var.use_bottlerocket
+    custom_kubelet_args = var.custom_kubelet_args
+  }))
+  
+
+
+  block_device_mappings {
+    #device_name = var.use_bottlerocket ? "/dev/xvda" : "/dev/xvdb"
+    device_name = "/dev/xvda"
     ebs {
       volume_size = var.ebs_volume_size_in_gb
       volume_type = var.ebs_volume_type 
@@ -81,14 +113,14 @@ resource "aws_launch_template" "eks_worker_nodes_spot" {
     create_before_destroy = true
   }
  
+   # Required for EKS node groups
   tag_specifications {
     resource_type = "instance"
     tags = {
-      NodeType = "eks-worker-node-spot"
-      Name = "${aws_eks_cluster.demo_eks_cluster.name}-worker-node"
+      NodeType = "eks-worker-node-spot-high-pods"
+      Name = substr("${aws_eks_cluster.demo_eks_cluster.name}-worker-node-${each.key}",0,64) 
     }
   }
-  
 }
 
  

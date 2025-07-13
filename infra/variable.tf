@@ -181,6 +181,13 @@ variable "required_spot_instances" {
   default     = true
 }
 
+variable "required_spot_instances_max_pods" {
+  description = "EKS worker nodes Spot instance types"
+  type        = bool
+  default     = false
+}
+
+
 variable "required_ondemand_instances" {
   description = "Execute module/feature or not. true = execute and false = don't execute"
   type        = bool
