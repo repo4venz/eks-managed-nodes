@@ -9,5 +9,5 @@ data "aws_region" "current" {}
 }
 
 data "aws_eks_cluster" "this" {
-  name =  "${var.cluster_name}-${var.environment}" # Replace with your cluster name
+  name =  module.eks.eks_cluster_name  #"${var.cluster_name}-${var.environment}" # Replace with your cluster name
 }
