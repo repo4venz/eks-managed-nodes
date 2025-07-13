@@ -1,12 +1,6 @@
 #!/bin/bash
 set -ex
-%{ if bottlerocket }
-cat <<EOF >> /etc/eks/bootstrap.sh
---use-max-pods false
---kubelet-extra-args '--max-pods=${max_pods} ${custom_kubelet_args}'
-EOF
-%{ else }
 /etc/eks/bootstrap.sh ${cluster_name} \
   --use-max-pods false \
   --kubelet-extra-args '--max-pods=${max_pods} ${custom_kubelet_args}'
-%{ endif }
+ 
