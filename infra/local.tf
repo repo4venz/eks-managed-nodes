@@ -31,7 +31,7 @@ locals {
    for_each = var.required_spot_instances_max_pods ? {
     for instance_type in var.spot_instance_types :
     instance_type => {
-     # instance_type = instance_type
+      instance_type = instance_type
       desired_size = try(var.overrides_node_scale_config[instance_type].desired_size, var.scaling_config_spot.desired_size)
       min_size     = try(var.overrides_node_scale_config[instance_type].min_size, var.scaling_config_spot.min_size)
       max_size     = try(var.overrides_node_scale_config[instance_type].max_size, var.scaling_config_spot.max_size)
@@ -39,6 +39,15 @@ locals {
     }
    } : {}
   } 
+
+
+  validated_max_pods = {
+    for k, v in local.spot_node_groups_max_pods :
+    k => merge(v, {
+      max_pods = try(v.max_pods, local.max_pods[k], 
+        error("Missing max_pods for instance type ${k}"))
+    })
+  }
 }
 
   
