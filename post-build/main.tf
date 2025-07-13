@@ -1,3 +1,43 @@
+module "cert-manager" {
+  count = var.include_cert_manager_module ? 1 : 0
+  source                                        = "../modules/cert-manager"
+  certmanager_chart_version                     =  var.certmanager_chart_version
+  k8s_cluster_name                              =  "${var.cluster_name}-${var.environment}" #module.eks.eks_cluster_name
+  
+  #depends_on = [module.eks, module.nginx_alb_controller]
+}
+
+
+module "external-dns" {
+  count = var.include_external_dns_module ? 1 : 0
+  source                                        = "../modules/external-dns"
+  k8s_cluster_name                              =  "${var.cluster_name}-${var.environment}" #module.eks.eks_cluster_name
+  k8s_namespace                                 = "kube-system"
+
+  depends_on = [module.cert-manager]
+}
+
+module "fluentbit" {
+  count = var.include_fluentbit_module ? 1 : 0
+  source                                        = "../modules/fluentbit"
+  k8s_cluster_name                              =  "${var.cluster_name}-${var.environment}" #module.eks.eks_cluster_name
+  k8s_namespace                                 =  var.k8s_observability_namespace
+  fluentbit_chart_version                       =  var.fluentbit_chart_version
+
+  #depends_on = [module.eks]
+}
+
+module "prometheus" {
+  count = var.include_prometheus_module ? 1 : 0
+  source                                        = "../modules/prometheus"
+  k8s_cluster_name                              =  "${var.cluster_name}-${var.environment}" #module.eks.eks_cluster_name
+  k8s_namespace                                 =  var.k8s_observability_namespace
+  prometheus_chart_version                      =  var.prometheus_chart_version
+
+  depends_on = [module.external-dns, module.cert-manager]
+}
+
+
 
 module "lets-encrypt" {
   count = var.include_lets_encrypt_ca_module ? 1 : 0
@@ -5,7 +45,20 @@ module "lets-encrypt" {
   environment        =  var.environment
   acme_environment   = "prod"    # Let's Encrypt ACME env = prod is required for valid ssl certs in browser                         
   
- # depends_on = [module.cert-manager]
+  depends_on = [module.external-dns, module.cert-manager]
+}
+
+
+
+
+module "external-secrets" {
+  count = var.include_external_secrets_module ? 1 : 0
+  source                        = "../modules/external-secrets"
+  k8s_cluster_name              =  "${var.cluster_name}-${var.environment}" #module.eks.eks_cluster_name
+  external_secret_chart_version =  var.external_secret_chart_version
+  aws_test_secrets              =  var.aws_test_secrets  ## This is only testing purpose
+
+  depends_on = [module.cert-manager]
 }
 
 
@@ -17,18 +70,7 @@ module "kube-cost" {
   environment               =  var.environment
   ingress_host              =  "kubecost.${var.public_domain_name}"
 
-  depends_on = [module.lets-encrypt]
-}
-
-
-module "external-secrets" {
-  count = var.include_external_secrets_module ? 1 : 0
-  source                        = "../modules/external-secrets"
-  k8s_cluster_name              =  "${var.cluster_name}-${var.environment}" #module.eks.eks_cluster_name
-  external_secret_chart_version =  var.external_secret_chart_version
-  aws_test_secrets              =  var.aws_test_secrets  ## This is only testing purpose
-
-  #depends_on = [module.eks, module.nginx_alb_controller]
+  depends_on = [module.lets-encrypt, module.external-dns, module.cert-manager]
 }
 
   
