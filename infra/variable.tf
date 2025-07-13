@@ -307,3 +307,46 @@ variable "aws_test_secrets" {
   description = "List of Secrets of AWS Secrets Manager and Kubernetes Application Namespace. It will map the which secrets will be accessed from which namespace"
    
 }
+
+variable "node_groups_max_pod_config" {
+  description = "Configuration block for node groups and max pods per instance type."
+
+  type = object({
+    spot_instance_types = list(string)
+    node_groups = map(object({
+      instance_type = string
+      desired_size  = optional(number)
+      max_pods      = number
+      min_size      = optional(number)
+      max_size      = optional(number)
+    }))
+  })
+
+  default = {
+    spot_instance_types = ["t3.xlarge", "t3.2xlarge"]
+
+    node_groups = {
+      general_large = {
+        instance_type = "t3.large"
+        max_pods      = 110
+        min_size      = 1
+        max_size      = 3
+      }
+      high_mem = {
+        instance_type = "r5.8xlarge"
+        desired_size  = 1
+        max_pods      = 234
+        min_size      = 1
+        max_size      = 3
+      }
+      high_cpu = {
+        instance_type = "c5.4xlarge"
+        desired_size  = 1
+        max_pods      = 234
+        min_size      = 1
+        max_size      = 3
+      }
+    }
+  }
+}
+

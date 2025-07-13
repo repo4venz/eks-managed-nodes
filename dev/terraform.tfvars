@@ -67,7 +67,7 @@ spot_instance_types          =  [ "t3.xlarge", "t3.2xlarge", "m5.2xlarge" ]
 ondemand_instance_types      =  ["t3.medium", "m5.large", "t3.xlarge"]
 required_spot_instances      =  true   # either spot or ondemand or both instance types provision for eks worker nodes
 required_ondemand_instances  =  false   # either spot or ondemand or both instance types provision for eks worker nodes
-required_spot_instances_max_pods      =  false 
+
 
 ebs_volume_size_in_gb        =  20
 ebs_volume_type              =  "gp3"
@@ -87,22 +87,9 @@ scaling_config_ondemand = {
 public_domain_name = "suvendupublicdomain.fun"
  
 
-/*
-
- locals {
-  # Max pods per instance type (using the AWS EKS formula: (ENIs * (IPs per ENI - 1)) + 2)
-  max_pods = {
-    "t3.large"    = 35   # 3 ENIs * (10-1) + 2 = 29 (AWS default), but can be increased
-    "t3.xlarge"   = 58   # 4 ENIs * (15-1) + 2
-    "t3.2xlarge"  = 58   # 4 ENIs * (15-1) + 2
-    "m5.large"    = 29
-    "m5.xlarge"   = 58
-    "m5.2xlarge"  = 58
-    "m5.4xlarge"  = 234  # With prefix delegation
-    "r5.8xlarge"  = 234  # 8 ENIs * (30-1) + 2
-    "c5.4xlarge"  = 234  # 8 ENIs * (30-1) + 2
-  }
-
+ 
+required_spot_instances_max_pods  =  false 
+ node_groups_max_pod_config {
   # Base configuration for all node groups
   
   # Spot instance types to include
@@ -112,31 +99,22 @@ public_domain_name = "suvendupublicdomain.fun"
   node_groups = merge(
     # Static node groups (non-spot)
     {
-      general_large = merge(local.scaling_config_spot, {
+      general_large = merge(var.scaling_config_spot, {
         instance_type = "t3.large"
-        max_pods      = local.max_pods["t3.large"]
+        max_pods      = var.max_pods["t3.large"]
       })
-      high_mem = merge(local.scaling_config_spot, {
-        instance_type = "r5.8xlarge"
+      high_mem = merge(var.scaling_config_spot, {
+        instance_type = "t3.2xlarge"
         desired_size  = 1   # This will override the base scaling config spot
-        max_pods      = local.max_pods["r5.8xlarge"]
+        max_pods      = local.max_pods["t3.2xlarge"]
       })
-      high_cpu = merge(local.scaling_config_spot, {
+      high_cpu = merge(var.scaling_config_spot, {
         instance_type = "c5.4xlarge"
         desired_size  = 1
         max_pods      = local.max_pods["c5.4xlarge"]
       })
-    } #,
-    # Dynamic spot node groups
-    /*{
-      for idx, instance_type in local.spot_instance_types : 
-      "spot_${replace(instance_type, ".", "_")}" => merge(local.scaling_config_spot, {
-        instance_type = instance_type
-        capacity_type = "SPOT"
-        max_pods      = local.max_pods[instance_type]
-      })
-    } 
+    }
   )
 }
 
-*/
+ 
