@@ -7,17 +7,7 @@ module "cert-manager" {
   #depends_on = [module.eks, module.nginx_alb_controller]
 }
 
- module "fluentbit" {
-  count = var.include_fluentbit_module ? 1 : 0
-  source                                        = "../modules/fluentbit"
-  k8s_cluster_name                              =  "${var.cluster_name}-${var.environment}" #module.eks.eks_cluster_name
-  k8s_namespace                                 =  var.k8s_observability_namespace
-  fluentbit_chart_version                       =  var.fluentbit_chart_version
-
-  #depends_on = [module.eks]
-}
-
-
+ 
 module "external-dns" {
   count = var.include_external_dns_module ? 1 : 0
   source                                        = "../modules/external-dns"

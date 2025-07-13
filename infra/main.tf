@@ -98,6 +98,7 @@ module "eks-cluster-autoscaler" {
   depends_on = [module.eks]
 }
 
+
  module "fluentbit" {
   count = var.include_fluentbit_module ? 1 : 0
   source                                        = "../modules/fluentbit"
@@ -108,6 +109,8 @@ module "eks-cluster-autoscaler" {
   depends_on = [module.eks]
 }
 
+
+/**
 module "external-dns" {
   count = var.include_external_dns_module ? 1 : 0
   source                                        = "../modules/external-dns"
@@ -138,4 +141,5 @@ module "cert-manager" {
   
   depends_on = [module.eks, module.nginx_alb_controller]
 }
+*/
  
