@@ -132,14 +132,25 @@ resource "aws_launch_template" "eks_worker_nodes_spot_high_pod" {
   name_prefix = "${aws_eks_cluster.demo_eks_cluster.name}-high-pod-${replace(each.key , ".", "")}-" 
 
   instance_type = each.key
- 
+  
+   /*
   user_data = base64encode(templatefile("${path.module}/worker-node-userdata.tftpl", {
     cluster_name     = var.cluster_name
     max_pods         = each.value.max_pods    #local.max_pods_map[each.value]
    # bottlerocket     = var.use_bottlerocket
     custom_kubelet_args = "--node-labels=group=${each.key}-spot"  #var.custom_kubelet_args
   })) 
- 
+  */
+
+   # Correct user data encoding
+  user_data = base64encode(<<-EOT
+    #!/bin/bash
+    set -ex
+    /etc/eks/bootstrap.sh ${var.cluster_name} \
+      --use-max-pods false \
+      --kubelet-extra-args "--max-pods=${each.value.max_pods}"
+  EOT
+  )
 
   block_device_mappings {
     #device_name = var.use_bottlerocket ? "/dev/xvda" : "/dev/xvdb"
