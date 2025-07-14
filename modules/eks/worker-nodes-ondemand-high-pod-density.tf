@@ -15,6 +15,9 @@ resource "aws_eks_node_group" "demo_eks_nodegroup_ondemand_high_pod" {
 
   capacity_type = "ON_DEMAND"
   #instance_types  = var.ondemand_instance_types[each.key]  # not needed as mentioned in launch template
+ 
+  # Force EKS-optimized AMI usage
+  ami_type = var.eks_optimized_ami_type # "AL2_x86_64"  # Amazon Linux 2
 
   launch_template {
     id      = aws_launch_template.eks_worker_nodes_ondemand_high_pod[each.key].id
@@ -30,6 +33,9 @@ resource "aws_eks_node_group" "demo_eks_nodegroup_ondemand_high_pod" {
   update_config {
     #max_unavailable = 1
     max_unavailable_percentage = 50
+  }
+  lifecycle {
+    create_before_destroy = true
   }
 
   labels = {
@@ -72,8 +78,8 @@ resource "aws_launch_template" "eks_worker_nodes_ondemand_high_pod" {
   name_prefix = "${aws_eks_cluster.demo_eks_cluster.name}-high-pod-${replace(each.key , ".", "")}-" 
 
   instance_type = each.key
-
-    user_data = data.template_cloudinit_config.eks_user_data_ondemand_high_pods[each.key].rendered
+  image_id      = data.aws_ssm_parameter.eks_optimized_ami.value
+  user_data = data.template_cloudinit_config.eks_user_data_ondemand_high_pods[each.key].rendered
     
   block_device_mappings {
     #device_name = var.use_bottlerocket ? "/dev/xvda" : "/dev/xvdb"
@@ -100,6 +106,7 @@ resource "aws_launch_template" "eks_worker_nodes_ondemand_high_pod" {
       instance_type = "${each.key}"  
     }
   }
+  depends_on = [template_cloudinit_config.eks_user_data_ondemand_high_pods]
 }
 
  
@@ -116,6 +123,10 @@ data "template_cloudinit_config" "eks_user_data_ondemand_high_pods" {
     content      = <<-EOF
       #!/bin/bash
       set -ex
+      echo "### DEBUG ###"
+      ls -la /etc/eks
+      cat /etc/eks/bootstrap.sh
+      whoami
       /etc/eks/bootstrap.sh ${var.cluster_name} \
         --use-max-pods false \
         --kubelet-extra-args '--max-pods=${each.value.max_pods}'

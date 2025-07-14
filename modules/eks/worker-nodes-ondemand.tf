@@ -14,6 +14,9 @@ resource "aws_eks_node_group" "demo_eks_nodegroup_ondemand" {
   capacity_type = "ON_DEMAND"
   instance_types  = var.ondemand_instance_types
 
+  # Force EKS-optimized AMI usage
+  ami_type = var.eks_optimized_ami_type # "AL2_x86_64"  # Amazon Linux 2
+  
   launch_template {
     id      = aws_launch_template.eks_worker_nodes_ondemand.id
     version = "$Latest"
@@ -29,7 +32,9 @@ resource "aws_eks_node_group" "demo_eks_nodegroup_ondemand" {
     #max_unavailable = 1
     max_unavailable_percentage = 50
   }
-
+  lifecycle {
+    create_before_destroy = true
+  }
   labels = {
     node = substr("${var.cluster_name}-ondemand-worker-node",0,64) 
     lifecycle = "ondemand"
@@ -62,7 +67,7 @@ resource "aws_eks_node_group" "demo_eks_nodegroup_ondemand" {
 
 resource "aws_launch_template" "eks_worker_nodes_ondemand" {
   name_prefix   = "eks-node-template-ondemand"
- # image_id      = data.aws_ami.eks_worker_ami.id
+  image_id      = data.aws_ssm_parameter.eks_optimized_ami.value
 
   #instance_type = "t2.medium"  # default/fallback
 
@@ -92,7 +97,7 @@ resource "aws_launch_template" "eks_worker_nodes_ondemand" {
       Name = "${aws_eks_cluster.demo_eks_cluster.name}-worker-node"
     }
   }
-  
+  depends_on = [template_cloudinit_config.eks_user_data_ondemand]
 }
 
 
@@ -107,6 +112,10 @@ resource "aws_launch_template" "eks_worker_nodes_ondemand" {
     content      = <<-EOF
       #!/bin/bash
       set -ex
+      echo "### DEBUG ###"
+      ls -la /etc/eks
+      cat /etc/eks/bootstrap.sh
+      whoami
       /etc/eks/bootstrap.sh ${var.cluster_name} \
         --use-max-pods false
     EOF

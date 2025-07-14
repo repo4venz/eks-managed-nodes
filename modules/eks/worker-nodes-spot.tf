@@ -14,6 +14,9 @@ resource "aws_eks_node_group" "demo_eks_nodegroup_spot" {
   capacity_type = "SPOT"
   instance_types  = var.spot_instance_types
 
+  # Force EKS-optimized AMI usage
+  ami_type = var.eks_optimized_ami_type # "AL2_x86_64"  # Amazon Linux 2
+
   launch_template {
     id      = aws_launch_template.eks_worker_nodes_spot.id
     version = "$Latest"
@@ -28,6 +31,9 @@ resource "aws_eks_node_group" "demo_eks_nodegroup_spot" {
   update_config {
     #max_unavailable = 1
     max_unavailable_percentage = 50
+  }
+  lifecycle {
+    create_before_destroy = true
   }
 
   labels = {
@@ -62,7 +68,7 @@ resource "aws_eks_node_group" "demo_eks_nodegroup_spot" {
 
 resource "aws_launch_template" "eks_worker_nodes_spot" {
   name_prefix   = "eks-node-template-spot"
- # image_id      = data.aws_ami.eks_worker_ami.id
+  image_id      = data.aws_ssm_parameter.eks_optimized_ami.value
 
   #instance_type = "t2.medium"  # default/fallback
 
@@ -92,7 +98,7 @@ resource "aws_launch_template" "eks_worker_nodes_spot" {
       Name = "${aws_eks_cluster.demo_eks_cluster.name}-worker-node"
     }
   }
-  
+  depends_on = [template_cloudinit_config.eks_user_data_spot]
 }
 
  
@@ -107,6 +113,10 @@ resource "aws_launch_template" "eks_worker_nodes_spot" {
     content      = <<-EOF
       #!/bin/bash
       set -ex
+      echo "### DEBUG ###"
+      ls -la /etc/eks
+      cat /etc/eks/bootstrap.sh
+      whoami
       /etc/eks/bootstrap.sh ${var.cluster_name} \
         --use-max-pods false
     EOF
