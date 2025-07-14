@@ -95,7 +95,7 @@ resource "aws_launch_template" "eks_worker_nodes_ondemand" {
       Name = "${aws_eks_cluster.demo_eks_cluster.name}-worker-node"
     }
   }
-  depends_on = [template_cloudinit_config.eks_user_data_ondemand]
+  
 }
 
 
