@@ -69,3 +69,10 @@ output "oidc_provider_arn" {
 }
  
  
+
+ output "increase_ondemand_pod_density_flag" {
+  description = "Boolean flag for On-Demand instances to increase POD density per EKS worker Nodes (EC2)."
+  value       = var.increase_ondemand_pod_density
+}
+
+ 

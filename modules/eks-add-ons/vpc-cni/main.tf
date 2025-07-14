@@ -27,9 +27,10 @@ resource "aws_eks_addon" "vpc_cni" {
   configuration_values = jsonencode({
     env = {
       ENABLE_PREFIX_DELEGATION = "true"  # Enable prefix delegation
-    #  WARM_IP_TARGET           = "5"     # Warm up 5 IPs
-    #  WARM_ENI_TARGET          = "1"    
-      WARM_PREFIX_TARGET       = "2"      # Warm up 1 prefix
+      WARM_IP_TARGET           = "5"     # Warm up 5 IPs
+      WARM_ENI_TARGET          = "1"    
+      WARM_PREFIX_TARGET       = "1"      # Warm up 1 prefix
+      MINIMUM_IP_TARGET        = "10"
     }
   })
 
@@ -38,3 +39,40 @@ resource "aws_eks_addon" "vpc_cni" {
     aws_iam_role.vpc_cni_irsa_role
   ]
 }
+
+/*
+Variable	Recommended Value	 
+ENABLE_PREFIX_DELEGATION	true	Uses /28 IPv4 prefixes (reduces API calls, improves scaling).
+WARM_IP_TARGET	5	Pre-allocates 5 IPs to reduce pod startup latency (good for moderate churn).
+WARM_ENI_TARGET	1	Keeps 1 extra ENI "warmed up" (helps sudden scaling needs).
+WARM_PREFIX_TARGET	1 (not 2)	Warms 1 prefix (16 IPs) instead of 2 (avoids wasting IPs).
+MINIMUM_IP_TARGET	10 (optional)	Ensures at least 10 IPs are always available (prevents throttling).
+
+
+Key Adjustments & Rationale
+WARM_PREFIX_TARGET=1 (not 2)
+
+Each prefix = 16 IPs. Warming 2 prefixes (32 IPs) is overkill for most workloads and wastes IPs.
+
+Exception: Use 2 only if you need instant scaling for 30+ pods simultaneously.
+
+MINIMUM_IP_TARGET=10 (Optional)
+
+Guarantees a buffer of IPs, preventing delays when pods scale up abruptly.
+
+Adjust based on your average pod churn rate.
+
+Avoid Over-Allocation
+
+WARM_ENI_TARGET=1 is sufficient (warming more ENs consumes extra IPs unnecessarily).
+
+
+
+Performance vs. Cost Tradeoffs
+Config	Pros	Cons
+WARM_PREFIX_TARGET=1	Balances speed/IP efficiency	Slight delay if scaling >16 pods at once
+WARM_PREFIX_TARGET=2	Faster scaling for bursts	Wastes 16+ IPs (higher AWS cost)
+MINIMUM_IP_TARGET=10	Prevents throttling	Slightly fewer available IPs for pods
+
+
+*/

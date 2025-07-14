@@ -15,7 +15,7 @@ resource "aws_eks_node_group" "demo_eks_nodegroup_ondemand" {
   instance_types  = var.ondemand_instance_types
 
   launch_template {
-    id      = aws_launch_template.eks_worker_nodes_spot.id
+    id      = aws_launch_template.eks_worker_nodes_ondemand.id
     version = "$Latest"
   }
 
