@@ -127,7 +127,7 @@ base_scaling_config_ondemand = {
 }
 
 # ----- Invidual Node group per Instance wise with user provided high POD density in EKS Nodes ----#
-enable_ondemand_pod_density_customised  =  false  # This will ignore 'required_ondemand_instances' and use 'ondemand_instance_types' to create individual node groups based on EC2 types
+enable_ondemand_pod_density_customised  =  true  # This will ignore 'required_ondemand_instances' and use 'ondemand_instance_types' to create individual node groups based on EC2 types
 
 
 # ---- Overrriding ON-DEMAND Node Scaling Configs ----- #
