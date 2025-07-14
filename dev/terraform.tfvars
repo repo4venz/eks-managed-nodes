@@ -96,10 +96,10 @@ overrides_spot_node_scale_config = {
     min_size     = 1
     desired_size = 1
     max_size     = 10
-    max_pods     = 150   
+    max_pods     = 100   
   },
   "m5.2xlarge" = {
-    max_pods = 120  # Special high-density configuration
+    max_pods = 100  # Special high-density configuration
   }
 }
 

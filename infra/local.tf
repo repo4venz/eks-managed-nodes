@@ -17,10 +17,10 @@ locals {
   # Max PODs when Prefix Delegation Enabled = (Number of network interfaces for the instance type × (the number of slots per network interface - 1)* 16)
     "t3.large"    = 35   # 3 ENIs * (10-1) + 2 = 29 (AWS default), but can be increased
     "t3.xlarge"   = 65   # 4 ENIs * (15-1) + 2 = 58
-    "t3.2xlarge"  = 60   # 4 ENIs * (12-1) + 2 = 45
+    "t3.2xlarge"  = 90   # 4 ENIs * (12-1) + 2 = 45
     "m5.large"    = 45   # (3 ENIs × (10 IPs - 1)) + 2 = 29 pods  (2 IPs reserved for Kubernetes system pods)
     "m5.xlarge"   = 64   # (4 × (15 − 1)) + 2 = 58
-    "m5.2xlarge"  = 100  # 
+    "m5.2xlarge"  = 110  # (4 ENIs × 15 IPs) - 1 (primary ENI IP) = 59 Kubelet --max-pods	Set to ≤ 59 (recommended: 58 for buffer) 
     "m5.4xlarge"  = 234
     "m5.8xlarge"  = 234
     "r5.8xlarge"  = 234  # 8 ENIs * (30-1) + 2 = 234
