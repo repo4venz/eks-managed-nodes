@@ -301,6 +301,18 @@ variable "include_external_secrets_module" {
   description = "Execute module or not. true = execute and false = don't execute"
 }
 
+variable "include_kube_proxy_addon_module" {
+  type        = bool
+  default     = true
+  description = "Execute module or not. true = execute and false = don't execute"
+}
+
+variable "include_coredns_addon_module" {
+  type        = bool
+  default     = true
+  description = "Execute module or not. true = execute and false = don't execute"
+}
+
 
  
 variable "aws_test_secrets" {

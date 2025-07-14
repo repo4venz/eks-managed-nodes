@@ -66,7 +66,23 @@ module "metrics_server" {
 
 module "vpc-cni-addon" {
   count = var.include_vpc_cni_addon_module ? 1 : 0
-  source                                        = "../modules/vpc-cni"
+  source                                        = "../modules/eks-add-ons/vpc-cni"
+  k8s_cluster_name                              =  "${var.cluster_name}-${var.environment}" #module.eks.eks_cluster_name
+
+  depends_on = [module.eks]
+}
+
+module "kube-proxy-addon" {
+  count = var.include_kube_proxy_addon_module ? 1 : 0
+  source                                        = "../modules/eks-add-ons/kube-proxy"
+  k8s_cluster_name                              =  "${var.cluster_name}-${var.environment}" #module.eks.eks_cluster_name
+
+  depends_on = [module.eks]
+}
+
+module "coredns-addon" {
+  count = var.include_coredns_addon_module ? 1 : 0
+  source                                        = "../modules/eks-add-ons/coredns"
   k8s_cluster_name                              =  "${var.cluster_name}-${var.environment}" #module.eks.eks_cluster_name
 
   depends_on = [module.eks]
@@ -112,38 +128,6 @@ module "eks-cluster-autoscaler" {
   depends_on = [module.eks]
 }
 
-module "cert-manager" {
-  count = var.include_cert_manager_module ? 1 : 0
-  source                                        = "../modules/cert-manager"
-  certmanager_chart_version                     =  var.certmanager_chart_version
-  k8s_cluster_name                              =  "${var.cluster_name}-${var.environment}" #module.eks.eks_cluster_name
-  
-  depends_on = [module.eks, module.nginx_alb_controller]
-}
-
-/**
-module "external-dns" {
-  count = var.include_external_dns_module ? 1 : 0
-  source                                        = "../modules/external-dns"
-  k8s_cluster_name                              =  "${var.cluster_name}-${var.environment}" #module.eks.eks_cluster_name
-  k8s_namespace                                 = "kube-system"
-
-  depends_on = [module.cert-manager]
-}
-
-
-
-module "prometheus" {
-  count = var.include_prometheus_module ? 1 : 0
-  source                                        = "../modules/prometheus"
-  k8s_cluster_name                              =  "${var.cluster_name}-${var.environment}" #module.eks.eks_cluster_name
-  k8s_namespace                                 =  var.k8s_observability_namespace
-  prometheus_chart_version                      =  var.prometheus_chart_version
-
-  depends_on = [module.external-dns, module.cert-manager]
-}
-*/
- 
 
 
  

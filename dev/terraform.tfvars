@@ -42,6 +42,8 @@ aws_test_secrets               = [
                                 ]
 
 include_vpc_cni_addon_module = true
+include_kube_proxy_addon_module = true
+include_coredns_addon_module = true
 include_calico_module = true
 include_nginx_controller_module = true
 include_eks_cluster_autoscaler_module = true
@@ -52,11 +54,12 @@ include_prometheus_module = true
 include_ebs_csi_driver_addon = true
 include_efs_csi_driver_addon = true
 include_cert_manager_module = true
-include_lets_encrypt_ca_module = true  # Run as post build
+include_lets_encrypt_ca_module = true   
 include_k8s_app_module = true
 include_k8s_app_secured_module = true  
-include_kubecost_module = true   # Run as post build
-include_external_secrets_module = true # Run as post build
+include_kubecost_module = true    
+include_external_secrets_module = true  
+
 
 
 
@@ -114,7 +117,7 @@ increase_ondemand_pod_density = true  # applicable only when (required_ondemand_
 # ---- Common ON-DEMAND Node Scaling Configs ----- #
 
 base_scaling_config_ondemand = {
-  desired_size = 3
+  desired_size = 1
   max_size     = 10
   min_size     = 1
 }

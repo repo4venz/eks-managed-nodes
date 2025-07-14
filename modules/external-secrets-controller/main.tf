@@ -1,6 +1,6 @@
 resource "aws_iam_role" "external_secrets_irsa" {
- name  = "${var.k8s_cluster_name}-external-secrets-irsa-role"
-
+ name  = substr("${var.k8s_cluster_name}-external-secrets-irsa-role",0,64)
+ 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
     Statement = [{
@@ -19,7 +19,7 @@ resource "aws_iam_role" "external_secrets_irsa" {
 }
 
 resource "aws_iam_policy" "external_secrets_policy" {
-  name        = "${var.k8s_cluster_name}-external-secrets-access_policy"
+  name        = substr("${var.k8s_cluster_name}-external-secrets-access_policy",0,64)
   description = "Allow access to SecretsManager and Parameter Store"
 
   policy = jsonencode({
