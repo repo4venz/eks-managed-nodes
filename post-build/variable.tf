@@ -187,7 +187,7 @@ variable "base_scaling_config_spot" {
 }
 
 
-variable "scaling_config_ondemand" {
+variable "base_scaling_config_ondemand" {
   type = object({
     desired_size = number
     max_size     = number

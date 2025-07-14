@@ -36,22 +36,22 @@ locals {
       instance_type = instance_type
 
       desired_size     = coalesce(
-        try(var.overrides_node_scale_config[instance_type].desired_size, null),
+        try(var.overrides_spot_node_scale_config[instance_type].desired_size, null),
         var.base_scaling_config_spot.desired_size
       )
 
       min_size     = coalesce(
-        try(var.overrides_node_scale_config[instance_type].min_size, null),
+        try(var.overrides_spot_node_scale_config[instance_type].min_size, null),
         var.base_scaling_config_spot.min_size
       )
 
       max_size     = coalesce(
-        try(var.overrides_node_scale_config[instance_type].max_size, null),
+        try(var.overrides_spot_node_scale_config[instance_type].max_size, null),
         var.base_scaling_config_spot.max_size
       )
  
       max_pods     = coalesce(
-        try(var.overrides_node_scale_config[instance_type].max_pods, null),
+        try(var.overrides_spot_node_scale_config[instance_type].max_pods, null),
         lookup(local.max_pods, instance_type) 
       )
     }

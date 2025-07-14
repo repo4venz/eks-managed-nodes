@@ -71,7 +71,7 @@ ebs_volume_type              =  "gp3"
 
 required_spot_instances      =  true   # either spot or ondemand or both instance types provision for eks worker nodes
 spot_instance_types          =  [ "t3.xlarge", "t3.2xlarge", "m5.2xlarge" ]
-increase_spot_pod_density    =  true   # applicable only for SPOT Node Group with mixed EC2 types
+increase_spot_pod_density    =  true   # applicable only for SPOT Node Group with mixed EC2 types. All EC2 instances POD density will be increased upto max
 
 # ---- Common SPOT Node Scaling Configs ----- #
 base_scaling_config_spot = {
@@ -86,7 +86,7 @@ enable_spot_pod_density_customised  =  true  # This will ignore 'required_spot_i
 
 # ---- Overrriding SPOT Node Scaling Configs ----- #
 # Applicable only when 'enable_spot_pod_density_customised' = true
-overrides_node_scale_config = {
+overrides_spot_node_scale_config = {
   "t3.xlarge" = {
     desired_size = 1
     max_size     = 5
@@ -105,12 +105,13 @@ overrides_node_scale_config = {
 
 #----------- ON-DEMAND Node Group Configs --------------#
 
-required_ondemand_instances  =  false   # either spot or ondemand or both instance types provision for eks worker nodes
-ondemand_instance_types      =  ["t3.medium", "m5.large", "t3.xlarge"]
+required_ondemand_instances   =  false   # either spot or ondemand or both instance types provision for eks worker nodes
+ondemand_instance_types       =  ["t3.medium", "m5.large", "t3.xlarge"]
+increase_ondemand_pod_density = false  # applicable only for ON-DEMAND Node Group with mixed EC2 types. All EC2 instances POD density will be increased upto max
 
 # ---- Common ON-DEMAND Node Scaling Configs ----- #
 
-scaling_config_ondemand = {
+base_scaling_config_ondemand = {
   desired_size = 5
   max_size     = 10
   min_size     = 1

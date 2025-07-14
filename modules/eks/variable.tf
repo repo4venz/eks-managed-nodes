@@ -104,6 +104,13 @@ variable "increase_spot_pod_density" {
   description = "Execute module or not. true = execute and false = don't execute"
 }
 
+variable "increase_ondemand_pod_density" {
+  type        = bool
+  default     = false
+  description = "Execute module or not. true = execute and false = don't execute"
+}
+
+
 
 variable "base_scaling_config_spot" {
   type = object({
@@ -119,7 +126,7 @@ variable "base_scaling_config_spot" {
 }
 
 
-variable "scaling_config_ondemand" {
+variable "base_scaling_config_ondemand" {
   type = object({
     desired_size = number
     max_size     = number

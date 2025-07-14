@@ -1,8 +1,8 @@
-
+/*
 resource "null_resource" "create_namespace_if_not_exists" {
   provisioner "local-exec" {
     command = <<EOT
-      kubectl get namespace ${var.namespace} || kubectl create namespace ${var.namespace} || kubectl label namespace ${var.namespace} "cert-manager.io/managed"="true"
+      kubectl get namespace ${var.namespace} || kubectl create namespace ${var.namespace}
     EOT
   }
 
@@ -10,7 +10,7 @@ resource "null_resource" "create_namespace_if_not_exists" {
     always_run = timestamp() # Forces re-run on every `apply`; can be improved
   }
 }
-
+*/
 
 
 

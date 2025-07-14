@@ -208,7 +208,7 @@ variable "base_scaling_config_spot" {
 }
 
 
-variable "scaling_config_ondemand" {
+variable "base_scaling_config_ondemand" {
   type = object({
     desired_size = number
     max_size     = number
@@ -334,8 +334,35 @@ variable "max_pods" {
 }
 
 
-variable "overrides_node_scale_config" {
-  description = "Per-instance-type overrides. Overrided local variable with different scaling configs."
+variable "overrides_spot_node_scale_config" {
+  description = "Per-instance-type overrides for SPOT instances. Overrided local variable with different scaling configs."
+  type = map(object({
+    desired_size = optional(number)
+    min_size     = optional(number)
+    max_size     = optional(number)
+    max_pods     = optional(number)
+  }))
+  default = {
+    "t3.xlarge" = {
+      desired_size = 3
+    }
+    "c5.4xlarge" = {
+      desired_size = 1
+      max_size     = 5
+      max_pods     = 234
+    }
+  }
+}
+
+variable "increase_ondemand_pod_density" {
+  type        = bool
+  default     = false
+  description = "Execute module or not. true = execute and false = don't execute"
+}
+
+
+variable "overrides_ondemand_node_scale_config" {
+  description = "Per-instance-type overrides for ON-DEMAND instances. Overrided local variable with different scaling configs."
   type = map(object({
     desired_size = optional(number)
     min_size     = optional(number)

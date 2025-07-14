@@ -77,6 +77,7 @@ resource "aws_launch_template" "eks_worker_nodes_spot" {
       volume_type = var.ebs_volume_type 
       encrypted   = true
       kms_key_id  = var.eks_kms_secret_encryption_key_arn
+      delete_on_termination = true  # Recommended for EKS nodes
     }
   }
   

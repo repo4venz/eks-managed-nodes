@@ -52,27 +52,4 @@ provider "helm" {
  
 
 
-/*
-provider "kubernetes" {
-  host                   = module.eks.eks_cluster_endpoint
-  token                  = data.aws_eks_cluster_auth.aws_iam_authenticator.token
-  cluster_ca_certificate = module.eks.eks_cluster_certificate_authority_data
-}
-
-
-provider "helm" {
-  kubernetes = {
-    host                   = module.eks.eks_cluster_endpoint
-    token                  = data.aws_eks_cluster_auth.aws_iam_authenticator.token
-    cluster_ca_certificate = module.eks.eks_cluster_certificate_authority_data
-  }
-}
-
  
-  provider "kubectl" {
-  # Configuration options
-    host                   = module.eks.eks_cluster_endpoint
-    token                  = data.aws_eks_cluster_auth.aws_iam_authenticator.token
-    cluster_ca_certificate = module.eks.eks_cluster_certificate_authority_data
-}
- */

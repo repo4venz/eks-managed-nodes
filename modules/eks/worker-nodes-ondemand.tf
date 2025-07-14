@@ -20,9 +20,9 @@ resource "aws_eks_node_group" "demo_eks_nodegroup_ondemand" {
   }
 
   scaling_config {
-    desired_size = var.scaling_config_ondemand.desired_size
-    max_size     = var.scaling_config_ondemand.max_size
-    min_size     = var.scaling_config_ondemand.min_size
+    desired_size = var.base_scaling_config_ondemand.desired_size
+    max_size     = var.base_scaling_config_ondemand.max_size
+    min_size     = var.base_scaling_config_ondemand.min_size
   }
 
   update_config {
@@ -65,6 +65,9 @@ resource "aws_launch_template" "eks_worker_nodes_ondemand" {
  # image_id      = data.aws_ami.eks_worker_ami.id
 
   #instance_type = "t2.medium"  # default/fallback
+
+      # Conditionally apply user_data
+  user_data = var.increase_ondemand_pod_density ? data.template_cloudinit_config.eks_ondemand_user_data.rendered : null
  
   block_device_mappings {
     device_name = "/dev/xvda"
@@ -74,6 +77,7 @@ resource "aws_launch_template" "eks_worker_nodes_ondemand" {
       volume_type = var.ebs_volume_type 
       encrypted   = true
       kms_key_id  = var.eks_kms_secret_encryption_key_arn
+      delete_on_termination = true  # Recommended for EKS nodes
     }
   }
 
@@ -90,6 +94,25 @@ resource "aws_launch_template" "eks_worker_nodes_ondemand" {
   }
   
 }
+
+
+
+ data "template_cloudinit_config" "eks_ondemand_user_data" {
+  gzip          = false
+  base64_encode = true
+
+  part {
+    filename     = "bootstrap.sh"
+    content_type = "text/x-shellscript"
+    content      = <<-EOF
+      #!/bin/bash
+      set -ex
+      /etc/eks/bootstrap.sh ${var.cluster_name} \
+        --use-max-pods false
+    EOF
+  }
+}
+
 
  
  

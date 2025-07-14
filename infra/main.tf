@@ -45,7 +45,7 @@ module "eks" {
     spot_node_groups_customised_config            =  local.spot_node_groups_customised_config ## Only applicable to individual SPOT nodegroups with INDIVIDUAL EC2 types + User defined number of PODs
     required_ondemand_instances                   =  var.required_ondemand_instances
     base_scaling_config_spot                           =  var.base_scaling_config_spot
-    scaling_config_ondemand                       =  var.scaling_config_ondemand
+    base_scaling_config_ondemand                       =  var.base_scaling_config_ondemand
     ebs_volume_size_in_gb                         =  var.ebs_volume_size_in_gb
     ebs_volume_type                               =  var.ebs_volume_type
 

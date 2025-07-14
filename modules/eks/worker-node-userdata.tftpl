@@ -1,4 +1,0 @@
-#!/bin/bash
-set -ex
-exec > >(tee /var/log/user-data.log|logger -t user-data) 2>&1
-/etc/eks/bootstrap.sh ${cluster_name}  --use-max-pods false  --kubelet-extra-args '--max-pods=${max_pods} ${custom_kubelet_args}'
