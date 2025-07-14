@@ -12,7 +12,7 @@ resource "aws_eks_node_group" "demo_eks_nodegroup_ondemand" {
   subnet_ids =  var.private_subnets
 
   capacity_type = "ON_DEMAND"
-  instance_types  = var.spot_instance_types
+  instance_types  = var.ondemand_instance_types
 
   launch_template {
     id      = aws_launch_template.eks_worker_nodes_spot.id
