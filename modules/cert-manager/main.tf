@@ -74,8 +74,8 @@ resource "helm_release" "cert_manager" {
   ]
   depends_on = [
   aws_iam_role_policy_attachment.cert_manager_attach,
-  aws_iam_role.cert_manager_role,
-  null_resource.create_namespace_if_not_exists
+  aws_iam_role.cert_manager_role  #,
+  #null_resource.create_namespace_if_not_exists
   ]
 }
  
