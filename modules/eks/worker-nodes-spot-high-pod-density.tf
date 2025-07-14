@@ -18,7 +18,7 @@ resource "aws_eks_node_group" "demo_eks_nodegroup_spot_high_pod" {
   
   # Force EKS-optimized AMI usage
   ami_type = var.eks_optimized_ami_type # "AL2_x86_64"  # Amazon Linux 2
-  
+
   launch_template {
     id      = aws_launch_template.eks_worker_nodes_spot_high_pod[each.key].id
     version = "$Latest"
@@ -60,9 +60,7 @@ resource "aws_eks_node_group" "demo_eks_nodegroup_spot_high_pod" {
     aws_iam_role_policy_attachment.AmazonEC2ContainerRegistryReadOnly,
     aws_iam_role_policy_attachment.EC2InstanceProfileForImageBuilderECRContainerBuilds,
     aws_iam_role.eks_worker_nodes_role,
-    aws_eks_cluster.demo_eks_cluster,
-    aws_launch_template.eks_worker_nodes_spot_high_pod
-
+    aws_eks_cluster.demo_eks_cluster 
   ]
 }
 

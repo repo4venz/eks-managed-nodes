@@ -61,9 +61,7 @@ resource "aws_eks_node_group" "demo_eks_nodegroup_ondemand_high_pod" {
     aws_iam_role_policy_attachment.AmazonEC2ContainerRegistryReadOnly,
     aws_iam_role_policy_attachment.EC2InstanceProfileForImageBuilderECRContainerBuilds,
     aws_iam_role.eks_worker_nodes_role,
-    aws_eks_cluster.demo_eks_cluster,
-    aws_launch_template.eks_worker_nodes_ondemand_high_pod
-
+    aws_eks_cluster.demo_eks_cluster
   ]
 }
 
