@@ -67,7 +67,7 @@ resource "aws_launch_template" "eks_worker_nodes_spot" {
   #instance_type = "t2.medium"  # default/fallback
 
     # Conditionally apply user_data
-  user_data = var.increase_spot_pod_density ? data.template_cloudinit_config.eks_spot_user_data[0].rendered : null
+  user_data = var.increase_spot_pod_density ? data.template_cloudinit_config.eks_spot_user_data.rendered : null
  
   block_device_mappings {
     device_name = "/dev/xvda"
@@ -97,7 +97,6 @@ resource "aws_launch_template" "eks_worker_nodes_spot" {
  
 
  data "template_cloudinit_config" "eks_spot_user_data" {
-  for_each = var.spot_node_groups_customised_config
   gzip          = false
   base64_encode = true
 
