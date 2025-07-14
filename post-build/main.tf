@@ -48,7 +48,7 @@ module "lets-encrypt" {
 
 module "external-secrets-controller" {
   count = var.include_external_secrets_module ? 1 : 0
-  source                        = "../modules/external-secrets"
+  source                        = "../modules/external-secrets-controller"
   k8s_cluster_name              =  "${var.cluster_name}-${var.environment}" #module.eks.eks_cluster_name
   external_secret_chart_version =  var.external_secret_chart_version
   aws_test_secrets              =  var.aws_test_secrets  ## This is only testing purpose

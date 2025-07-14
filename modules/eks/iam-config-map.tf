@@ -17,6 +17,12 @@ resource "null_resource" "wait_for_cluster" {
   depends_on = [aws_eks_cluster.demo_eks_cluster]
 }
 
+resource "time_sleep" "wait_120_seconds" {
+  create_duration = "120s"  # 2 minutes
+
+  depends_on = [aws_eks_cluster.demo_eks_cluster ]
+}
+
 
 # Update the Kubeconfig file in the GitHub Actions Runner
 resource "null_resource" "eks_get_config_exec" {
@@ -30,7 +36,8 @@ resource "null_resource" "eks_get_config_exec" {
 	
 	  depends_on = [
 	    aws_eks_cluster.demo_eks_cluster,
-      null_resource.wait_for_cluster
+      null_resource.wait_for_cluster,
+      time_sleep.wait_120_seconds
 	  ]
 	}
 

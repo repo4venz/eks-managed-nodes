@@ -39,13 +39,14 @@ module "eks" {
     include_efs_csi_driver_addon                  =  var.include_efs_csi_driver_addon
     spot_instance_types                           =  var.spot_instance_types
     ondemand_instance_types                       =  var.ondemand_instance_types
+    increase_ondemand_pod_density                 =  var.increase_ondemand_pod_density
     required_spot_instances                       =  var.required_spot_instances    ## only applicable to SPOT nodegroups with mixed EC2 types
     increase_spot_pod_density                     =  var.increase_spot_pod_density  ## only applicable to SPOT nodegroups with mixed EC2 types
     enable_spot_pod_density_customised            =  var.enable_spot_pod_density_customised  ## Only applicable to individual SPOT nodegroups with INDIVIDUAL EC2 types + User defined number of PODs
     spot_node_groups_customised_config            =  local.spot_node_groups_customised_config ## Only applicable to individual SPOT nodegroups with INDIVIDUAL EC2 types + User defined number of PODs
     required_ondemand_instances                   =  var.required_ondemand_instances
-    base_scaling_config_spot                           =  var.base_scaling_config_spot
-    base_scaling_config_ondemand                       =  var.base_scaling_config_ondemand
+    base_scaling_config_spot                      =  var.base_scaling_config_spot
+    base_scaling_config_ondemand                  =  var.base_scaling_config_ondemand
     ebs_volume_size_in_gb                         =  var.ebs_volume_size_in_gb
     ebs_volume_type                               =  var.ebs_volume_type
 
