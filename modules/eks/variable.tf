@@ -166,3 +166,18 @@ variable "ebs_volume_type" {
 
   default = { }
 }
+
+
+ variable "ondemand_node_groups_customised_config" {
+  description = "Map of instance types and their scaling configuration"
+  type = map(object({
+    instance_type = string
+    desired_size  = number
+    max_pods      = number
+    max_size      = number
+    min_size      = number
+  }))
+
+  default = { }
+}
+

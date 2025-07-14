@@ -44,6 +44,9 @@ aws_test_secrets               = [
 include_vpc_cni_addon_module = true
 include_kube_proxy_addon_module = true
 include_coredns_addon_module = true
+include_ebs_csi_driver_addon = true
+include_efs_csi_driver_addon = true
+
 include_calico_module = true
 include_nginx_controller_module = true
 include_eks_cluster_autoscaler_module = true
@@ -51,8 +54,7 @@ include_external_dns_module = true
 include_metrics_server_module = true
 include_fluentbit_module = true
 include_prometheus_module = true
-include_ebs_csi_driver_addon = true
-include_efs_csi_driver_addon = true
+
 include_cert_manager_module = true
 include_lets_encrypt_ca_module = true   
 include_k8s_app_module = true
@@ -64,13 +66,14 @@ include_external_secrets_module = true
 
 
 
-####################  EKS Worker Nodes config - Works with VPC CNI (Generic Config for multiple type of instances) ###################
+####################  EKS Worker Nodes configs - Works with VPC CNI (Generic Config for multiple type of instances) ###################
 
 # ------  Common for SPOT and On-DEMAND -----#
 ebs_volume_size_in_gb        =  20
 ebs_volume_type              =  "gp3"
 
 #----------- SPOT Node Group Configs with mixed EC2 types  --------------#
+#-----------------------------------------------------------------------------
 
 required_spot_instances      =  false   # either spot or ondemand or both instance types provision for eks worker nodes
 spot_instance_types          =  [ "t3.xlarge", "t3.2xlarge", "m5.2xlarge" ]
@@ -102,17 +105,18 @@ overrides_spot_node_scale_config = {
     max_pods     = 100   
   },
   "m5.2xlarge" = {
-    max_pods = 100  # Special high-density configuration
+    max_pods = 100   
   }
 }
 
 
 
 #----------- ON-DEMAND Node Group Configs --------------#
+#--------------------------------------------------------------
 
-required_ondemand_instances   =  true   # either spot or ondemand or both instance types provision for eks worker nodes
+required_ondemand_instances   =  false   # either spot or ondemand or both instance types provision for eks worker nodes
 ondemand_instance_types       =  ["t3.medium", "m5.large", "t3.xlarge"]
-increase_ondemand_pod_density = true  # applicable only when (required_ondemand_instances=true) for ON-DEMAND Node Group with mixed EC2 types. All EC2 instances POD density will be increased upto max
+increase_ondemand_pod_density = false  # applicable only when (required_ondemand_instances=true) for ON-DEMAND Node Group with mixed EC2 types. All EC2 instances POD density will be increased upto max
 
 # ---- Common ON-DEMAND Node Scaling Configs ----- #
 
@@ -122,7 +126,30 @@ base_scaling_config_ondemand = {
   min_size     = 1
 }
 
+# ----- Invidual Node group per Instance wise with user provided high POD density in EKS Nodes ----#
+enable_ondemand_pod_density_customised  =  true  # This will ignore 'required_ondemand_instances' and use 'ondemand_instance_types' to create individual node groups based on EC2 types
 
+
+# ---- Overrriding ON-DEMAND Node Scaling Configs ----- #
+# Applicable only when 'enable_ondemand_pod_density_customised' = true
+overrides_ondemand_node_scale_config = {
+  "t3.medium" = {
+    min_size     = 1
+    desired_size = 1
+    max_size     = 5
+  },
+  "t3.xlarge" = {
+    min_size     = 1
+    desired_size = 1
+    max_size     = 10
+    max_pods     = 30   
+  },
+  "m5.large" = {
+    max_pods = 50   
+  }
+}
+
+####################  END of EKS Worker Nodes configs with VPC CNI ###################
 
 public_domain_name = "suvendupublicdomain.fun"
  

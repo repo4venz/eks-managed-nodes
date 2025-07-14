@@ -15,6 +15,7 @@ locals {
     # Max pods per instance type (using the AWS EKS formula: Default : (ENIs * (IPs per ENI - 1)) + 2)
                          # (AWS default), but can be increased
   # Max PODs when Prefix Delegation Enabled = (Number of network interfaces for the instance type × (the number of slots per network interface - 1)* 16)
+    "t3.medium"   = 20
     "t3.large"    = 35   # 3 ENIs * (10-1) + 2 = 29 (AWS default), but can be increased
     "t3.xlarge"   = 65   # 4 ENIs * (15-1) + 2 = 58
     "t3.2xlarge"  = 90   # 4 ENIs * (12-1) + 2 = 45
@@ -29,7 +30,7 @@ locals {
  
  
 
-    # Calculate final max_pods with overrides
+    # Calculate final max_pods with overrides for SPOT Instances
   spot_node_groups_customised_config = var.enable_spot_pod_density_customised ? {
     for instance_type in var.spot_instance_types :
     instance_type => {
@@ -56,6 +57,38 @@ locals {
       )
     }
    } : {}
+
+
+
+
+    # Calculate final max_pods with overrides for ON-DEMAND Instances
+  ondemand_node_groups_customised_config = var.enable_ondemand_pod_density_customised ? {
+    for instance_type in var.ondemand_instance_types :
+    instance_type => {
+      instance_type = instance_type
+
+      desired_size     = coalesce(
+        try(var.overrides_ondemand_node_scale_config[instance_type].desired_size, null),
+        var.base_scaling_config_ondemand.desired_size
+      )
+
+      min_size     = coalesce(
+        try(var.overrides_ondemand_node_scale_config[instance_type].min_size, null),
+        var.base_scaling_config_ondemand.min_size
+      )
+
+      max_size     = coalesce(
+        try(var.overrides_ondemand_node_scale_config[instance_type].max_size, null),
+        var.base_scaling_config_ondemand.max_size
+      )
+ 
+      max_pods     = coalesce(
+        try(var.overrides_ondemand_node_scale_config[instance_type].max_pods, null),
+        lookup(local.max_pods, instance_type) 
+      )
+    }
+   } : {}
+
 }
 
   

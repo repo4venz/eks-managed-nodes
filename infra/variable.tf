@@ -187,6 +187,14 @@ variable "enable_spot_pod_density_customised" {
   default     = false
 }
 
+variable "enable_ondemand_pod_density_customised" {
+  description = "EKS worker nodes On-Demand instance types"
+  type        = bool
+  default     = false
+}
+
+
+
 
 variable "required_ondemand_instances" {
   description = "Execute module/feature or not. true = execute and false = don't execute"
@@ -215,7 +223,7 @@ variable "base_scaling_config_ondemand" {
     min_size     = number
   })
   default = {
-    desired_size = 2
+    desired_size = 1
     max_size     = 6
     min_size     = 1
   }
