@@ -126,7 +126,7 @@ resource "aws_launch_template" "eks_worker_nodes_spot_high_pod" {
       instance_type = "${each.key}"  
     }
   }
-  depends_on = [template_cloudinit_config.eks_user_data_spot_high_pods]
+   
 }
 
  
