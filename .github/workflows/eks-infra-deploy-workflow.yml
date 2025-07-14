@@ -7,14 +7,13 @@ on:
       - 'modules/vpc/**'
       - 'modules/eks/**'
       - 'modules/kms-aws/**'
-      - 'modules/cert-manager/**'
       - 'modules/eks-cluster-autoscaler/**'
+      - 'modules/calico/**'
       - 'modules/external-dns/**'
       - 'modules/fluentbit/**'
       - 'modules/metrics-server/**'
       - 'modules/nginx-lb-controller/**'
-      - 'modules/vpc-cni/**'
-      - 'modules/prometheus/**'
+      - 'modules/eks-add-ons/**'
   pull_request:
     branches: [ main ] # input your banch name here
 
