@@ -172,7 +172,7 @@ variable "required_ondemand_instances" {
   default     = false
 }
 
-variable "scaling_config_spot" {
+variable "base_scaling_config_spot" {
   type = object({
     desired_size = number
     max_size     = number

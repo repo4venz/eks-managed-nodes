@@ -181,7 +181,7 @@ variable "required_spot_instances" {
   default     = true
 }
 
-variable "required_spot_instances_max_pods" {
+variable "enable_spot_pod_density_customised" {
   description = "EKS worker nodes Spot instance types"
   type        = bool
   default     = false
@@ -194,7 +194,7 @@ variable "required_ondemand_instances" {
   default     = false
 }
 
-variable "scaling_config_spot" {
+variable "base_scaling_config_spot" {
   type = object({
     desired_size = number
     max_size     = number
@@ -280,6 +280,12 @@ variable "public_domain_name" {
   description = "Public Domain name hosted in Route53. e.g. suvendupublicdomain.fun"
   type        = string
   default = ""
+}
+
+variable "increase_spot_pod_density" {
+  type        = bool
+  default     = false
+  description = "Execute module or not. true = execute and false = don't execute"
 }
 
 

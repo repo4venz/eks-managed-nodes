@@ -13,7 +13,7 @@ resource "aws_iam_role_policy_attachment" "vpc_cni_attach" {
 }
 
 
-
+#https://aws.amazon.com/blogs/containers/amazon-vpc-cni-increases-pods-per-node-limits/
 resource "aws_eks_addon" "vpc_cni" {
 
   cluster_name                = data.aws_eks_cluster.this.name
@@ -26,10 +26,10 @@ resource "aws_eks_addon" "vpc_cni" {
 
   configuration_values = jsonencode({
     env = {
-      ENABLE_PREFIX_DELEGATION = "true"
-      WARM_IP_TARGET           = "3"
-      WARM_ENI_TARGET          = "1"
-      WARM_PREFIX_TARGET       = "2"
+      ENABLE_PREFIX_DELEGATION = "true"  # Enable prefix delegation
+    #  WARM_IP_TARGET           = "5"     # Warm up 5 IPs
+    #  WARM_ENI_TARGET          = "1"    
+      WARM_PREFIX_TARGET       = "2"      # Warm up 1 prefix
     }
   })
 

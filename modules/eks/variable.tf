@@ -85,7 +85,7 @@ variable "required_spot_instances" {
   default     = true
 }
 
-variable "required_spot_instances_max_pods" {
+variable "enable_spot_pod_density_customised" {
   description = "EKS worker nodes Spot instance types"
   type        = bool
   default     = false
@@ -98,8 +98,14 @@ variable "required_ondemand_instances" {
   default     = false
 }
 
+variable "increase_spot_pod_density" {
+  type        = bool
+  default     = false
+  description = "Execute module or not. true = execute and false = don't execute"
+}
 
-variable "scaling_config_spot" {
+
+variable "base_scaling_config_spot" {
   type = object({
     desired_size = number
     max_size     = number
@@ -138,22 +144,10 @@ variable "ebs_volume_type" {
   description = "EKS Worker Node EBS Volume Type for SPOT and On_DEMAND instances"
   default     = "gp3"
 }
-
-variable "use_bottlerocket" {
-  description = "EKS worker nodes EC2 AMI Type"
-  type        = bool
-  default     = false
-}
-
-variable "custom_kubelet_args" {
-  type        = string
-  description = "EKS Worker Cuustom Kubelet Arguments"
-  default     = ""
-}
  
  
 
- variable "spot_node_groups_max_pods" {
+ variable "spot_node_groups_customised_config" {
   description = "Map of instance types and their scaling configuration"
   type = map(object({
     instance_type = string

@@ -4,30 +4,8 @@
 # The node groupd will work with AWS VPC CNI only
 
 resource "aws_eks_node_group" "demo_eks_nodegroup_spot_high_pod" {
-   #for_each = var.required_spot_instances_max_pods ? toset(var.spot_instance_types) : null
-  /*
-  for_each = var.required_spot_instances_max_pods ? {
-    for instance_type in var.spot_node_groups_max_pods : instance_type => instance_type
-  } : {} */
 
-   /* for_each = var.required_spot_instances_max_pods ? {
-    for instance_type, config in var.spot_node_groups_max_pods : 
-    "spot_${replace(instance_type, ".", "_")}" => {
-      instance_type = instance_type
-      max_pods      = config.max_pods
-      desired_size  = config.desired_size
-      min_size      = config.min_size
-      max_size      = config.max_size
-    }
-  } : {}
-*/
-
-  #If var.create_instances is true, use var.instance_map (create instances)
-  #If var.create_instances is false, use an empty map {} (don't create any instances but don't destroy if created)
-  #If var.create_instances is false, use another for (don't create any instances and destroy is created)
-
-
-  for_each = var.spot_node_groups_max_pods
+  for_each = var.spot_node_groups_customised_config
 
   cluster_name    = aws_eks_cluster.demo_eks_cluster.name
   node_group_name = "${var.cluster_name}-${var.environment}-${replace(each.key, ".", "")}-nodes-group-spot-high-pods" 
@@ -44,9 +22,9 @@ resource "aws_eks_node_group" "demo_eks_nodegroup_spot_high_pod" {
   }
 
   scaling_config {
-    desired_size =  each.value.desired_size  #var.scaling_config_spot.desired_size
-    max_size     =  each.value.max_size    #var.scaling_config_spot.max_size
-    min_size     =  each.value.min_size  #var.scaling_config_spot.min_size
+    desired_size =  each.value.desired_size  #var.base_scaling_config_spot.desired_size
+    max_size     =  each.value.max_size    #var.base_scaling_config_spot.max_size
+    min_size     =  each.value.min_size  #var.base_scaling_config_spot.min_size
   }
 
   update_config {
@@ -83,35 +61,19 @@ resource "aws_eks_node_group" "demo_eks_nodegroup_spot_high_pod" {
   ]
 }
 
-/*
-locals {
-  # Pre-calculated max pods based on AWS ENI limits
-  max_pods_map = {
-    "t3.large"    = 35
-    "t3.xlarge"   = 58
-    "t3.2xlarge"  = 58
-    "m5.large"    = 29
-    "m5.xlarge"   = 58
-    "m5.2xlarge"  = 58
-    "m5.4xlarge"  = 234  # With prefix delegation
-    "c5.4xlarge"  = 234
-    "r5.8xlarge"  = 234
-  }
-}
-*/
-
+ 
  
 
  # Launch Template for High-Pod-Density Nodes
 resource "aws_launch_template" "eks_worker_nodes_spot_high_pod" {
-   #for_each = var.required_spot_instances_max_pods ? toset(var.spot_instance_types) : null
+   #for_each = var.enable_spot_pod_density_customised ? toset(var.spot_instance_types) : null
   /*
-  for_each = var.required_spot_instances_max_pods ? {
-    for instance_type in var.spot_node_groups_max_pods : instance_type => instance_type
+  for_each = var.enable_spot_pod_density_customised ? {
+    for instance_type in var.spot_node_groups_customised_config : instance_type => instance_type
   } : {} */
 
-   /* for_each = var.required_spot_instances_max_pods ? {
-    for instance_type, config in var.spot_node_groups_max_pods : 
+   /* for_each = var.enable_spot_pod_density_customised ? {
+    for instance_type, config in var.spot_node_groups_customised_config : 
     "spot_${replace(instance_type, ".", "_")}" => {
       instance_type = instance_type
       max_pods      = config.max_pods
@@ -127,38 +89,12 @@ resource "aws_launch_template" "eks_worker_nodes_spot_high_pod" {
   #If var.create_instances is false, use another for (don't create any instances and destroy is created)
 
 
-  for_each = var.spot_node_groups_max_pods
+  for_each = var.spot_node_groups_customised_config
 
   name_prefix = "${aws_eks_cluster.demo_eks_cluster.name}-high-pod-${replace(each.key , ".", "")}-" 
 
   instance_type = each.key
-  
-   /*
-  user_data = base64encode(templatefile("${path.module}/worker-node-userdata.tftpl", {
-    cluster_name     = var.cluster_name
-    max_pods         = each.value.max_pods    #local.max_pods_map[each.value]
-   # bottlerocket     = var.use_bottlerocket
-    custom_kubelet_args = "--node-labels=group=${each.key}-spot"  #var.custom_kubelet_args
-  })) 
-  
 
-   # Correct user data encoding
-  user_data = base64encode(<<-EOF
-      MIME-Version: 1.0
-      Content-Type: multipart/mixed; boundary="==BOUNDARY=="
-
-                --==BOUNDARY==
-      Content-Type: text/x-shellscript; charset="us-ascii"
-
-      #!/bin/bash
-      set -ex
-      /etc/eks/bootstrap.sh ${var.cluster_name} \
-      --use-max-pods false \
-      --kubelet-extra-args "--max-pods=${each.value.max_pods}"
-                --==BOUNDARY==--
-      EOF
-    )
-*/
     user_data = data.template_cloudinit_config.eks_user_data[each.key].rendered
     
   block_device_mappings {
@@ -192,7 +128,7 @@ resource "aws_launch_template" "eks_worker_nodes_spot_high_pod" {
 
 
 data "template_cloudinit_config" "eks_user_data" {
-  for_each = var.spot_node_groups_max_pods
+  for_each = var.spot_node_groups_customised_config
   gzip          = false
   base64_encode = true
 

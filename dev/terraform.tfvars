@@ -61,29 +61,62 @@ include_external_secrets_module = true # Run as post build
 
 
 
+####################  EKS Worker Nodes config - Works with VPC CNI (Generic Config for multiple type of instances) ###################
 
-#EKS Worker Nodes config (Geric Config for multiple type of instances)
-spot_instance_types          =  [ "t3.xlarge", "t3.2xlarge", "m5.2xlarge" ]
-ondemand_instance_types      =  ["t3.medium", "m5.large", "t3.xlarge"]
-required_spot_instances      =  true   # either spot or ondemand or both instance types provision for eks worker nodes
-required_ondemand_instances  =  false   # either spot or ondemand or both instance types provision for eks worker nodes
-
-required_spot_instances_max_pods  =  true 
-
+# ------  Common for SPOT and On-DEMAND -----#
 ebs_volume_size_in_gb        =  20
 ebs_volume_type              =  "gp3"
 
-scaling_config_spot = {
-  desired_size = 2
+#----------- SPOT Node Group Configs with mixed EC2 types  --------------#
+
+required_spot_instances      =  true   # either spot or ondemand or both instance types provision for eks worker nodes
+spot_instance_types          =  [ "t3.xlarge", "t3.2xlarge", "m5.2xlarge" ]
+increase_spot_pod_density    =  true   # applicable only for SPOT Node Group with mixed EC2 types
+
+# ---- Common SPOT Node Scaling Configs ----- #
+base_scaling_config_spot = {
+  desired_size = 1
   max_size     = 20
   min_size     = 1
 }
+
+# ----- Invidual Node group per Instance wise with user provided high POD density in EKS Nodes ----#
+enable_spot_pod_density_customised  =  true  # This will ignore 'required_spot_instances' and use 'spot_instance_types' to create individual node groups based on EC2 types
+
+
+# ---- Overrriding SPOT Node Scaling Configs ----- #
+# Applicable only when 'enable_spot_pod_density_customised' = true
+overrides_node_scale_config = {
+  "t3.xlarge" = {
+    desired_size = 1
+    max_size     = 5
+  },
+  "t3.2xlarge" = {
+    desired_size = 1
+    max_size     = 10
+    max_pods     = 150   
+  },
+  "m5.2xlarge" = {
+    max_pods = 120  # Special high-density configuration
+  }
+}
+
+
+
+#----------- ON-DEMAND Node Group Configs --------------#
+
+required_ondemand_instances  =  false   # either spot or ondemand or both instance types provision for eks worker nodes
+ondemand_instance_types      =  ["t3.medium", "m5.large", "t3.xlarge"]
+
+# ---- Common ON-DEMAND Node Scaling Configs ----- #
 
 scaling_config_ondemand = {
   desired_size = 5
   max_size     = 10
   min_size     = 1
 }
+
+
 
 public_domain_name = "suvendupublicdomain.fun"
  

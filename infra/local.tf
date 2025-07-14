@@ -11,40 +11,43 @@ locals {
     tags                           = var.tags
 
  max_pods = {
-    # Max pods per instance type (using the AWS EKS formula: (ENIs * (IPs per ENI - 1)) + 2)
+  # https://github.com/awslabs/amazon-eks-ami/blob/main/nodeadm/internal/kubelet/eni-max-pods.txt
+    # Max pods per instance type (using the AWS EKS formula: Default : (ENIs * (IPs per ENI - 1)) + 2)
+                         # (AWS default), but can be increased
+  # Max PODs when Prefix Delegation Enabled = (Number of network interfaces for the instance type × (the number of slots per network interface - 1)* 16)
     "t3.large"    = 35   # 3 ENIs * (10-1) + 2 = 29 (AWS default), but can be increased
-    "t3.xlarge"   = 58   # 4 ENIs * (15-1) + 2
-    "t3.2xlarge"  = 58   # 4 ENIs * (15-1) + 2
-    "r5.8xlarge"  = 234  # 8 ENIs * (30-1) + 2
-    "c5.4xlarge"  = 234  # 8 ENIs * (30-1) + 2
-    "m5.large"    = 29
-    "m5.xlarge"   = 58
-    "m5.2xlarge"  = 110
+    "t3.xlarge"   = 58   # 4 ENIs * (15-1) + 2 = 58
+    "t3.2xlarge"  = 58   # 4 ENIs * (12-1) + 2 = 45
+    "m5.large"    = 38   # (3 ENIs × (10 IPs - 1)) + 2 = 29 pods  (2 IPs reserved for Kubernetes system pods)
+    "m5.xlarge"   = 64   # (4 × (15 − 1)) + 2 = 58
+    "m5.2xlarge"  = 110  # 
     "m5.4xlarge"  = 234
     "m5.8xlarge"  = 234
+    "r5.8xlarge"  = 234  # 8 ENIs * (30-1) + 2 = 234
+    "c5.4xlarge"  = 234  # 8 ENIs * (30-1) + 2 = 234
   }
  
  
 
     # Calculate final max_pods with overrides
-  spot_node_groups_max_pods = var.required_spot_instances_max_pods ? {
+  spot_node_groups_customised_config = var.enable_spot_pod_density_customised ? {
     for instance_type in var.spot_instance_types :
     instance_type => {
       instance_type = instance_type
 
       desired_size     = coalesce(
         try(var.overrides_node_scale_config[instance_type].desired_size, null),
-        var.scaling_config_spot.desired_size
+        var.base_scaling_config_spot.desired_size
       )
 
       min_size     = coalesce(
         try(var.overrides_node_scale_config[instance_type].min_size, null),
-        var.scaling_config_spot.min_size
+        var.base_scaling_config_spot.min_size
       )
 
       max_size     = coalesce(
         try(var.overrides_node_scale_config[instance_type].max_size, null),
-        var.scaling_config_spot.max_size
+        var.base_scaling_config_spot.max_size
       )
  
       max_pods     = coalesce(
@@ -62,7 +65,7 @@ locals {
   MAP looks like:
 
 
- + debug_spot_node_groups_max_pods = {
+ + debug_spot_node_groups_customised_config = {
 2025-07-13T22:39:16.6867043Z       + "m5.2xlarge" = {
 2025-07-13T22:39:16.6867234Z           + desired_size  = 2
 2025-07-13T22:39:16.6867462Z           + instance_type = "m5.2xlarge"
