@@ -95,7 +95,7 @@ resource "aws_launch_template" "eks_worker_nodes_spot_high_pod" {
 
   instance_type = each.key
 
-    user_data = data.template_cloudinit_config.eks_user_data[each.key].rendered
+    user_data = data.template_cloudinit_config.eks_user_data_spot_high_pods[each.key].rendered
     
   block_device_mappings {
     #device_name = var.use_bottlerocket ? "/dev/xvda" : "/dev/xvdb"
@@ -127,7 +127,7 @@ resource "aws_launch_template" "eks_worker_nodes_spot_high_pod" {
  
 
 
-data "template_cloudinit_config" "eks_user_data" {
+data "template_cloudinit_config" "eks_user_data_spot_high_pods" {
   for_each = var.spot_node_groups_customised_config
   gzip          = false
   base64_encode = true

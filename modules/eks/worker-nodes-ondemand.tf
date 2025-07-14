@@ -67,7 +67,7 @@ resource "aws_launch_template" "eks_worker_nodes_ondemand" {
   #instance_type = "t2.medium"  # default/fallback
 
       # Conditionally apply user_data
-  user_data = var.increase_ondemand_pod_density ? data.template_cloudinit_config.eks_ondemand_user_data.rendered : null
+  user_data = var.increase_ondemand_pod_density ? data.template_cloudinit_config.eks_user_data_ondemand.rendered : null
  
   block_device_mappings {
     device_name = "/dev/xvda"
@@ -97,7 +97,7 @@ resource "aws_launch_template" "eks_worker_nodes_ondemand" {
 
 
 
- data "template_cloudinit_config" "eks_ondemand_user_data" {
+ data "template_cloudinit_config" "eks_user_data_ondemand" {
   gzip          = false
   base64_encode = true
 
