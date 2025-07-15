@@ -127,7 +127,7 @@ data "template_cloudinit_config" "eks_user_data_ondemand_high_pods" {
       whoami
       /etc/eks/bootstrap.sh ${var.cluster_name} \
         --use-max-pods false \
-        --kubelet-extra-args '--max-pods=${each.value.max_pods} --node-labels=worker-type=suvendu-ondemand'
+        --kubelet-extra-args '--max-pods=${each.value.max_pods}'
     EOF
   }
 }

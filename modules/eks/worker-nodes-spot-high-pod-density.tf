@@ -143,13 +143,10 @@ data "template_cloudinit_config" "eks_user_data_spot_high_pods" {
     content      = <<-EOF
       #!/bin/bash
       set -ex
-      echo "### DEBUG ###"
-      ls -la /etc/eks
-      cat /etc/eks/bootstrap.sh
-      whoami
+ 
       /etc/eks/bootstrap.sh ${var.cluster_name} \
         --use-max-pods false \
-        --kubelet-extra-args '--max-pods=${each.value.max_pods} --node-labels=worker-type=suvendu-spot'
+        --kubelet-extra-args '--max-pods=${each.value.max_pods}'
     EOF
   }
 }
