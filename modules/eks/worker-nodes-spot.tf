@@ -66,7 +66,7 @@ resource "aws_eks_node_group" "demo_eks_nodegroup_spot" {
 
 resource "aws_launch_template" "eks_worker_nodes_spot" {
   name_prefix   = "eks-node-template-spot"
- # image_id      = data.aws_ssm_parameter.eks_optimized_ami.value
+  image_id      = data.aws_ssm_parameter.eks_optimized_ami.value
 
   #instance_type = "t2.medium"  # default/fallback
 
