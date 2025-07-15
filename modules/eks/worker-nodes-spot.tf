@@ -15,7 +15,7 @@ resource "aws_eks_node_group" "demo_eks_nodegroup_spot" {
   instance_types  = var.spot_instance_types
 
   # Force EKS-optimized AMI usage
-  ami_type = var.eks_optimized_ami_type # "AL2_x86_64"  # Amazon Linux 2
+  #ami_type = var.eks_optimized_ami_type # "AL2_x86_64"  # Amazon Linux 2
 
   launch_template {
     id      = aws_launch_template.eks_worker_nodes_spot.id
