@@ -183,5 +183,5 @@ variable "ebs_volume_type" {
 
 variable "eks_optimized_ami_type" {
   description = "AMI Tpes used in EKS worker nodes. It would be a EKS Optimized AMIs"
-  default = "AL2023"  # Amazon Linux 2023 (AL2023)
+  default = "AL2023_x86_64"  # Amazon Linux 2023 (AL2023)
 }
