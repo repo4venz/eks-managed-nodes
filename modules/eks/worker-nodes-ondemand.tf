@@ -15,7 +15,7 @@ resource "aws_eks_node_group" "demo_eks_nodegroup_ondemand" {
   instance_types  = var.ondemand_instance_types
 
   # Force EKS-optimized AMI usage
-  ami_type = var.eks_optimized_ami_type # "AL2_x86_64"  # Amazon Linux 2
+  #ami_type = var.eks_optimized_ami_type # "AL2_x86_64"  # Amazon Linux 2
 
   launch_template {
     id      = aws_launch_template.eks_worker_nodes_ondemand.id
@@ -65,7 +65,7 @@ resource "aws_eks_node_group" "demo_eks_nodegroup_ondemand" {
 
 resource "aws_launch_template" "eks_worker_nodes_ondemand" {
   name_prefix   = "eks-node-template-ondemand"
-  #image_id      = data.aws_ssm_parameter.eks_optimized_ami.value
+  image_id      = data.aws_ssm_parameter.eks_optimized_ami.value
 
   #instance_type = "t2.medium"  # default/fallback
 
