@@ -65,7 +65,7 @@ resource "aws_eks_node_group" "demo_eks_nodegroup_ondemand" {
 
 resource "aws_launch_template" "eks_worker_nodes_ondemand" {
   name_prefix   = "eks-node-template-ondemand"
-  image_id      = data.aws_ssm_parameter.eks_optimized_ami.value
+  #image_id      = data.aws_ssm_parameter.eks_optimized_ami.value
 
   #instance_type = "t2.medium"  # default/fallback
 

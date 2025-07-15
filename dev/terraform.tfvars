@@ -75,9 +75,9 @@ ebs_volume_type              =  "gp3"
 #----------- SPOT Node Group Configs with mixed EC2 types  --------------#
 #-----------------------------------------------------------------------------
 
-required_spot_instances      =  true   # either spot or ondemand or both instance types provision for eks worker nodes
+required_spot_instances      =  false   # either spot or ondemand or both instance types provision for eks worker nodes
 spot_instance_types          =  [ "t3.xlarge", "t3.2xlarge", "m5.2xlarge" ]
-increase_spot_pod_density    =  true   # applicable only when (required_spot_instances=true) for SPOT Node Group with mixed EC2 types. All EC2 instances POD density will be increased upto max
+increase_spot_pod_density    =  false   # applicable only when (required_spot_instances=true) for SPOT Node Group with mixed EC2 types. All EC2 instances POD density will be increased upto max
 
 # ---- Common SPOT Node Scaling Configs ----- #
 base_scaling_config_spot = {
@@ -87,7 +87,7 @@ base_scaling_config_spot = {
 }
 
 # ----- Invidual Node group per Instance wise with user provided high POD density in EKS Nodes ----#
-enable_spot_pod_density_customised  =  false  # This will ignore 'required_spot_instances' and use 'spot_instance_types' to create individual node groups based on EC2 types
+enable_spot_pod_density_customised  =  true  # This will ignore 'required_spot_instances' and use 'spot_instance_types' to create individual node groups based on EC2 types
 
 
 # ---- Overrriding SPOT Node Scaling Configs ----- #
@@ -114,9 +114,9 @@ overrides_spot_node_scale_config = {
 #----------- ON-DEMAND Node Group Configs --------------#
 #--------------------------------------------------------------
 
-required_ondemand_instances   =  true   # either spot or ondemand or both instance types provision for eks worker nodes
+required_ondemand_instances   =  false   # either spot or ondemand or both instance types provision for eks worker nodes
 ondemand_instance_types       =  ["t3.medium", "m5.large", "t3.xlarge"]
-increase_ondemand_pod_density = true  # applicable only when (required_ondemand_instances=true) for ON-DEMAND Node Group with mixed EC2 types. All EC2 instances POD density will be increased upto max
+increase_ondemand_pod_density = false  # applicable only when (required_ondemand_instances=true) for ON-DEMAND Node Group with mixed EC2 types. All EC2 instances POD density will be increased upto max
 
 # ---- Common ON-DEMAND Node Scaling Configs ----- #
 

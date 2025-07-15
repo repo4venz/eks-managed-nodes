@@ -97,7 +97,7 @@ resource "aws_launch_template" "eks_worker_nodes_spot_high_pod" {
   name_prefix = "${aws_eks_cluster.demo_eks_cluster.name}-high-pod-${replace(each.key , ".", "")}-" 
 
   instance_type = each.key
-  image_id      = data.aws_ssm_parameter.eks_optimized_ami.value
+  #image_id      = data.aws_ssm_parameter.eks_optimized_ami.value
 
   user_data = data.template_cloudinit_config.eks_user_data_spot_high_pods[each.key].rendered
     
