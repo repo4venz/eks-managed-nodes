@@ -7,7 +7,7 @@
 resource "aws_iam_role" "eso_app_irsa" {
 #for_each = { for idx, secret in var.aws_test_secrets : idx => secret.application_namespace }
 
-for_each = toset(var.app_namespaces)
+for_each = toset(var.app_namespace)
  name  = substr("${var.k8s_cluster_name}-eso-app-irsa-role-${each.value}",0,64)
  
   assume_role_policy = jsonencode({
@@ -52,7 +52,7 @@ resource "aws_iam_policy" "eso_app_irsa_policy" {
 resource "aws_iam_role_policy_attachment" "external_secrets_attachment" {
 #for_each = { for idx, secret in var.aws_test_secrets : idx => secret.application_namespace }
 
-for_each = toset(var.app_namespaces)
+for_each = toset(var.app_namespace)
   role       = aws_iam_role.eso_app_irsa[each.key].name
   policy_arn = aws_iam_policy.eso_app_irsa_policy.arn
 }
@@ -60,7 +60,7 @@ for_each = toset(var.app_namespaces)
 
 resource "kubernetes_service_account" "eso_app_sa" {
   #for_each = { for idx, secret in var.aws_test_secrets : idx => secret.application_namespace }
-for_each = toset(var.app_namespaces)
+for_each = toset(var.app_namespace)
   metadata {
     name      = "${each.value}-eso-sa"
     namespace = each.key
