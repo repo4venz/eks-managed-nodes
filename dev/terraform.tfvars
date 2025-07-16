@@ -114,9 +114,9 @@ overrides_spot_node_scale_config = {
 #----------- ON-DEMAND Node Group Configs --------------#
 #--------------------------------------------------------------
 
-required_ondemand_instances   =  false   # either spot or ondemand or both instance types provision for eks worker nodes
+required_ondemand_instances   =  true   # either spot or ondemand or both instance types provision for eks worker nodes
 ondemand_instance_types       =  ["t3.medium", "m5.large", "t3.xlarge"]
-increase_ondemand_pod_density = false  # applicable only when (required_ondemand_instances=true) for ON-DEMAND Node Group with mixed EC2 types. All EC2 instances POD density will be increased upto max
+increase_ondemand_pod_density = true  # applicable only when (required_ondemand_instances=true) for ON-DEMAND Node Group with mixed EC2 types. All EC2 instances POD density will be increased upto max
 
 # ---- Common ON-DEMAND Node Scaling Configs ----- #
 
