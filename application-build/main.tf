@@ -22,4 +22,11 @@ module "kubernetes_app_secured" {
 }
  
 
- 
+ module "application-external-secrets" {
+  count = var.application-external-secrets_module ? 1 : 0
+  source                        = "../modules/app-ext-secrets"
+  k8s_cluster_name              =  "${var.cluster_name}-${var.environment}" #module.eks.eks_cluster_name
+  app_namespace                 =  var.app_namespace   
+
+ # depends_on = [module.cert-manager]
+}

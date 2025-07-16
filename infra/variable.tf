@@ -284,11 +284,7 @@ variable "include_vpc_cni_addon_module" {
   description = "Execute module or not. true = execute and false = don't execute"
 }
 
-variable "public_domain_name" {
-  description = "Public Domain name hosted in Route53. e.g. suvendupublicdomain.fun"
-  type        = string
-  default = ""
-}
+
 
 variable "increase_spot_pod_density" {
   type        = bool
