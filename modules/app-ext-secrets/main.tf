@@ -44,4 +44,5 @@ resource "kubernetes_manifest" "secret_store" {
       }
     }
   }
+    depends_on = [ aws_iam_role_policy_attachment.eso_app_irsa_attachment    ]
 }

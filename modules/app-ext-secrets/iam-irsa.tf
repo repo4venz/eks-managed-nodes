@@ -49,7 +49,7 @@ resource "aws_iam_policy" "eso_app_irsa_policy" {
   })
 }
 
-resource "aws_iam_role_policy_attachment" "external_secrets_attachment" {
+resource "aws_iam_role_policy_attachment" "eso_app_irsa_attachment" {
 #for_each = { for idx, secret in var.aws_test_secrets : idx => secret.application_namespace }
 
 for_each = toset(var.app_namespace)
