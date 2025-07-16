@@ -10,7 +10,13 @@ variable "app_namespace" {
   type        = list(string)
   default     = ["myapps1", "myapps2"]
 }
- 
+
+variable "cluster_version" {}
+
+variable "region_name" {
+  description = "AWS Region code"
+  default = "eu-west-2"
+}
  
 variable "tags" {
   type        = map(string)
