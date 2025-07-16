@@ -1,15 +1,6 @@
 
  
-module "cert-manager" {
-  count = var.include_cert_manager_module ? 1 : 0
-  source                                        = "../modules/cert-manager"
-  certmanager_chart_version                     =  var.certmanager_chart_version
-  k8s_cluster_name                              =  "${var.cluster_name}-${var.environment}" #module.eks.eks_cluster_name
-  
-  #depends_on = [module.eks, module.nginx_alb_controller]
-}
 
- 
 
 
 module "external-dns" {
@@ -18,7 +9,7 @@ module "external-dns" {
   k8s_cluster_name                              =  "${var.cluster_name}-${var.environment}" #module.eks.eks_cluster_name
   k8s_namespace                                 = "kube-system"
 
-  depends_on = [module.cert-manager]
+ # depends_on = [module.cert-manager]
 }
 
 
@@ -40,7 +31,7 @@ module "lets-encrypt" {
   environment        =  var.environment
   acme_environment   = "prod"    # Let's Encrypt ACME env = prod is required for valid ssl certs in browser                         
   
-  depends_on = [module.external-dns, module.cert-manager]
+  depends_on = [module.external-dns ]
 }
 
 
@@ -53,7 +44,7 @@ module "external-secrets-controller" {
   external_secret_chart_version =  var.external_secret_chart_version
  # aws_test_secrets              =  var.aws_test_secrets  ## This is only testing purpose
 
-  depends_on = [module.cert-manager]
+ # depends_on = [module.cert-manager]
 }
 
 
@@ -65,6 +56,6 @@ module "kube-cost" {
   environment               =  var.environment
   ingress_host              =  "kubecost.${var.public_domain_name}"
 
-  depends_on = [module.lets-encrypt, module.external-dns, module.cert-manager]
+  depends_on = [module.lets-encrypt, module.external-dns]
 }
  
