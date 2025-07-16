@@ -88,7 +88,7 @@ resource "time_sleep" "wait_30_seconds_for_secret_store" {
           }
         },
         {
-          secretKey = "application-password"        # Same AWS secret as above
+          secretKey = "application-password"        # Key in the K8s Secret
           remoteRef = {
             key      = "${each.value.secret_name}"   # Same AWS secret as above
             property = "app-password"                   # Different field in the same AWS secret
