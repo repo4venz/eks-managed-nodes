@@ -50,4 +50,13 @@ variable "public_domain_name" {
   default = ""
 }
 
- 
+  
+variable "aws_test_secrets" {
+  type = list(object({
+    secret_name           = string
+    application_namespace = string
+  }))
+  default = []
+  description = "List of Secrets of AWS Secrets Manager and Kubernetes Application Namespace. It will map the which secrets will be accessed from which namespace"
+   
+}

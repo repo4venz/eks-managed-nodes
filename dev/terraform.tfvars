@@ -32,12 +32,10 @@ aws_test_secrets               = [
                                     {
                                         secret_name = "test/application3/credentials",          # Reference to the secret of AWS Secret Manager 
                                         application_namespace = "myapps1"                # K8s namespace in EKS where the AWS Secret will sync
-                                        k8s_secret_store_name = "application1-secret-store"     # K8s Secret Store name which will be created in EKS to sync the AWS Secrets
                                     },
                                     {
                                         secret_name = "test/application4/credentials",
                                         application_namespace = "myapps2"
-                                        k8s_secret_store_name = "application2-secret-store" 
                                     }
                                 ]
 

@@ -27,6 +27,7 @@ module "kubernetes_app_secured" {
   source                        = "../modules/app-ext-secrets"
   app_namespace                 =  var.app_namespace  
   k8s_cluster_name              =  "${var.cluster_name}-${var.environment}" 
-  
+  aws_test_secrets              =   var.aws_test_secrets
+
  # depends_on = [module.cert-manager]
 }
