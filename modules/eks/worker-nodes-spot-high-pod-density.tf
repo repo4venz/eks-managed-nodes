@@ -144,9 +144,9 @@ data "template_cloudinit_config" "eks_user_data_spot_high_pods" {
       #!/bin/bash
       set -ex
  
-      /etc/eks/bootstrap.sh ${var.cluster_name} \
+      /etc/eks/bootstrap.sh '${var.cluster_name}' \
         --use-max-pods false \
-        --kubelet-extra-args '--max-pods=${each.value.max_pods}'
+        --kubelet-extra-args '--max-pods=${each.value.max_pods} --node-labels=node_group_custom=infra'
     EOF
   }
 }
