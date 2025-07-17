@@ -18,4 +18,8 @@ data "aws_iam_openid_connect_provider" "oidc" {
   url = data.aws_eks_cluster.this.identity[0].oidc[0].issuer
 }
 
- 
+ data "aws_eks_addon_version" "pod_identity_agent" {
+  addon_name         = "aws-eks-pod-identity-agent"
+  kubernetes_version = data.aws_eks_cluster.this.version
+  most_recent        = true
+}

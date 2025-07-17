@@ -108,7 +108,7 @@ module "calico" {
   k8s_cluster_name                              =  "${var.cluster_name}-${var.environment}" #module.eks.eks_cluster_name
   calico_chart_version                          =  var.calico_chart_version
 
-  depends_on = [module.eks, module.vpc-cni-addon]
+  depends_on = [module.eks, module.vpc-cni-addon, module.coredns-addon, module.kube-proxy-addon, module.pod_indentity_agent]
 }
 
 module "nginx_alb_controller" {
