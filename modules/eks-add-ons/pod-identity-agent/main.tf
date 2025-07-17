@@ -1,5 +1,5 @@
-resource "helm_release" "pod_identity_agent" {
-  name       = "aws-pod-identity-agent"
+
+  /*name       = "aws-pod-identity-agent"
   repository = "https://aws.github.io/eks-charts"
   chart      = "aws-pod-identity-agent"
   #version    = "aws_eks_addon_version.pod_identity_agent.version"
@@ -18,4 +18,12 @@ resource "helm_release" "pod_identity_agent" {
       })
     ]
 }
+*/
 
+resource "aws_eks_addon" "pod_identity_agent" {
+  cluster_name                = data.aws_eks_cluster.this.name
+  addon_name                  = data.aws_eks_addon_version.pod_identity_agent.addon_name
+  addon_version               = data.aws_eks_addon_version.pod_identity_agent.version # optional (e.g. "v1.16.0-eksbuild.1")
+  resolve_conflicts_on_create = "OVERWRITE"
+  resolve_conflicts_on_update = "OVERWRITE"
+}
