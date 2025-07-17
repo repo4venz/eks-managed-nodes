@@ -1,4 +1,4 @@
-name: "Terraform Build All (Infra, Post-Build and Application) Workflow"
+name: "Terraform Plan All (Infra, Post-Build and Application) Workflow"
 on:
   workflow_dispatch:  # Manual trigger via GitHub UI
 
@@ -105,12 +105,7 @@ jobs:
         if: "!contains(github.event.head_commit.message, 'destroy')"
         id: plan_infra
         run: TF_LOG=DEBUG terraform -chdir=infra plan -input=false -var-file=$(pwd)/${{ matrix.environment }}/terraform.tfvars -no-color
-
-      - name: Terraform Apply (Infra only)
-        if: "!contains(github.event.head_commit.message, 'destroy')"
-        id: apply_infra
-        run: TF_LOG=DEBUG terraform -chdir=infra apply -auto-approve -input=false -var-file=$(pwd)/${{matrix.environment }}/terraform.tfvars
-
+ 
       - name: Format Terraform (Post Build Only)
         run: terraform -chdir=post-build fmt
 
@@ -127,12 +122,7 @@ jobs:
         if: "!contains(github.event.head_commit.message, 'destroy')"
         id: plan_post_build
         run: TF_LOG=DEBUG terraform -chdir=post-build plan -input=false -var-file=$(pwd)/${{ matrix.environment }}/terraform.tfvars -no-color
-
-      - name: Terraform Apply (Post Build Only)
-        if: "!contains(github.event.head_commit.message, 'destroy')"
-        id: apply_post_build
-        run: TF_LOG=DEBUG terraform -chdir=post-build apply -auto-approve -input=false -var-file=$(pwd)/${{matrix.environment }}/terraform.tfvars
-
+ 
 
       - name: Format Terraform (Application Only)
         run: terraform -chdir=application-build fmt
@@ -151,10 +141,6 @@ jobs:
         id: plan_application
         run: TF_LOG=DEBUG terraform -chdir=application-build plan -input=false -var-file=$(pwd)/${{ matrix.environment }}/terraform.tfvars -no-color
 
-      - name: Terraform Apply (Application only)
-        if: "!contains(github.event.head_commit.message, 'destroy')"
-        id: apply_application
-        run: TF_LOG=DEBUG terraform -chdir=application-build apply -auto-approve -input=false -var-file=$(pwd)/${{matrix.environment }}/terraform.tfvars
 
   comment:
     runs-on: ubuntu-latest
