@@ -2,7 +2,7 @@ resource "helm_release" "pod_identity_agent" {
   name       = "aws-pod-identity-agent"
   repository = "https://aws.github.io/eks-charts"
   chart      = "aws-pod-identity-agent"
-  version    = "aws_eks_addon_version.pod_identity_agent.version"
+  #version    = "aws_eks_addon_version.pod_identity_agent.version"
   namespace  = "kube-system"
 
   values = [
