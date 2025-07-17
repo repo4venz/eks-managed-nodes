@@ -1,19 +1,3 @@
-data "aws_iam_policy_document" "prometheus_assume_role" {
-  statement {
-    effect = "Allow"
-    actions = ["sts:AssumeRoleWithWebIdentity"]
-    principals {
-      type        = "Federated"
-      identifiers = [data.aws_iam_openid_connect_provider.oidc.arn]
-    }
-
-    condition {
-      test     = "StringEquals"
-      variable = "${replace(data.aws_iam_openid_connect_provider.oidc.url, "https://", "")}:sub"
-      values   = ["system:serviceaccount:${var.k8s_namespace}:prometheus-sa"]
-    }
-  }
-}
 
  
 resource "aws_iam_role" "prometheus_role" {
@@ -41,11 +25,7 @@ resource "aws_iam_role_policy" "prometheus_policy" {
           "autoscaling:DescribeAutoScalingGroups",
           "logs:DescribeLogGroups",
           "logs:GetLogEvents",
-          "logs:FilterLogEvents",
-          "ec2:DescribeInstances",
-          "ec2:DescribeRegions",
-          "ec2:DescribeTags",
-          "ec2:DescribeVolumes"
+          "logs:FilterLogEvents"
         ],
         Resource = "*"
       }
@@ -71,7 +51,7 @@ resource "helm_release" "prometheus" {
     yamlencode({
       serviceAccounts = {
         server = {
-          name        = "prometheus-sa"
+          name        = "${var.prometheus_service_account_name}"
           annotations = {
             "eks.amazonaws.com/role-arn" = aws_iam_role.prometheus_role.arn
           }

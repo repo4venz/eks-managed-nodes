@@ -25,3 +25,10 @@ variable "environment" {
   type        = string
   default = "test"
 }
+
+
+variable "prometheus_service_account_name" {
+  type        = string
+  description = "Service Account Name of kube-prometheus-stack"
+  default     = "prometheus-sa"
+}
