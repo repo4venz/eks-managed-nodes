@@ -1,4 +1,4 @@
-name: "Terraform Post Build Deployment"
+name: "Deploy-Post Build Only TF Workflow"
 on:
   workflow_dispatch:
   push:

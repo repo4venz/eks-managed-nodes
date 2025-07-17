@@ -1,4 +1,4 @@
-name: Terraform Destroy - Infra Only
+name: Destroy-Infra Only TF Workflow
 on:
   workflow_dispatch:  # Manual trigger via GitHub UI
 

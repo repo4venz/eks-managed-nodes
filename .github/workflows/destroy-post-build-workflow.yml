@@ -1,4 +1,4 @@
-name: Terraform Destroy - Post Build Only
+name: Destroy-Post Build Only TF Workflow
 on:
   workflow_dispatch:  # Manual trigger via GitHub UI
 

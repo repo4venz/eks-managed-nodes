@@ -1,4 +1,4 @@
-name: Terraform Destroy - All
+name: Destory-All (Infra, Post-Build and Application) TF Workflow
 on:
   workflow_dispatch:  # Manual trigger via GitHub UI
 

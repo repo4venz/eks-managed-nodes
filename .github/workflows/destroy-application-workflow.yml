@@ -1,4 +1,4 @@
-name: Terraform Destroy - Application Only
+name: Destroy-Application Only TF Workflow
 on:
   workflow_dispatch:  # Manual trigger via GitHub UI
 

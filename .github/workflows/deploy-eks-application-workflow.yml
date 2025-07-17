@@ -1,4 +1,4 @@
-name: "Terraform Application Deployment"
+name: "Deploy-Application Deployment Only TF Workflow"
 on:
   workflow_dispatch:
   push:

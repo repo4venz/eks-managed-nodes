@@ -1,4 +1,4 @@
-name: "Terraform Build All (Infra, Post-Build and Application) Workflow"
+name: "Deploy-Build All (Infra, Post-Build and Application) TF Workflow"
 on:
   workflow_dispatch:  # Manual trigger via GitHub UI
 
