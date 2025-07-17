@@ -52,6 +52,22 @@ resource "aws_eks_addon" "ebs_csi" {
   configuration_values = jsonencode({
       defaultStorageClass = {
         enabled = true
+            name = var.ebs_volume_custom_name  # Custom name
+            annotations = {
+            "kubernetes.io/created-for/pv/storagetype" = "EBS"
+            "kubernetes.io/created-for/pv/driver" = "ebs.csi" 
+            "kubernetes.io/created-for/pv/volume-type" = "gp3"
+            "kubernetes.io/created-for/pv/iops" = var.ebs_volume_iops
+            "kubernetes.io/created-for/pv/encrypted" = "true"
+            "kubernetes.io/created-for/pv/kms-key-id" = var.eks_kms_secret_encryption_key_arn 
+          }
+        parameters = {
+          type = "gp3"  # Example volume type
+          iops = var.ebs_volume_iops  # Example IOPS value
+          throughput = var.ebs_volume_throughput  # Example throughput value
+          encrypted = "true"
+          kmsKeyId = var.eks_kms_secret_encryption_key_arn  # Example KMS Key ARN}
+        }
       }
     })
 

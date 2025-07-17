@@ -43,7 +43,7 @@ prometheus:
           resources:
             requests:
               storage: ${storage_size}  #10Gi  # Adjust storage size as needed
-          storageClassName:  ${storage_class_name}  #"ebs-csi-default-sc" #"gp3"  # Use gp3 for better performance
+          storageClassName:  ${storage_class_name}  # "eks-ebs-csi-gp3-storageclass" #"gp3"  # Use gp3 for better performance
     resources:
       requests:
         memory: 2Gi

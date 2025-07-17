@@ -152,6 +152,23 @@ variable "ebs_volume_type" {
   default     = "gp3"
 }
  
+variable "ebs_volume_iops" {
+  type        = number
+  description = "EKS Worker Node EBS Volume IOPS for SPOT and On_DEMAND instances"
+  default     = 3000
+}
+
+variable "ebs_volume_custom_name" {
+  type        = string
+  description = "EKS Worker Node EBS Volume Name for SPOT and On_DEMAND instances"
+  default     = "eks-ebs-csi-gp3-storageclass"
+}
+
+variable ebs_volume_throughput {
+  type        = number
+  description = "EKS Worker Node EBS Volume Throughput for SPOT and On_DEMAND instances"
+  default     = 125
+}
  
 
  variable "spot_node_groups_customised_config" {
