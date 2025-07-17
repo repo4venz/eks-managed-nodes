@@ -260,7 +260,7 @@ resource "kubernetes_ingress_v1" "kubecost" {
   ]
 }
 
-
+/*
 
 ### This is for Vertical Pod Autoscaler (VPA) for Kubecost
 # Vertical Pod Autoscaler (VPA) for Kubecost
@@ -295,3 +295,5 @@ resource "kubernetes_vertical_pod_autoscaler" "kubecost_vpa" {
     }
   }
 }
+
+*/
