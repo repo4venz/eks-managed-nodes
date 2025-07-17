@@ -90,6 +90,9 @@ resource "helm_release" "aws_ebs_csi_driver" {
   chart      = "aws-ebs-csi-driver"
   namespace  = "kube-system"
   version    = var.ebs_csi_helm_chart_version
+  atomic           = true
+  cleanup_on_fail  = true
+  timeout    = 900
 
   values = [
     yamlencode({
