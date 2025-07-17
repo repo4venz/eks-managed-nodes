@@ -11,6 +11,7 @@ locals {
     eks_worker_nodes_role_arn      = module.eks.eks_worker_nodes_role_arn
     eks_cluster_version            = module.eks.eks_cluster_version
     eks_cluster_platform_version   = module.eks.eks_cluster_platform_version
+    eks_kms_secret_encryption_alias_arn     = module.kms_aws.eks_kms_secret_encryption_alias_arn
     tags                           = var.tags
 
  max_pods = {

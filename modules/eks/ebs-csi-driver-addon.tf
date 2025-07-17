@@ -92,7 +92,7 @@ resource "helm_release" "aws_ebs_csi_driver" {
   version    = var.ebs_csi_helm_chart_version
   atomic           = true
   cleanup_on_fail  = true
-  timeout    = 900
+  timeout    = 2000
 
   values = [
     yamlencode({
@@ -111,12 +111,12 @@ resource "helm_release" "aws_ebs_csi_driver" {
           annotations = {
             "storageclass.kubernetes.io/is-default-class" = "true"
           }
-          type      = var.ebs_volume_type
-          encrypted = true
-          kmsKeyId = var.eks_kms_secret_encryption_alias_arn
           parameters = {
             iops      = var.ebs_volume_iops
             throughput = var.ebs_volume_throughput
+            type      = var.ebs_volume_type
+            encrypted = "true"
+            kmsKeyId = var.eks_kms_secret_encryption_alias_arn
           }
         }
       ]
