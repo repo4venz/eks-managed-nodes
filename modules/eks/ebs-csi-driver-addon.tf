@@ -49,31 +49,20 @@ resource "aws_eks_addon" "ebs_csi" {
   resolve_conflicts_on_create = "OVERWRITE"
   resolve_conflicts_on_update = "OVERWRITE"
 
+  # Only supported configuration parameters
   configuration_values = jsonencode({
-      defaultStorageClass = {
-        enabled = true
-            name = var.ebs_volume_custom_name  # Custom name
-            annotations = {
-            "kubernetes.io/created-for/pv/storagetype" = "EBS"
-            "kubernetes.io/created-for/pv/driver" = "ebs.csi" 
-            "kubernetes.io/created-for/pv/volume-type" = "gp3"
-            "kubernetes.io/created-for/pv/iops" = var.ebs_volume_iops
-            "kubernetes.io/created-for/pv/encrypted" = "true"
-            "kubernetes.io/created-for/pv/kms-key-id" = var.eks_kms_secret_encryption_key_arn 
-          }
-        parameters = {
-          type = "gp3"  # Example volume type
-          iops = var.ebs_volume_iops  # Example IOPS value
-          throughput = var.ebs_volume_throughput  # Example throughput value
-          encrypted = "true"
-          kmsKeyId = var.eks_kms_secret_encryption_key_arn  # Example KMS Key ARN}
-        }
-      }
-    })
+    storageClass = {
+      defaultClass = true
+      encrypted    = true
+      type         = "gp3"
+      # Note: These are the only supported parameters in the EKS addon configuration
+    }
+  })
 
     tags = {
-      Name = "EBS CSI Driver Addon"
-      Desc = "EBS CSI Driver Addon for EKS Worker Nodes"
+      "csi-driver-name" = "EBS CSI Driver Addon"
+      "description" = "EBS CSI Driver Addon for EKS Worker Nodes"
+      "terraform" = "true"
   }
   depends_on = [
     aws_eks_node_group.demo_eks_nodegroup_spot,

@@ -42,10 +42,17 @@ resource "aws_eks_addon" "efs_csi_driver" {
  
   resolve_conflicts_on_create = "OVERWRITE"
   resolve_conflicts_on_update = "OVERWRITE"
+  
+  configuration_values = jsonencode({
+    storageClass = {
+      encrypted    = true
+    }
+  })
 
-    tags = {
-    Name = "EFS CSI Driver Addon"
-    Desc = "EFS CSI Driver Addon for EKS Worker Nodes"
+  tags = {
+      "csi-driver-name" = "EFS CSI Driver Addon"
+      "description" = "EFS CSI Driver Addon for EKS Worker Nodes"
+      "terraform" = "true"
   }
 
   depends_on = [
