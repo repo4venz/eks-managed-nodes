@@ -57,13 +57,13 @@ variable "storage_class" {
 variable "storage_size" {
   description = "Size of persistent volume"
   type        = string
-  default     = "10Gi"
+  default     = "2Gi"
 }
 
 variable "prometheus_retention" {
   description = "Prometheus data retention period"
   type        = string
-  default     = "7d"
+  default     = "1d"
 }
 
 variable "ingress_host" {
@@ -78,4 +78,11 @@ variable "tags" {
   description = "Tags for AWS resources"
   type        = map(string)
   default     = {}
+}
+
+
+variable prometheus_namespace {
+  description = "Namespace where Prometheus is deployed"
+  type        = string
+  default     = "monitoring"
 }

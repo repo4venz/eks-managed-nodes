@@ -79,6 +79,31 @@ prometheus:
             replacement: $1:$2
             target_label: __address__
 
+  # Configure Prometheus to scrape metrics from Kubecost
+      - job_name: 'kubecost'
+        honor_labels: true
+        scrape_interval: 1m
+        scrape_timeout: 10s
+        metrics_path: /metrics
+        scheme: http
+        static_configs:
+      - targets: ['kubecost-cost-analyzer.kubecost.svc:9003']
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_namespace]
+            action: keep
+            regex: kubecost
+          - source_labels: [__meta_kubernetes_service_name]
+            action: keep
+            regex: kubecost-cost-analyzer
+
+      - job_name: 'node-exporter'
+        static_configs:
+      - targets: ['node-exporter.kube-system.svc:9100']
+
+      - job_name: 'kube-state-metrics'
+        static_configs:
+      - targets: ['kube-state-metrics.kube-system.svc:8080']
+
 
 
   # Enable Grafana

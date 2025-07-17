@@ -73,8 +73,8 @@ resource "aws_iam_role_policy_attachment" "kubecost_custom" {
 }
 
  
-
-# Kubecost Helm Release
+/*
+# Kubecost Helm Release (Use it's own Prometheus and Graphana Servers)
 resource "helm_release" "kubecost" {
   name       = "kubecost"
   repository = "https://kubecost.github.io/cost-analyzer/"
@@ -123,6 +123,71 @@ values = [
     aws_iam_role_policy_attachment.kubecost_custom
     ]
 }
+*/
+
+
+
+
+#http://prometheus-operated.monitoring.svc.cluster.local:9090 (Existing Prometheus Service)
+
+# Kubecost Helm Release ( Use existing Prometheus but own kube-cost bunddled Graphana Server)
+resource "helm_release" "kubecost" {
+  name       = "kubecost"
+  repository = "https://kubecost.github.io/cost-analyzer/"
+  chart      = "cost-analyzer"
+  version    = var.kubecost_chart_version
+  namespace  = var.namespace
+  create_namespace = true
+  atomic           = true
+  cleanup_on_fail  = true
+  timeout    = 900
+  
+values = [
+  yamlencode({
+    global = {
+      clusterName = var.k8s_cluster_name
+      prometheus  = {
+        url = "http://prometheus-operated.${var.prometheus_namespace}.svc.cluster.local:9090" # Use existing Prometheus Service
+        enabled = false
+      }
+    }
+    
+    serviceAccount = {
+      create = true
+      name   = var.service_account_name
+      annotations = {
+        "eks.amazonaws.com/role-arn" = aws_iam_role.kubecost.arn
+      }
+    }
+    
+    kubecostProductConfigs = {
+      clusterName       = var.k8s_cluster_name
+      awsAthenaProjectID = data.aws_caller_identity.current.account_id
+      awsRegion        = data.aws_region.current.id
+    }
+    
+    prometheus = {
+      enabled = false # Disable internal Prometheus  # Disable Kubecost's bundled Prometheus
+      # Use existing Prometheus Service
+      fqdn = "http://prometheus-operated.${var.prometheus_namespace}.svc.cluster.local"
+      service = {
+        port = 9090
+      }
+      operator = {
+        enabled = false # Disable Prometheus Operator
+      }  
+    }
+  })
+]
+  depends_on = [
+    aws_iam_role_policy_attachment.kubecost,
+    aws_iam_role_policy_attachment.kubecost_custom
+    ]
+}
+
+
+
+
 
 # Ingress with TLS
 resource "kubernetes_ingress_v1" "kubecost" {
