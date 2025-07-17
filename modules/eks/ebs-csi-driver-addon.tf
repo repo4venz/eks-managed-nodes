@@ -12,7 +12,7 @@ data "aws_iam_policy_document" "ebs_csi_assume_role_policy" {
     condition {
       test     = "StringEquals"
       variable = "${replace(aws_iam_openid_connect_provider.oidc_provider.url, "https://", "")}:sub"
-      values   = ["system:serviceaccount:kube-system:${ebs_csi_service_account_name}"]
+      values   = ["system:serviceaccount:kube-system:${var.ebs_csi_service_account_name}"]
     }
   }
 }
