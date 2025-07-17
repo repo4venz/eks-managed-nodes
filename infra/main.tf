@@ -93,6 +93,15 @@ module "coredns-addon" {
   depends_on = [module.eks]
 }
 
+module "pod_indentity_agent" {
+  count = var.include_pod_identity_agent_addon_module ? 1 : 0
+  source                                        = "../modules/eks-add-ons/pod-identity-agent"
+  k8s_cluster_name                              =  "${var.cluster_name}-${var.environment}" #module.eks.eks_cluster_name
+  eks_worker_nodes_role_arn                     =  local.eks_worker_nodes_role_arn 
+
+  depends_on = [module.eks]
+}
+
 
 module "calico" {
   count = var.include_calico_module ? 1 : 0

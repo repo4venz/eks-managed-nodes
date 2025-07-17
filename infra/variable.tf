@@ -317,6 +317,12 @@ variable "include_coredns_addon_module" {
   description = "Execute module or not. true = execute and false = don't execute"
 }
 
+
+variable include_pod_identity_agent_addon_module {
+  type        = bool
+  default     = true
+  description = "Execute module or not. true = execute and false = don't execute"
+}
  
 variable "max_pods" {
   description = "Map of instance type to max pods"

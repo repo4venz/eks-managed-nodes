@@ -7,7 +7,10 @@ locals {
     eks_cluster_id                 = module.eks.eks_cluster_name
     eks_oidc_issuer_url            = module.eks.oidc_provider 
     eks_oidc_provider_arn          = "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:oidc-provider/${module.eks.oidc_provider}"
-    eks_certificate_authority_data = module.eks.eks_cluster_certificate_authority_data 
+    eks_certificate_authority_data = module.eks.eks_cluster_certificate_authority_data
+    eks_worker_nodes_role_arn      = module.eks.eks_worker_nodes_role_arn
+    eks_cluster_version            = module.eks.eks_cluster_version
+    eks_cluster_platform_version   = module.eks.eks_cluster_platform_version
     tags                           = var.tags
 
  max_pods = {

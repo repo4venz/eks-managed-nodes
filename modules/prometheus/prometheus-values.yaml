@@ -83,9 +83,9 @@ grafana:
   ingress:
     enabled: true
     hosts:
-      - [var.grafana_ingress_hostname]  # Replace with your domain
-    paths: ["/"]  # Path for Grafana
-    pathType: "Prefix"
+      - ${var.grafana_ingress_hostname}  # Replace with your domain
+    path: /
+    pathType: Prefix
     tls:
       - secretName: grafana-tls  # Replace with your TLS secret name
         hosts:

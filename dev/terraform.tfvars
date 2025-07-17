@@ -39,9 +39,10 @@ aws_test_secrets               = [
                                     }
                                 ]
 
-include_vpc_cni_addon_module = false
+include_vpc_cni_addon_module = true
 include_kube_proxy_addon_module = true
 include_coredns_addon_module = true
+include_pod_identity_agent_addon_module = true
 include_ebs_csi_driver_addon = true
 include_efs_csi_driver_addon = true
 

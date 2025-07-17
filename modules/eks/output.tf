@@ -52,7 +52,10 @@ output "eks_cluster_primary_security_group_id" {
 }
 
 
- 
+output eks_worker_nodes_role_arn {
+  description = "The ARN of the IAM role associated with the EKS worker nodes"
+  value       = try(aws_iam_role.eks_worker_nodes_role.arn, "")
+}
 
 ################################################################################
 # IRSA - OIDC
