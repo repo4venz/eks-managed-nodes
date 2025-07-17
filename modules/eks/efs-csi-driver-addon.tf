@@ -11,7 +11,7 @@ data "aws_iam_policy_document" "efs_csi_assume_role_policy" {
     condition {
       test     = "StringEquals"
       variable = "${replace(aws_iam_openid_connect_provider.oidc_provider.url, "https://", "")}:sub"
-      values   = ["system:serviceaccount:kube-system:efs-csi-controller-sa"]
+      values   = ["system:serviceaccount:kube-system:${efs_csi_service_account_name}"]
     }
   }
 }
@@ -43,12 +43,7 @@ resource "aws_eks_addon" "efs_csi_driver" {
   resolve_conflicts_on_create = "OVERWRITE"
   resolve_conflicts_on_update = "OVERWRITE"
   
-  configuration_values = jsonencode({
-    storageClass = {
-      encrypted    = true
-    }
-  })
-
+  
   tags = {
       "csi-driver-name" = "EFS CSI Driver Addon"
       "description" = "EFS CSI Driver Addon for EKS Worker Nodes"
@@ -59,7 +54,9 @@ resource "aws_eks_addon" "efs_csi_driver" {
     aws_iam_role_policy_attachment.efs_csi_policy,
     aws_iam_role.efs_csi_driver_role,
     aws_eks_node_group.demo_eks_nodegroup_spot,
-    aws_eks_node_group.demo_eks_nodegroup_ondemand
+    aws_eks_node_group.demo_eks_nodegroup_ondemand,
+    aws_eks_node_group.demo_eks_nodegroup_ondemand_high_pod,
+    aws_eks_node_group.demo_eks_nodegroup_spot_high_pod
   ]
 }
 

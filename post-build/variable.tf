@@ -84,7 +84,7 @@ variable "include_fluentbit_module" {
   description = "Execute module or not. true = execute and false = don't execute"
 }
 
-variable "include_ebs_csi_driver_addon" {
+variable "include_ebs_csi_driver" {
   description = "Execute module/feature or not. true = execute and false = don't execute"
   type        = bool
   default     = true

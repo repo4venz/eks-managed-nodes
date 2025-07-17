@@ -57,7 +57,7 @@ variable "aws_admin_user_name" {
   description = "AWS User who will assume AWS Admin Role to manage EKS cluster. The user must be created in AWS to assume the admin role."
 }
 
-variable "include_ebs_csi_driver_addon" {
+variable "include_ebs_csi_driver" {
   description = "Execute module/feature or not. true = execute and false = don't execute"
   default = true
 }
@@ -158,19 +158,30 @@ variable "ebs_volume_iops" {
   default     = 3000
 }
 
-variable "ebs_volume_custom_name" {
-  type        = string
-  description = "EKS Worker Node EBS Volume Name for SPOT and On_DEMAND instances"
-  default     = "eks-ebs-csi-gp3-storageclass"
-}
-
-variable ebs_volume_throughput {
+variable "ebs_volume_throughput" {
   type        = number
   description = "EKS Worker Node EBS Volume Throughput for SPOT and On_DEMAND instances"
   default     = 125
 }
- 
 
+variable ebs_csi_service_account_name {
+  description = "Service Account Name for EBS CSI Driver"
+  type        = string
+  default     = "ebs-csi-controller-sa"
+}
+
+variable "efs_csi_service_account_name" {
+  description = "Service Account Name for EFS CSI Driver"
+  type        = string
+  default     = "efs-csi-controller-sa"
+}
+
+variable "ebs_csi_helm_chart_version" {
+  description = "Helm chart version for EBS CSI Driver"
+  type        = string
+  default     = "2.46.0"  # Check for latest version
+}
+ 
  variable "spot_node_groups_customised_config" {
   description = "Map of instance types and their scaling configuration"
   type = map(object({

@@ -25,6 +25,7 @@ prometheus_chart_version     = "75.10.0"
 kubecost_chart_version       = "2.8.0"
 certmanager_chart_version    = "1.18.2"
 external_secret_chart_version = "0.18.2"
+ebs_csi_helm_chart_version = "2.46.0"   
 
 
 app_namespace        =  ["myapps1", "myapps2"]
@@ -43,7 +44,7 @@ include_vpc_cni_addon_module = true
 include_kube_proxy_addon_module = true
 include_coredns_addon_module = true
 include_pod_identity_agent_addon_module = true
-include_ebs_csi_driver_addon = true
+include_ebs_csi_driver = true
 include_efs_csi_driver_addon = true
 
 include_calico_module = true

@@ -36,7 +36,8 @@ module "eks" {
     aws_admin_role_name                           =  var.aws_admin_role_name
     aws_admin_user_name                           =  var.aws_admin_user_name
 
-    include_ebs_csi_driver_addon                  =  var.include_ebs_csi_driver_addon
+    include_ebs_csi_driver                        =  var.include_ebs_csi_driver
+    ebs_csi_helm_chart_version                    =  var.ebs_csi_helm_chart_version  
     include_efs_csi_driver_addon                  =  var.include_efs_csi_driver_addon
 
     required_spot_instances                       =  var.required_spot_instances    ## only applicable to SPOT nodegroups with mixed EC2 types

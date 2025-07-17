@@ -84,7 +84,7 @@ variable "include_fluentbit_module" {
   description = "Execute module or not. true = execute and false = don't execute"
 }
 
-variable "include_ebs_csi_driver_addon" {
+variable "include_ebs_csi_driver" {
   description = "Execute module/feature or not. true = execute and false = don't execute"
   type        = bool
   default     = true
@@ -161,7 +161,11 @@ variable "calico_chart_version" {
   default     = "3.30.2"
 }
 
-
+variable "ebs_csi_helm_chart_version" {
+  description = "Helm chart version for EBS CSI Driver"
+  type        = string
+  default     = "2.46.0"  # Check for latest version
+}
 
 variable "spot_instance_types" {
   description = "EKS worker nodes Spot instance types"

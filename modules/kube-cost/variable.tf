@@ -51,7 +51,7 @@ variable "kubecost_chart_version" {
 variable "storage_class" {
   description = "Storage class for persistent volume"
   type        = string
-  default     = "eks-ebs-csi-gp3-storageclass" 
+  default     = "gp3"  # Use gp3 for better performance
 }
 
 variable "storage_size" {
