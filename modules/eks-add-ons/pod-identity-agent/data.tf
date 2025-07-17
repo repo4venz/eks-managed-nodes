@@ -12,11 +12,7 @@ data "aws_eks_cluster_auth" "this" {
   name = var.k8s_cluster_name
 }
 
-data "aws_eks_addon_version" "pod_identity_agent" {
-  addon_name   = "aws-pod-identity-agent"
-  kubernetes_version = data.aws_eks_cluster.this.version
-  most_recent        = true
-}
+ 
 
 data "aws_iam_openid_connect_provider" "oidc" {
   url = data.aws_eks_cluster.this.identity[0].oidc[0].issuer
