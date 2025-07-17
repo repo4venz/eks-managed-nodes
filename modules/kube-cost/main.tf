@@ -73,7 +73,7 @@ resource "aws_iam_role_policy_attachment" "kubecost_custom" {
 }
 
  
-/*
+ 
 # Kubecost Helm Release (Use it's own Prometheus and Graphana Servers)
 resource "helm_release" "kubecost" {
   name       = "kubecost"
@@ -104,8 +104,11 @@ values = [
       clusterName       = var.k8s_cluster_name
       awsAthenaProjectID = data.aws_caller_identity.current.account_id
       awsRegion        = data.aws_region.current.id
+      metricResolution = "1m"  # Set to 1 minute for more granular metrics
+      etlDailyStoreDurationDays = "365"
+      etlHourlyStoreDurationHours = "720" # 30 days
     }
-    
+        
     prometheus = {
       server = {
         persistentVolume = {
@@ -115,18 +118,41 @@ values = [
         }
         retention = var.prometheus_retention
       }
+      nodeExporter = {
+        enabled = true
+      }
+      kubeStateMetrics = {
+        enabled = true
+      }
+      alertmanager = {
+        enabled = false # Disable internal Alertmanager
+      }
+      operator = {
+        enabled = false # Disable Prometheus Operator
+      }
+      serviceMonitor = {
+        enabled = true
+      }
+      service = {
+        enabled = true
+        type    = "ClusterIP"
+      }
+      pushgateway = {
+        enabled = false # Disable Pushgateway
+      }
     }
-  })
+  }),
+  file("${path.module}/kubecost-advanced-values.yaml")
 ]
   depends_on = [
     aws_iam_role_policy_attachment.kubecost,
     aws_iam_role_policy_attachment.kubecost_custom
     ]
 }
-*/
+ 
 
 
-
+/*# Kubecost Helm Release ( Use existing Prometheus but own kube-cost bunddled Graphana Server)
 
 #http://prometheus-operated.monitoring.svc.cluster.local:9090 (Existing Prometheus Service)
 
@@ -184,7 +210,7 @@ values = [
     aws_iam_role_policy_attachment.kubecost_custom
     ]
 }
-
+*/
 
 
 
@@ -235,3 +261,37 @@ resource "kubernetes_ingress_v1" "kubecost" {
 }
 
 
+
+### This is for Vertical Pod Autoscaler (VPA) for Kubecost
+# Vertical Pod Autoscaler (VPA) for Kubecost
+# This is an example configuration for VPA, adjust resource limits as needed
+# Only for testing purpose, not recommended for production
+resource "kubernetes_vertical_pod_autoscaler" "kubecost_vpa" {
+  metadata {
+    name = "kubecost-vpa"
+    namespace = "kubecost"
+  }
+  spec {
+    target_ref {
+      api_version = "apps/v1"
+      kind = "Deployment"
+      name = "kubecost-cost-analyzer"
+    }
+    update_policy {
+      update_mode = "Auto"
+    }
+    resource_policy {
+      container_policies {
+        container_name = "cost-analyzer"
+        min_allowed = {
+          cpu = "200m"
+          memory = "512Mi"
+        }
+        max_allowed = {
+          cpu = "2"
+          memory = "8Gi"
+        }
+      }
+    }
+  }
+}
