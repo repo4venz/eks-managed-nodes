@@ -41,7 +41,11 @@ resource "aws_iam_role_policy" "prometheus_policy" {
           "autoscaling:DescribeAutoScalingGroups",
           "logs:DescribeLogGroups",
           "logs:GetLogEvents",
-          "logs:FilterLogEvents"
+          "logs:FilterLogEvents",
+          "ec2:DescribeInstances",
+          "ec2:DescribeRegions",
+          "ec2:DescribeTags",
+          "ec2:DescribeVolumes"
         ],
         Resource = "*"
       }

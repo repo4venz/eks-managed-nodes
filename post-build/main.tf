@@ -12,19 +12,6 @@ module "external-dns" {
  # depends_on = [module.cert-manager]
 }
 
-
-
-module "prometheus" {
-  count = var.include_prometheus_module ? 1 : 0
-  source                                        = "../modules/prometheus"
-  k8s_cluster_name                              =  "${var.cluster_name}-${var.environment}" #module.eks.eks_cluster_name
-  k8s_namespace                                 =  var.k8s_observability_namespace
-  prometheus_chart_version                      =  var.prometheus_chart_version
-
-  depends_on = [module.external-dns]
-}
-
-
 module "lets-encrypt" {
   count = var.include_lets_encrypt_ca_module ? 1 : 0
   source             = "../modules/lets-encrypt"
@@ -34,6 +21,19 @@ module "lets-encrypt" {
   depends_on = [module.external-dns ]
 }
 
+
+
+module "prometheus" {
+  count = var.include_prometheus_module ? 1 : 0
+  source                                        = "../modules/prometheus"
+  k8s_cluster_name                              =  "${var.cluster_name}-${var.environment}" #module.eks.eks_cluster_name
+  k8s_namespace                                 =  var.k8s_observability_namespace
+  environment                                   =  var.environment
+  prometheus_chart_version                      =  var.prometheus_chart_version
+  grafana_ingress_hostname                      =  "grafana.${var.public_domain_name}"
+
+  depends_on = [module.external-dns, module.lets-encrypt]
+}
 
 
 

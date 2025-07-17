@@ -1,4 +1,6 @@
+ # Configure node-exporter for worker nodes
 prometheus-node-exporter:
+  enabled: true
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:  # Hard requirement
@@ -7,16 +9,38 @@ prometheus-node-exporter:
           - key: kubernetes.io/os  # Only Linux nodes
             operator: In
             values: [linux]
+  hostRootFs:
+    enabled: true  # Enable host root filesystem metrics
   tolerations:
     - operator: Exists  # Tolerate all taints
+    - key: "eks.amazonaws.com/capacity-type"
+      operator: "Equal"
+      value: "spot"
+      effect: "NoSchedule"
 
+# Configure Prometheus and Grafana
+# This section configures Prometheus and Grafana for monitoring and visualization
 prometheus:
   prometheusSpec:
     serviceMonitorSelectorNilUsesHelmValues: false
     podMonitorSelectorNilUsesHelmValues: false
     scrapeInterval: 30s
     evaluationInterval: 30s
-
+    ruleSelectorNilUsesHelmValues: false
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 10Gi  # Adjust storage size as needed
+          storageClassName: "gp3"  # Use gp3 for better performance
+    resources:
+      requests:
+        memory: 2Gi
+        cpu: 1
+    retention: 1d
+    retentionSize: 3Gi
     additionalScrapeConfigs:
       - job_name: 'kubernetes-nodes'
         static_configs:
@@ -45,3 +69,42 @@ prometheus:
             regex: (.+):(?:\d+);(\d+)
             replacement: $1:$2
             target_label: __address__
+
+
+
+  # Enable Grafana
+grafana:
+  Enabled: true
+  adminPassword: 'admin'
+  persistence:      # Enable persistence for Grafana
+    enabled: true
+    size: 5Gi
+    storageClassName: 'gp3'  # Use gp3 for better performance
+  ingress:
+    enabled: true
+    hosts:
+      - [var.grafana_ingress_hostname]  # Replace with your domain
+    paths: ["/"]  # Path for Grafana
+    pathType: "Prefix"
+    tls:
+      - secretName: grafana-tls  # Replace with your TLS secret name
+        hosts:
+          - ${var.grafana_ingress_hostname}  # Replace with your domain
+    ingressClassName: 'nginx'  # Replace with your ingress class if needed
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      nginx.ingress.kubernetes.io/rewrite-target: /
+      nginx.ingress.kubernetes.io/ssl-redirect: 'true'
+      nginx.ingress.kubernetes.io/proxy-body-size: 100m  # Increase body size limit for large dashboards
+      external-dns.alpha.kubernetes.io/hostname: ${var.grafana_ingress_hostname}  # For external DNS integration
+      cert-manager.io/cluster-issuer: 'letsencrypt-${var.environment}'  # Use cert-manager for TLS
+      nginx.ingress.kubernetes.io/configuration-snippet: |
+        more_set_headers "X-Frame-Options: SAMEORIGIN"  # Prevent clickjacking
+        more_set_headers "X-Content-Type-Options: nosniff"  # Prevent MIME type sniffing
+        more_set_headers "X-XSS-Protection: 1; mode=block"  # Enable XSS protection
+        more_set_headers "Strict-Transport-Security: max-age=31536000; includeSubDomains"  # HSTS for security
+        more_set_headers "Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; frame-ancestors 'none'"  # CSP for security
+ 
+  # Enable Alertmanager
+alertmanager:
+  enabled: true
