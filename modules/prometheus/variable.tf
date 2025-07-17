@@ -16,7 +16,7 @@ variable "prometheus_chart_version" {
 variable grafana_ingress_hostname  {
   description = "Hostname for Grafana Ingress"
   type        = string
-  default     = "grafana.example.com"
+  default     = "grafana.suvendupublicdomain.fun"
 }
 
 
@@ -31,4 +31,29 @@ variable "prometheus_service_account_name" {
   type        = string
   description = "Service Account Name of kube-prometheus-stack"
   default     = "prometheus-sa"
+}
+
+ 
+variable "storage_size" {
+  description = "Size of persistent volume"
+  type        = string
+  default     = "10Gi"
+}
+
+variable "prometheus_retention" {
+  description = "Prometheus data retention period"
+  type        = string
+  default     = "3d"
+}
+
+variable "storage_class_name" {
+  description = "Storage class name for persistent volumes"
+  type        = string
+  default     = "ebs-csi-default-sc"
+}
+
+variable "prometheus_role_arn" {
+  description = "IAM role arn for Prometheus"
+  type        = string
+  default     = ""
 }

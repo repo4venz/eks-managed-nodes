@@ -56,6 +56,6 @@ module "kube-cost" {
   environment               =  var.environment
   ingress_host              =  "kubecost.${var.public_domain_name}"
 
-  depends_on = [module.lets-encrypt, module.external-dns]
+  depends_on = [module.lets-encrypt, module.external-dns, module.prometheus]
 }
  

@@ -1,4 +1,12 @@
  # Configure node-exporter for worker nodes
+
+serviceAccounts:
+  server:
+    name: ${service_account_name}
+    annotations:
+      eks.amazonaws.com/role-arn: ${prometheus_role_arn}
+      eks.amazonaws.com/sts-regional-endpoints: "true"  # Use regional STS endpoints for better performance
+
 prometheus-node-exporter:
   enabled: true
   affinity:
@@ -31,16 +39,17 @@ prometheus:
       volumeClaimTemplate:
         spec:
           accessModes: ["ReadWriteOnce"]
+           # Use a persistent volume claim for Prometheus storage
           resources:
             requests:
-              storage: 10Gi  # Adjust storage size as needed
-          storageClassName: "gp3"  # Use gp3 for better performance
+              storage: ${var.storage_size}  #10Gi  # Adjust storage size as needed
+          storageClassName:  ${storage_class_name}  #"ebs-csi-default-sc" #"gp3"  # Use gp3 for better performance
     resources:
       requests:
         memory: 2Gi
         cpu: 1
-    retention: 1d
-    retentionSize: 3Gi
+    retention: ${var.prometheus_retention}  # 15d
+    retentionSize: 5GiB
     additionalScrapeConfigs:
       - job_name: 'kubernetes-nodes'
         static_configs:
@@ -75,11 +84,12 @@ prometheus:
   # Enable Grafana
 grafana:
   Enabled: true
-  adminPassword: 'admin'
+  adminUser: 'admin'  # Default admin user
+  adminPassword: 'admin123'  # Default admin password, change this in production
   persistence:      # Enable persistence for Grafana
     enabled: true
-    size: 5Gi
-    storageClassName: 'gp3'  # Use gp3 for better performance
+    size: ${var.storage_size} #5Gi
+    storageClassName: ${var.storage_class_name}  #'gp3'  # Use gp3 for better performance
   ingress:
     enabled: true
     hosts:
