@@ -42,13 +42,13 @@ prometheus:
            # Use a persistent volume claim for Prometheus storage
           resources:
             requests:
-              storage: ${var.storage_size}  #10Gi  # Adjust storage size as needed
+              storage: ${storage_size}  #10Gi  # Adjust storage size as needed
           storageClassName:  ${storage_class_name}  #"ebs-csi-default-sc" #"gp3"  # Use gp3 for better performance
     resources:
       requests:
         memory: 2Gi
         cpu: 1
-    retention: ${var.prometheus_retention}  # 15d
+    retention: ${prometheus_retention}  # 15d
     retentionSize: 5GiB
     additionalScrapeConfigs:
       - job_name: 'kubernetes-nodes'
@@ -88,26 +88,26 @@ grafana:
   adminPassword: 'admin123'  # Default admin password, change this in production
   persistence:      # Enable persistence for Grafana
     enabled: true
-    size: ${var.storage_size} #5Gi
-    storageClassName: ${var.storage_class_name}  #'gp3'  # Use gp3 for better performance
+    size: ${storage_size} #5Gi
+    storageClassName: ${storage_class_name}  #'gp3'  # Use gp3 for better performance
   ingress:
     enabled: true
     hosts:
-      - ${var.grafana_ingress_hostname}  # Replace with your domain
+      - ${grafana_ingress_hostname}  # Replace with your domain
     path: /
     pathType: Prefix
     tls:
       - secretName: grafana-tls  # Replace with your TLS secret name
         hosts:
-          - ${var.grafana_ingress_hostname}  # Replace with your domain
+          - ${grafana_ingress_hostname}  # Replace with your domain
     ingressClassName: 'nginx'  # Replace with your ingress class if needed
     annotations:
       kubernetes.io/ingress.class: nginx
       nginx.ingress.kubernetes.io/rewrite-target: /
       nginx.ingress.kubernetes.io/ssl-redirect: 'true'
       nginx.ingress.kubernetes.io/proxy-body-size: 100m  # Increase body size limit for large dashboards
-      external-dns.alpha.kubernetes.io/hostname: ${var.grafana_ingress_hostname}  # For external DNS integration
-      cert-manager.io/cluster-issuer: 'letsencrypt-${var.environment}'  # Use cert-manager for TLS
+      external-dns.alpha.kubernetes.io/hostname: ${grafana_ingress_hostname}  # For external DNS integration
+      cert-manager.io/cluster-issuer: 'letsencrypt-${environment}'  # Use cert-manager for TLS
       nginx.ingress.kubernetes.io/configuration-snippet: |
         more_set_headers "X-Frame-Options: SAMEORIGIN"  # Prevent clickjacking
         more_set_headers "X-Content-Type-Options: nosniff"  # Prevent MIME type sniffing

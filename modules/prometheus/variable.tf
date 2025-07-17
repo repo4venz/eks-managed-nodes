@@ -23,7 +23,7 @@ variable grafana_ingress_hostname  {
 variable "environment" {
   description = "Environemnt of Lets Encrypt"
   type        = string
-  default = "test"
+  default = "dev"
 }
 
 
