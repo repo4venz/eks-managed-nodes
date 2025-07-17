@@ -13,7 +13,7 @@ resource "helm_release" "pod_identity_agent" {
           "eks.amazonaws.com/role-arn" = var.eks_worker_nodes_role_arn
         }
       }
-      region = var.aws_region.current.id
+      region = data.aws_region.current.id
       clusterName = var.k8s_cluster_name
       })
     ]
