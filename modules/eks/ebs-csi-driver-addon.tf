@@ -104,11 +104,11 @@ resource "helm_release" "aws_ebs_csi_driver" {
       }
       storageClasses = [
         {
-          name = "gp3"
+          name = var.ebs_volume_type
           annotations = {
             "storageclass.kubernetes.io/is-default-class" = "true"
           }
-          type      = "gp3"
+          type      = var.ebs_volume_type
           encrypted = true
           kmsKeyId = var.eks_kms_secret_encryption_alias_arn
           parameters = {

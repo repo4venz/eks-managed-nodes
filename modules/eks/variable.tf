@@ -153,15 +153,15 @@ variable "ebs_volume_type" {
 }
  
 variable "ebs_volume_iops" {
-  type        = number
+  type        = string
   description = "EKS Worker Node EBS Volume IOPS for SPOT and On_DEMAND instances"
-  default     = 3000
+  default     = "3000"
 }
 
 variable "ebs_volume_throughput" {
-  type        = number
+  type        = string
   description = "EKS Worker Node EBS Volume Throughput for SPOT and On_DEMAND instances"
-  default     = 125
+  default     = "125"
 }
 
 variable ebs_csi_service_account_name {
