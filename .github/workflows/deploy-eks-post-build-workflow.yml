@@ -4,8 +4,9 @@ on:
   push:
     paths:
       - 'post-build/**'
-      - 'modules/lets-encrypt/**'
-      - 'modules/external-secrets/**'
+      - 'modules/external-dns/**'
+      - 'modules/prometheus/**'
+      - 'modules/external-secrets-controller/**'
       - 'modules/kube-cost/**'
   pull_request:
     branches: [ main ] # input your banch name here
