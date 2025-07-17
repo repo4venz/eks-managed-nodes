@@ -118,12 +118,32 @@ values = [
         }
         retention = var.prometheus_retention
       }
-      nodeExporter = {
-        enabled = true
-      }
-      kubeStateMetrics = {
-        enabled = true
-      }
+        nodeExporter = {
+          enabled = true
+          port    = 19100 # Custom Node Exporter port. Change to custom port if needed 
+          # Use the same port for service and serviceMonitor
+          service = {
+            port = 19100 # Service port
+            targetPort = 19100 # Container port
+          }
+          serviceMonitor = {
+            enabled = true
+            port    = "http-metrics" # Reference the port name
+          }
+        }
+
+        # Kube-State-Metrics Configuration
+        kubeStateMetrics = {
+          enabled = true
+          service = {
+            port = 18080 # Custom KSM port
+            targetPort = 18080 # Container port
+          }
+          serviceMonitor = {
+            enabled = true
+            port    = "http-metrics" # Reference the port name
+          }
+        }
       alertmanager = {
         enabled = false # Disable internal Alertmanager
       }
@@ -132,6 +152,8 @@ values = [
       }
       serviceMonitor = {
         enabled = true
+        interval = "30s"
+        scrapeTimeout = "10s"
       }
       service = {
         enabled = true

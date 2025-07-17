@@ -2,6 +2,14 @@
 prometheus:
   server:
     extraScrapeConfigs: |
+      - job_name: 'node-exporter'
+        static_configs:
+          - targets: ['node-exporter.kube-system.svc:19100'] # Match port here
+
+      - job_name: 'kube-state-metrics'
+          static_configs:
+            - targets: ['kubecost-prometheus-kube-state-metrics.kubecost.svc:18080']  # Match port here
+
       - job_name: 'kubecost-high-resolution'
         scrape_interval: 30s
         scrape_timeout: 10s
