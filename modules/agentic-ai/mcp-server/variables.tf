@@ -68,8 +68,7 @@ variable "policy_arns" {
   default = [
           "arn:aws:iam::aws:policy/IAMFullAccess",
           "arn:aws:iam::aws:policy/AmazonVPCFullAccess",
-          "arn:aws:iam::aws:policy/AWSCloudFormationFullAccess",
-           aws_iam_policy.pod_access_policy_for_mcp_server.arn
+          "arn:aws:iam::aws:policy/AWSCloudFormationFullAccess"
   ]
 }
 

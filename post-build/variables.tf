@@ -279,3 +279,17 @@ variable external_dns_chart_version {
   description = "Helm chart version for external-dns"
   default     = "1.17.0" # Update this to the desired version
 }
+
+
+variable include_mcp_server_module {
+  type        = bool
+  default     = true
+  description = "Execute module or not. true = execute and false = don't execute"
+}
+
+variable "mcpserver_chart_version" {
+  type        = string
+  description = "Helm chart version for MCP server"
+  default     = "0.1.0"
+  
+}

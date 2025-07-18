@@ -60,7 +60,13 @@ resource "aws_iam_role_policy_attachment" "pod_policy_multiple_attachments" {
   policy_arn = each.value
 }
 
- 
+
+resource "aws_iam_role_policy_attachment" "pod_policy_attach" {
+  role       = aws_iam_role.pod_identity_role_mcp_server.name
+  policy_arn = aws_iam_policy.pod_access_policy_for_mcp_server.arn
+}
+           
+
 
 ## 5. Create EKS Pod Identity Association
 resource "aws_eks_pod_identity_association" "mcp_server" {
@@ -70,6 +76,7 @@ resource "aws_eks_pod_identity_association" "mcp_server" {
   role_arn        = aws_iam_role.pod_identity_role_mcp_server.arn
 
     depends_on = [
-        aws_iam_role_policy_attachment.pod_policy_multiple_attachments
+        aws_iam_role_policy_attachment.pod_policy_multiple_attachments,
+        aws_iam_role_policy_attachment.pod_policy_attach
     ]
 }
