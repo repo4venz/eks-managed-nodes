@@ -5,7 +5,7 @@ output "mcp_service_name" {
 
 output "mcp_service_namespace" {
   description = "Namespace of the MCP server service"
-  value       = kubernetes_namespace.agentic_ai.metadata[0].name
+  value       = var.namespace
 }
 
 output "mcp_service_endpoint" {
