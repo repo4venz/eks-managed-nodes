@@ -8,7 +8,8 @@ resource "helm_release" "aws_efs_csi_driver" {
   cleanup_on_fail  = true
   timeout    = 900
 
-  values = yamlencode({
+  values = [ 
+     yamlencode({
     controller = {
       serviceAccount = {
         create = true
@@ -19,4 +20,5 @@ resource "helm_release" "aws_efs_csi_driver" {
       }
     }
   })
+  ]
 }
