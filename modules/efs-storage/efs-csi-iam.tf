@@ -72,3 +72,9 @@ resource "aws_iam_role_policy_attachment" "efs_csi_driver_policy_attachment" {
   role       = aws_iam_role.efs_csi_driver_role.name
   policy_arn = aws_iam_policy.efs_csi_driver_policy.arn
 }
+
+ # AWS IAM Policy for KMS usage. Required for EKS to access KMS Key.
+ resource "aws_iam_policy" "eks_efs_kms_usage_policy" {
+  name   = substr("${var.k8s_cluster_name}-AmazonEKS-EFS-KMS-UsagePolicy",0,64)
+  policy = data.aws_iam_policy_document.eks_use_kms_policy_efs.json
+}

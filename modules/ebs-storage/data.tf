@@ -22,8 +22,3 @@ data "aws_eks_cluster" "this" {
 	}
 
 
- # AWS IAM Policy for KMS usage. Required for EKS to access KMS Key.
- resource "aws_iam_policy" "eks_ebs_kms_usage_policy" {
-  name   = substr("${var.k8s_cluster_name}-AmazonEKS-EBS-KMS-UsagePolicy",0,64)
-  policy = data.aws_iam_policy_document.eks_use_kms_policy_ebs.json
-}

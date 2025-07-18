@@ -31,7 +31,15 @@ resource "aws_iam_role_policy_attachment" "ebs_csi_driver_policy" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
 }
 
+ # AWS IAM Policy for KMS usage. Required for EKS to access KMS Key.
+ resource "aws_iam_policy" "eks_ebs_kms_usage_policy" {
+  name   = substr("${var.k8s_cluster_name}-AmazonEKS-EBS-KMS-UsagePolicy",0,64)
+  policy = data.aws_iam_policy_document.eks_use_kms_policy_ebs.json
+}
+
+
 resource "aws_iam_role_policy_attachment" "ebs_csi_driver_policy_attach" {
   role       = aws_iam_role.ebs_csi_driver_role.name
   policy_arn = aws_iam_policy.eks_ebs_kms_usage_policy.arn
 }
+
