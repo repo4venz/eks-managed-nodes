@@ -28,7 +28,8 @@ resource "helm_release" "prometheus" {
 
   depends_on = [
     aws_iam_role_policy.prometheus_policy,
-    aws_iam_role_policy_attachment.prometheus_policy_attachment
+    aws_iam_role_policy_attachment.prometheus_policy_attachment,
+    aws_iam_role_policy_attachment.prometheus_policy_custom
   ]
 }
 
