@@ -1,12 +1,5 @@
  
 
-variable "kubecost_hostname" {
-  description = "The DNS name Kuubecost"
-  type        = string
-  default = "kubecost.suvendupublicdomain.fun"
-}
-
-
 variable "environment" {
   description = "Environemnt of Kube-Cost"
   type        = string

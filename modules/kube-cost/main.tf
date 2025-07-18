@@ -46,6 +46,25 @@ values = [
         }
         retention = var.prometheus_retention
       }
+      ingress = {
+        enabled = true
+        path    = "/"
+        pathType = "Prefix"
+        className = "nginx" # Ensure you have an NGINX Ingress Controller
+        hosts   = [var.ingress_host]
+        annotations = {
+          "kubernetes.io/ingress.class"                  = "nginx"
+          "nginx.ingress.kubernetes.io/backend-protocol" = "HTTP"
+          "cert-manager.io/cluster-issuer"               = "letsencrypt-${var.environment}"
+          "external-dns.alpha.kubernetes.io/hostname"    = var.ingress_host
+          "nginx.ingress.kubernetes.io/force-ssl-redirect" = "true"
+          "nginx.ingress.kubernetes.io/rewrite-target"     = "/"
+        }
+        tls     = {
+          enabled = true
+          secretName = "kubecost-tls" # Ensure this secret is created with the TLS certificate
+        }
+      }
       /*  nodeExporter = {
           enabled = true
           port    = 19100 # Custom Node Exporter port. Change to custom port if needed 
@@ -165,7 +184,7 @@ values = [
 
 
 
-
+/*
 # Ingress with TLS
 resource "kubernetes_ingress_v1" "kubecost" {
   metadata {
@@ -210,6 +229,8 @@ resource "kubernetes_ingress_v1" "kubecost" {
     helm_release.kubecost 
   ]
 }
+
+*/
 
 /*
 
