@@ -31,7 +31,8 @@
     })
   ]
     depends_on = [
-    aws_iam_role_policy_attachment.ebs_csi_driver_policy_attach
+    aws_iam_role_policy_attachment.ebs_csi_driver_policy_attach,
+    aws_iam_role_policy_attachment.ebs_csi_driver_policy
   ]
   }
 
