@@ -8,17 +8,22 @@ resource "helm_release" "aws_efs_csi_driver" {
   cleanup_on_fail  = true
   timeout    = 900
 
-  values = [ 
-     yamlencode({
+  values = [yamlencode({
     controller = {
       serviceAccount = {
         create = true
         name   = "efs-csi-controller-sa"
         annotations = {
-          "eks.amazonaws.com/role-arn" = aws_iam_role.efs_csi_driver_role.arn
+        "eks.amazonaws.com/role-arn" = aws_iam_role.efs_csi_driver_role.arn
         }
-      }
     }
-  })
+  }
+})]
+  depends_on = [
+    aws_iam_role_policy_attachment.efs_csi_driver_policy_attach,
+    aws_iam_role.efs_csi_driver_role
   ]
 }
+
+
+ 
