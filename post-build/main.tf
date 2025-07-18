@@ -59,7 +59,7 @@ module "kube-cost" {
   depends_on = [module.lets-encrypt, module.external-dns, module.prometheus]
 }
 
-
+/*
 # Add the agentic-ai module for MCP server
 module "mcp_server" {
    count = var.include_mcp_server_module ? 1 : 0
@@ -73,3 +73,4 @@ module "mcp_server" {
   
   depends_on = [ module.external-dns, module.lets-encrypt]
 }
+*/
