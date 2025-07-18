@@ -7,7 +7,7 @@ resource "kubernetes_storage_class" "ebs_sc" {
   allow_volume_expansion = true
 
   parameters = {
-    type = "gp3"
+    type = var.ebs_volume_type
     encrypted = "true"
     iops      = var.ebs_volume_iops
     throughput = var.ebs_volume_throughput
@@ -15,7 +15,6 @@ resource "kubernetes_storage_class" "ebs_sc" {
     encrypted = "true"
     kmsKeyId = var.eks_kms_secret_encryption_alias_arn
   }
-
 }
 
 resource "kubernetes_storage_class" "ebs_sc_retain" {
@@ -28,7 +27,7 @@ resource "kubernetes_storage_class" "ebs_sc_retain" {
   allow_volume_expansion = true
   
   parameters = {
-    type = "gp3"
+    type = var.ebs_volume_type
     encrypted = "true"
     iops      = var.ebs_volume_iops
     throughput = var.ebs_volume_throughput
