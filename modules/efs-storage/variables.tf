@@ -22,3 +22,9 @@ variable "eks_kms_secret_encryption_alias_arn" {
   description = "KMS key (alias) ARN for EKS"
   type        = string
 }
+
+variable "efs_csi_helm_chart_version" {
+  description = "Helm chart version for EFS CSI Driver"
+  type        = string
+  default     = "2.4.0"  # Check for latest version
+}

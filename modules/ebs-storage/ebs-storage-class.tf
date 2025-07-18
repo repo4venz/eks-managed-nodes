@@ -6,11 +6,7 @@ resource "kubernetes_storage_class_v1" "ebs_sc" {
   volume_binding_mode = "WaitForFirstConsumer"
   allow_volume_expansion = true
 
-  annotations = {
-      "storageclass.kubernetes.io/is-default-class" = "true"
-    }
-
-  parameters = {
+   parameters = {
     type = var.ebs_volume_type
     encrypted = "true"
     iops      = var.ebs_volume_iops

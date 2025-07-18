@@ -3,20 +3,20 @@ resource "helm_release" "aws_efs_csi_driver" {
   namespace  = "kube-system"
   repository = "https://kubernetes-sigs.github.io/aws-efs-csi-driver"
   chart      = "aws-efs-csi-driver"
-  version    = "2.4.0"
+  version    = var.efs_csi_helm_chart_version #"2.4.0"
+  atomic           = true
+  cleanup_on_fail  = true
+  timeout    = 900
 
-  set {
-    name  = "controller.serviceAccount.create"
-    value = "true"
-  }
-
-  set {
-    name  = "controller.serviceAccount.name"
-    value = "efs-csi-controller-sa"
-  }
-
-  set {
-    name  = "controller.serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
-    value = aws_iam_role.efs_csi_driver_role.arn
-  }
+  values = yamlencode({
+    controller = {
+      serviceAccount = {
+        create = true
+        name   = "efs-csi-controller-sa"
+        annotations = {
+          "eks.amazonaws.com/role-arn" = aws_iam_role.efs_csi_driver_role.arn
+        }
+      }
+    }
+  })
 }
