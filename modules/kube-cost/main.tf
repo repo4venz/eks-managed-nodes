@@ -32,20 +32,8 @@ values = [
       awsAthenaProjectID = data.aws_caller_identity.current.account_id
       awsRegion        = data.aws_region.current.id
       metricResolution = "1m"  # Set to 1 minute for more granular metrics
-      etlDailyStoreDurationDays = "365"
+      etlDailyStoreDurationDays = "10"
       etlHourlyStoreDurationHours = "720" # 30 days
-    }
-        
-    prometheus = {
-      server = {
-        persistentVolume = {
-          enabled      = true
-          storageClass = var.storage_class
-          size         = var.storage_size
-          accessModes  = ["ReadWriteMany"]  #  ["ReadWriteOnce"] # for ebs use ReadWriteOnce. For efs use ReadWriteMany
-        }
-        retention = var.prometheus_retention
-      }
       ingress = {
         enabled = true
         path    = "/"
@@ -53,7 +41,7 @@ values = [
         className = "nginx" # Ensure you have an NGINX Ingress Controller
         hosts   = [var.ingress_host]
         annotations = {
-          "kubernetes.io/ingress.class"                  = "nginx"
+          #"kubernetes.io/ingress.class"                  = "nginx"
           "nginx.ingress.kubernetes.io/backend-protocol" = "HTTP"
           "cert-manager.io/cluster-issuer"               = "letsencrypt-${var.environment}"
           "external-dns.alpha.kubernetes.io/hostname"    = var.ingress_host
@@ -65,6 +53,19 @@ values = [
           secretName = "kubecost-tls" # Ensure this secret is created with the TLS certificate
         }
       }
+    }
+   
+    prometheus = {
+      server = {
+        persistentVolume = {
+          enabled      = true
+          storageClass = var.storage_class
+          size         = var.storage_size
+          accessModes  = ["ReadWriteMany"]  #  ["ReadWriteOnce"] # for ebs use ReadWriteOnce. For efs use ReadWriteMany
+        }
+        retention = var.prometheus_retention
+      }
+
       /*  nodeExporter = {
           enabled = true
           port    = 19100 # Custom Node Exporter port. Change to custom port if needed 
