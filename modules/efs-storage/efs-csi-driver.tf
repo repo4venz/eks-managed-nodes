@@ -20,7 +20,7 @@ resource "helm_release" "aws_efs_csi_driver" {
   }
 })]
   depends_on = [
-    aws_iam_role_policy_attachment.efs_csi_driver_policy_attachment,
+    aws_iam_role_policy_attachment.efs_csi_driver_policy,
     aws_iam_role.efs_csi_driver_role
   ]
 }
