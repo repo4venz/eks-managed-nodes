@@ -24,20 +24,7 @@ resource "null_resource" "wait_for_cert_manager_crds" {
 }
 */
 
-
-resource "null_resource" "delete_letsencrypt_clusterissuer" {
-  triggers = {
-    # Trigger recreation when these values change
-    cluster_issuer_name = "letsencrypt-${var.environment}"
-  }
-
-  provisioner "local-exec" {
-    when    = destroy
-    command = <<-EOT
-      kubectl delete clusterissuer ${cluster_issuer_name} --ignore-not-found
-    EOT
-  }
-}
+ 
 
 
 # -------------------
