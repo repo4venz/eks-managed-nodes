@@ -18,7 +18,7 @@ prometheus-node-exporter:
             operator: In
             values: [linux]
   hostRootFs:
-    enabled: true  # Enable host root filesystem metrics
+    enabled: true  # Enable host root filesystem metrics (exposes disk usage, inode stats, etc.; ensure only trusted users can access these metrics to avoid leaking node-level information)
   tolerations:
     - operator: Exists  # Tolerate all taints
     - key: "eks.amazonaws.com/capacity-type"
@@ -30,20 +30,19 @@ prometheus-node-exporter:
 # This section configures Prometheus and Grafana for monitoring and visualization
 prometheus:
   prometheusSpec:
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: ${storage_class_name} #ebs-sc
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: ${storage_size} 
     serviceMonitorSelectorNilUsesHelmValues: false
     podMonitorSelectorNilUsesHelmValues: false
     scrapeInterval: 30s
     evaluationInterval: 30s
     ruleSelectorNilUsesHelmValues: false
-    storageSpec:
-      volumeClaimTemplate:
-        spec:
-          accessModes: ["ReadWriteOnce"]
-           # Use a persistent volume claim for Prometheus storage
-          resources:
-            requests:
-              storage: ${storage_size}  #10Gi  # Adjust storage size as needed
-          storageClassName:  ${storage_class_name}  # "eks-ebs-csi-gp3-storageclass" #"gp3"  # Use gp3 for better performance
     resources:
       requests:
         memory: 2Gi
@@ -106,8 +105,9 @@ grafana:
   adminPassword: 'admin123'  # Default admin password, change this in production
   persistence:      # Enable persistence for Grafana
     enabled: true
-    size: ${storage_size} #5Gi
-    storageClassName: ${storage_class_name}  #'gp3'  # Use gp3 for better performance
+    storageClassName: ${storage_class_name} #ebs-sc
+    accessModes: ["ReadWriteOnce"]
+    size: ${storage_size}  #5Gi
   ingress:
     enabled: true
     hosts:
@@ -131,7 +131,16 @@ grafana:
       nginx.ingress.kubernetes.io/proxy-read-timeout: "60"
       nginx.ingress.kubernetes.io/client-body-buffer-size: "8k"
 
-
   # Enable Alertmanager
 alertmanager:
   enabled: true
+  alertmanagerSpec:
+    storage:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: ${storage_class_name} #ebs-sc
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 2Gi
+

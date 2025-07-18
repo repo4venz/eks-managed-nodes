@@ -51,7 +51,7 @@ resource "helm_release" "mcp_server" {
         enabled = true
         hosts = [
           {
-            host = "${var.var.ingress_host}"
+            host = "${var.ingress_host}"
             paths = "/"
             pathType = "Prefix"
           }

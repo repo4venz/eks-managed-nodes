@@ -10,7 +10,7 @@ output "mcp_service_namespace" {
 
 output "mcp_service_endpoint" {
   description = "Endpoint for the MCP server service"
-  value       = "mcp-server.${kubernetes_namespace.agentic_ai.metadata[0].name}.svc.cluster.local:${var.mcp_port}"
+  value       = "https://${var.ingress_host}"  
 }
 
 output "pod_identity_role_arn" {

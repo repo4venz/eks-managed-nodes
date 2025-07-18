@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pvc-f073b986-2b0f-400b-ad97-d49820245a32
+  annotations:
+    pv.kubernetes.io/provisioned-by: ebs.csi.aws.com
+spec:
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: topology.kubernetes.io/zone
+          operator: In
+          values:
+          - us-west-2a
+          - us-west-2b
+          - us-west-2c
+        - key: kubernetes.io/hostname
+          operator: Exists
+  persistentVolumeReclaimPolicy: Delete
+  storageClassName: gp2
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  claimRef:
+    namespace: monitoring
+    name: prometheus-kube-prometheus-kube-prome-prometheus-db-prometheus-kube-prometheus-kube-prome-prometheus-0
+  csi:
+    driver: ebs.csi.aws.com
+    volumeHandle: vol-0e32898d1817e4338 # Replace with actual volume ID
+    fsType: ext4

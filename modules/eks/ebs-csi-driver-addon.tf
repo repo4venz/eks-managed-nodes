@@ -1,4 +1,4 @@
-
+/*
 data "aws_iam_policy_document" "ebs_csi_assume_role_policy" {
   count = var.include_ebs_csi_driver ? 1 : 0
 
@@ -42,7 +42,7 @@ resource "aws_iam_role_policy_attachment" "eks_kms_usage_for_ebs_csi" {
   role       = aws_iam_role.ebs_csi_driver_role[0].name
   policy_arn = aws_iam_policy.EKS_KMS_Usage_Policy.arn
 }
-
+*/
 /*
 ### This is the EBS CSI Driver Addon for EKS
 # It allows EKS to manage EBS volumes using the CSI driver
@@ -81,7 +81,7 @@ resource "aws_eks_addon" "ebs_csi" {
 }
 */
 
-
+/*
 resource "helm_release" "aws_ebs_csi_driver" {
   count = var.include_ebs_csi_driver ? 1 : 0
 
@@ -132,3 +132,5 @@ resource "helm_release" "aws_ebs_csi_driver" {
     aws_iam_role.ebs_csi_driver_role
   ]
 }
+
+*/

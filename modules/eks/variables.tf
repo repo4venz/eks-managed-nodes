@@ -152,23 +152,6 @@ variable "ebs_volume_type" {
   default     = "gp3"
 }
  
-variable "ebs_volume_iops" {
-  type        = string
-  description = "EKS Worker Node EBS Volume IOPS for SPOT and On_DEMAND instances"
-  default     = "3000"
-}
-
-variable "ebs_volume_throughput" {
-  type        = string
-  description = "EKS Worker Node EBS Volume Throughput for SPOT and On_DEMAND instances"
-  default     = "125"
-}
-
-variable ebs_csi_service_account_name {
-  description = "Service Account Name for EBS CSI Driver"
-  type        = string
-  default     = "ebs-csi-controller-sa"
-}
 
 variable "efs_csi_service_account_name" {
   description = "Service Account Name for EFS CSI Driver"
@@ -176,11 +159,7 @@ variable "efs_csi_service_account_name" {
   default     = "efs-csi-controller-sa"
 }
 
-variable "ebs_csi_helm_chart_version" {
-  description = "Helm chart version for EBS CSI Driver"
-  type        = string
-  default     = "2.46.0"  # Check for latest version
-}
+
  
  variable "spot_node_groups_customised_config" {
   description = "Map of instance types and their scaling configuration"
