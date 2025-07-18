@@ -1,5 +1,5 @@
  
-resource "null_resource" "create_namespaces" {
+resource "null_resource" "create_namespaces_if_not_exists" {
   #for_each = { for idx, secret in var.aws_test_secrets : idx => secret.application_namespace }
   for_each = toset(var.app_namespace)
 
@@ -12,6 +12,9 @@ resource "null_resource" "create_namespaces" {
         echo "Namespace ${each.value} already exists"
       fi
     EOT
+  }
+    triggers = {
+    always_run = timestamp() # Forces re-run on every `apply`; can be improved
   }
 }
 
@@ -44,7 +47,8 @@ resource "kubernetes_manifest" "secret_store" {
       }
     }
   }
-    depends_on = [ aws_iam_role_policy_attachment.eso_app_irsa_attachment    ]
+    depends_on = [ aws_iam_role_policy_attachment.eso_app_irsa_attachment,
+    null_resource.create_namespaces_if_not_exists    ]
 }
 
 

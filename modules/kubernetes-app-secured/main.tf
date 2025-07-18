@@ -1,15 +1,25 @@
  
+ 
+
+ 
 resource "null_resource" "create_namespace_if_not_exists" {
+ 
   provisioner "local-exec" {
     command = <<EOT
-      kubectl get namespace ${var.app_namespace} || kubectl create namespace ${var.app_namespace}
+      if ! kubectl get namespace ${var.app_namespace} >/dev/null 2>&1; then
+        kubectl create namespace ${var.app_namespace}
+        echo "Created namespace: ${var.app_namespace}"
+      else
+        echo "Namespace ${var.app_namespace} already exists"
+      fi
     EOT
   }
-
-  triggers = {
+    triggers = {
     always_run = timestamp() # Forces re-run on every `apply`; can be improved
   }
 }
+
+
 
 # Terraform module to deploy docker-2048 to EKS using NGINX Ingress
 

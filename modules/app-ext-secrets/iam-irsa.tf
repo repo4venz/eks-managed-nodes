@@ -68,4 +68,5 @@ for_each = toset(var.app_namespace)
       "eks.amazonaws.com/role-arn" = aws_iam_role.eso_app_irsa[each.key].arn
     }
   }
+      depends_on = [ null_resource.create_namespaces_if_not_exists ]
 }
