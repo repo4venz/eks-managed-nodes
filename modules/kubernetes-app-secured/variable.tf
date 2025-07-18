@@ -22,7 +22,7 @@ variable "image" {
 }
 
 variable "replicas" {
-  default = 5
+  default = 3
 }
 
 variable "ingress_hostname" {
@@ -35,5 +35,5 @@ variable "ingress_hostname" {
 variable "environment" {
   description = "Environemnt of Lets Encrypt"
   type        = string
-  default = "test"
+  default = "dev"
 }
