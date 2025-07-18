@@ -1,4 +1,4 @@
-data "aws_iam_policy_document" "efs_csi_assume_role_policy" {
+/* data "aws_iam_policy_document" "efs_csi_assume_role_policy" {
   count = var.include_efs_csi_driver_addon ? 1 : 0
 
   statement {
@@ -60,3 +60,4 @@ resource "aws_eks_addon" "efs_csi_driver" {
   ]
 }
 
+*/

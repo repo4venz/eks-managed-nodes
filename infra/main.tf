@@ -57,7 +57,31 @@ module "eks" {
 
     depends_on = [module.vpc, module.kms_aws]
 }
- 
+
+
+
+module "efs_storage" {
+  source = "./modules/ebs-storage"
+  
+  cluster_name                                  = var.cluster_name
+  eks_kms_secret_encryption_alias_arn           =  module.kms_aws.eks_kms_secret_encryption_alias_arn  
+
+  depends_on = [module.eks]
+}
+
+
+module "efs_storage" {
+  source = "./modules/efs-storage"
+  
+  cluster_name                                  = var.cluster_name
+  vpc_id                                        = var.vpc_id
+  private_subnet_ids                            = var.private_subnet_ids
+  eks_cluster_security_group_id                 = var.eks_cluster_security_group_id
+  eks_kms_secret_encryption_alias_arn           =  module.kms_aws.eks_kms_secret_encryption_alias_arn  
+
+   depends_on = [module.eks]
+}
+
 
 module "metrics_server" {
   count = var.include_metrics_server_module ? 1 : 0
