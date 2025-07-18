@@ -6,7 +6,7 @@ data "aws_eks_cluster" "this" {
 
  data "aws_iam_policy_document" "eks_use_kms_policy_efs" {
 	  statement {
-	    sid = "KMSUsagePolicy-EBS"
+	    sid = "KMSUsagePolicyEBS"
 	    actions = [
 	      "kms:Encrypt",
 	      "kms:Decrypt",

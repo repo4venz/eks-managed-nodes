@@ -36,9 +36,9 @@ module "eks" {
     aws_admin_role_name                           =  var.aws_admin_role_name
     aws_admin_user_name                           =  var.aws_admin_user_name
 
-    include_ebs_csi_driver                        =  var.include_ebs_csi_driver
+    #include_ebs_csi_driver                        =  var.include_ebs_csi_driver
     #ebs_csi_helm_chart_version                    =  var.ebs_csi_helm_chart_version  
-    include_efs_csi_driver_addon                  =  var.include_efs_csi_driver_addon
+    #include_efs_csi_driver_addon                  =  var.include_efs_csi_driver_addon
 
     required_spot_instances                       =  var.required_spot_instances    ## only applicable to SPOT nodegroups with mixed EC2 types
     spot_instance_types                           =  var.spot_instance_types
@@ -62,8 +62,10 @@ module "eks" {
 
 module "ebs_storage" {
   source = "../modules/ebs-storage"
+  count = var.include_ebs_csi_driver_module ? 1 : 0 
   
   k8s_cluster_name                              = "${var.cluster_name}-${var.environment}"
+  ebs_csi_helm_chart_version                    =  var.ebs_csi_helm_chart_version
   eks_kms_secret_encryption_alias_arn           =  module.kms_aws.eks_kms_secret_encryption_alias_arn  
 
   depends_on = [module.eks]
@@ -71,9 +73,11 @@ module "ebs_storage" {
 
 
 module "efs_storage" {
-  source = "../modules/efs-storage"
-  
+    count = var.include_efs_csi_driver_module ? 1 : 0 
+
+  source = "../modules/efs-storage"  
   k8s_cluster_name                              =   "${var.cluster_name}-${var.environment}"
+  efs_csi_helm_chart_version                    =   var.efs_csi_helm_chart_version
   vpc_id                                        =   module.vpc.vpc_id
   private_subnet_ids                            =   module.vpc.aws_subnets_private_ids
   eks_cluster_security_group_id                 =   module.eks.eks_cluster_primary_security_group_id

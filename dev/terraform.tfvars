@@ -26,6 +26,7 @@ kubecost_chart_version       = "2.8.0"
 certmanager_chart_version    = "1.18.2"
 external_secret_chart_version = "0.18.2"
 ebs_csi_helm_chart_version = "2.46.0"
+efs_csi_helm_chart_version = "2.4.0"
 mcpserver_chart_version     = "0.1.0"
 external_dns_chart_version = "1.17.0"
 
@@ -46,8 +47,11 @@ include_vpc_cni_addon_module = true
 include_kube_proxy_addon_module = true
 include_coredns_addon_module = true
 include_pod_identity_agent_addon_module = true
-include_ebs_csi_driver = true
-include_efs_csi_driver_addon = true
+#include_ebs_csi_driver = true
+#include_efs_csi_driver_addon = true
+include_ebs_csi_driver_module = true
+include_efs_csi_driver_module = true
+
 
 include_calico_module = true
 include_nginx_controller_module = true

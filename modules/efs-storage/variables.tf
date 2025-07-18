@@ -28,3 +28,9 @@ variable "efs_csi_helm_chart_version" {
   type        = string
   default     = "2.4.0"  # Check for latest version
 }
+
+variable efs_csi_service_account_name {
+  description = "Service Account Name for EFS CSI Driver"
+  type        = string
+  default     = "efs-csi-controller-sa"
+}

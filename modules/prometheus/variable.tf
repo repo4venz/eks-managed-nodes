@@ -49,7 +49,7 @@ variable "prometheus_retention" {
 variable "storage_class_name" {
   description = "Storage class name for persistent volumes"
   type        = string
-  default     = "gp3"
+  default     = "ebs-gp3-sc"
 }
 
 variable "prometheus_role_arn" {

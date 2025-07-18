@@ -84,6 +84,7 @@ variable "include_fluentbit_module" {
   description = "Execute module or not. true = execute and false = don't execute"
 }
 
+ 
 variable "include_ebs_csi_driver" {
   description = "Execute module/feature or not. true = execute and false = don't execute"
   type        = bool
@@ -91,6 +92,19 @@ variable "include_ebs_csi_driver" {
 }
 
 variable "include_efs_csi_driver_addon" {
+  description = "Execute module/feature or not. true = execute and false = don't execute"
+  type        = bool
+  default     = true
+}
+ 
+
+variable  include_ebs_csi_driver_module {
+  description = "Execute module/feature or not. true = execute and false = don't execute"
+  type        = bool
+  default     = true
+}
+
+variable  include_efs_csi_driver_module {
   description = "Execute module/feature or not. true = execute and false = don't execute"
   type        = bool
   default     = true
@@ -165,6 +179,12 @@ variable "ebs_csi_helm_chart_version" {
   description = "Helm chart version for EBS CSI Driver"
   type        = string
   default     = "2.46.0"  # Check for latest version
+}
+
+variable efs_csi_helm_chart_version {
+  description = "Helm chart version for EFS CSI Driver"
+  type        = string
+  default     = "2.4.0"  # Check for latest version  
 }
 
 variable "spot_instance_types" {

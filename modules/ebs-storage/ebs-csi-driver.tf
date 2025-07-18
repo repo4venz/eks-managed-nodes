@@ -13,7 +13,7 @@
       controller = {
         serviceAccount = {
           create = true
-          name   = "ebs-csi-controller-sa"
+          name   = var.ebs_csi_service_account_name
           annotations = {
             "eks.amazonaws.com/role-arn" = aws_iam_role.ebs_csi_driver_role.arn
           }

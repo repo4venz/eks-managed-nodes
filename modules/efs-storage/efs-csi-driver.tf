@@ -12,7 +12,7 @@ resource "helm_release" "aws_efs_csi_driver" {
     controller = {
       serviceAccount = {
         create = true
-        name   = "efs-csi-controller-sa"
+        name   = var.efs_csi_service_account_name  # "efs-csi-controller-sa"
         annotations = {
         "eks.amazonaws.com/role-arn" = aws_iam_role.efs_csi_driver_role.arn
         }

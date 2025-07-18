@@ -9,10 +9,8 @@ resource "kubernetes_storage_class_v1" "ebs_sc" {
    parameters = {
     type = var.ebs_volume_type
     encrypted = "true"
-    iops      = var.ebs_volume_iops
+    iops = var.ebs_volume_iops
     throughput = var.ebs_volume_throughput
-    type      = var.ebs_volume_type
-    encrypted = "true"
     kms_key_id = var.eks_kms_secret_encryption_alias_arn
   }
 }
@@ -20,6 +18,9 @@ resource "kubernetes_storage_class_v1" "ebs_sc" {
 resource "kubernetes_storage_class_v1" "ebs_sc_retain" {
   metadata {
     name = "ebs-gp3-sc-retain"
+    annotations = {
+      "storageclass.kubernetes.io/is-default-class" = "true"
+    }
   }
   storage_provisioner = "ebs.csi.aws.com"
   volume_binding_mode = "WaitForFirstConsumer"
@@ -29,10 +30,8 @@ resource "kubernetes_storage_class_v1" "ebs_sc_retain" {
   parameters = {
     type = var.ebs_volume_type
     encrypted = "true"
-    iops      = var.ebs_volume_iops
+    iops = var.ebs_volume_iops
     throughput = var.ebs_volume_throughput
-    type      = var.ebs_volume_type
-    encrypted = "true"
     kms_key_id = var.eks_kms_secret_encryption_alias_arn
   }
 }
