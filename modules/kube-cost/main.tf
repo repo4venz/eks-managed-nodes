@@ -118,7 +118,7 @@ values = [
         }
         retention = var.prometheus_retention
       }
-        nodeExporter = {
+      /*  nodeExporter = {
           enabled = true
           port    = 19100 # Custom Node Exporter port. Change to custom port if needed 
           # Use the same port for service and serviceMonitor
@@ -161,10 +161,11 @@ values = [
       }
       pushgateway = {
         enabled = false # Disable Pushgateway
-      }
+      }*/
     }
-  }),
-  file("${path.module}/kubecost-advanced-values.yaml")
+  })
+  
+  #,file("${path.module}/kubecost-advanced-values.yaml")
 ]
   depends_on = [
     aws_iam_role_policy_attachment.kubecost,
