@@ -73,7 +73,7 @@ module "ebs_storage" {
 module "efs_storage" {
   source = "../modules/efs-storage"
   
-  cluster_name                                  =   "${var.cluster_name}-${var.environment}"
+  k8s_cluster_name                              =   "${var.cluster_name}-${var.environment}"
   vpc_id                                        =   module.vpc.vpc_id
   private_subnet_ids                            =   module.vpc.aws_subnets_private_ids
   eks_cluster_security_group_id                 =   module.eks.eks_cluster_primary_security_group_id
