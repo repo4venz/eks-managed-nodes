@@ -49,8 +49,8 @@ include_coredns_addon_module = true
 include_pod_identity_agent_addon_module = true
 #include_ebs_csi_driver = true
 #include_efs_csi_driver_addon = true
-include_ebs_csi_driver_module = true
-include_efs_csi_driver_module = true
+include_ebs_csi_driver_module = false
+include_efs_csi_driver_module = false
 
 
 include_calico_module = true
