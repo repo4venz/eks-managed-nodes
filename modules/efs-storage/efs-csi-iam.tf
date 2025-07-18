@@ -19,12 +19,12 @@ data "aws_iam_policy_document" "efs_csi_assume_role_policy" {
 }
 
 resource "aws_iam_role" "efs_csi_driver_role" {
-  name               = "${var.cluster_name}-efs-csi-driver-role"
+  name               = "${var.k8s_cluster_name}-efs-csi-driver-role"
   assume_role_policy = data.aws_iam_policy_document.efs_csi_assume_role_policy.json
 }
 
 resource "aws_iam_policy" "efs_csi_driver_policy" {
-  name        = "${var.cluster_name}-efs-csi-driver-policy"
+  name        = "${var.k8s_cluster_name}-efs-csi-driver-policy"
   description = "Policy for EFS CSI driver"
   
   policy = jsonencode({

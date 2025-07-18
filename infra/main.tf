@@ -63,7 +63,7 @@ module "eks" {
 module "ebs_storage" {
   source = "../modules/ebs-storage"
   
-  cluster_name                                  = "${var.cluster_name}-${var.environment}"
+  k8s_cluster_name                              = "${var.cluster_name}-${var.environment}"
   eks_kms_secret_encryption_alias_arn           =  module.kms_aws.eks_kms_secret_encryption_alias_arn  
 
   depends_on = [module.eks]

@@ -11,7 +11,7 @@ resource "kubernetes_storage_class_v1" "efs_sc" {
 }
 
 resource "aws_efs_file_system" "eks_efs" {
-  creation_token = "${var.cluster_name}-efs"
+  creation_token = "${var.k8s_cluster_name}-efs"
   encrypted      = true
   kms_key_id     = var.eks_kms_secret_encryption_alias_arn
   
@@ -19,7 +19,7 @@ resource "aws_efs_file_system" "eks_efs" {
   throughput_mode  = "bursting"
 
   tags = {
-    Name = "${var.cluster_name}-efs"
+    Name = "${var.k8s_cluster_name}-efs"
   }
 }
 
@@ -31,7 +31,7 @@ resource "aws_efs_mount_target" "eks_efs_mount" {
 }
 
 resource "aws_security_group" "efs_sg" {
-  name        = "${var.cluster_name}-efs-sg"
+  name        = "${var.k8s_cluster_name}-efs-sg"
   description = "Security group for EFS mount targets"
   vpc_id      = var.vpc_id
 
@@ -51,6 +51,6 @@ resource "aws_security_group" "efs_sg" {
   }
 
   tags = {
-    Name = "${var.cluster_name}-efs-sg"
+    Name = "${var.k8s_cluster_name}-efs-sg"
   }
 }
