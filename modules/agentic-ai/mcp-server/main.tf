@@ -35,8 +35,8 @@ resource "helm_release" "mcp_server" {
           memory = var.mcp_memory_request
         }
         limits = {
-          cpu    = "1000m"
-          memory = "1Gi"
+          cpu    = var.mcp_cpu_limit
+          memory = var.mcp_memory_limit
         }
       }
       config = {

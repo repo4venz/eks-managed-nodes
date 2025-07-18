@@ -1,9 +1,4 @@
-## 1. Data Sources
-data "aws_caller_identity" "current" {}
-
-data "aws_eks_cluster" "this" {
-  name = var.k8s_cluster_name
-}
+ 
 
 ## 2. Create IAM Policy for Pod Access
 resource "aws_iam_policy" "pod_access_policy_for_mcp_server" {

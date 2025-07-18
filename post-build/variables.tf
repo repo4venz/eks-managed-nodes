@@ -274,4 +274,8 @@ variable "include_external_secrets_module" {
   description = "Execute module or not. true = execute and false = don't execute"
 }
 
-
+variable external_dns_chart_version {
+  type        = string
+  description = "Helm chart version for external-dns"
+  default     = "1.17.0" # Update this to the desired version
+}

@@ -3,12 +3,7 @@ variable "k8s_cluster_name" {
   type        = string
 }
 
-variable "policy_arns" {
-  description = "List of IAM policy ARNs to attach to the pod identity role"
-  type        = list(string)
-  default     = []
-}
-
+ 
 variable "helm_repo_url" {
   description = "Helm repository URL for MCP server chart"
   type        = string
@@ -56,11 +51,16 @@ variable "mcp_memory_request" {
   type        = string
   default     = "512Mi"
 }
-
-variable "k8s_cluster_name" {
-  description = "the name of your stack, e.g. \"demo\""
+variable "mcp_cpu_limit" {
+  description = "CPU limit for MCP server"
+  type        = string
+  default     = "1"
 }
-
+variable "mcp_memory_limit" {
+  description = "Memory limit for MCP server"
+  type        = string
+  default     = "1Gi"
+}
 
 variable "policy_arns" {
   description = "List of policy ARNs to attach to the role"
