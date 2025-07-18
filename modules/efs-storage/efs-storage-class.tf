@@ -13,7 +13,6 @@ resource "kubernetes_storage_class_v1" "efs_sc" {
 resource "aws_efs_file_system" "eks_efs" {
   creation_token = "${var.k8s_cluster_name}-efs"
   encrypted      = true
-  kms_key_id     = var.eks_kms_secret_encryption_key_arn
   
   performance_mode = "generalPurpose"
   throughput_mode  = "bursting"

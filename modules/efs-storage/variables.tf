@@ -18,11 +18,6 @@ variable "eks_cluster_security_group_id" {
   type        = string
 }
 
-variable "eks_kms_secret_encryption_key_arn" {
-  description = "KMS key (alias) ARN for EKS"
-  type        = string
-}
-
 variable "efs_csi_helm_chart_version" {
   description = "Helm chart version for EFS CSI Driver"
   type        = string

@@ -14,7 +14,6 @@ resource "kubernetes_storage_class_v1" "ebs_sc" {
     encrypted = "true"
     iops = var.ebs_volume_iops
     throughput = var.ebs_volume_throughput
-    kms_key_id = var.eks_kms_secret_encryption_key_arn
   }
 }
 
@@ -35,7 +34,6 @@ resource "kubernetes_storage_class_v1" "ebs_sc_retain" {
     encrypted = "true"
     iops = var.ebs_volume_iops
     throughput = var.ebs_volume_throughput
-    kms_key_id = var.eks_kms_secret_encryption_key_arn
   }
 
 }
