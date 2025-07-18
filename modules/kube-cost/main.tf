@@ -45,7 +45,7 @@ values = [
         }
       }
       
-      # Ingress config
+     /* # Ingress config
       ingress = {
         enabled = true
         path = "/"
@@ -61,9 +61,10 @@ values = [
         }
         tls = {
           enabled = true
+          hosts = [var.ingress_host]
           secretName = "kubecost-tls"
         }
-      }
+      }*/
       
       # Service and resources
       service = { type = "ClusterIP" }
@@ -149,8 +150,15 @@ values = [
 */
 
 
+resource "time_sleep" "wait_120_seconds" {
+  create_duration = "120s"  # 2 minutes
 
-/*
+  depends_on = [
+    # Resources that must complete before waiting
+    helm_release.kubecost 
+  ]
+}
+ 
 # Ingress with TLS
 resource "kubernetes_ingress_v1" "kubecost" {
   metadata {
@@ -196,7 +204,7 @@ resource "kubernetes_ingress_v1" "kubecost" {
   ]
 }
 
-*/
+ 
 
 /*
 
