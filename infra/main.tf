@@ -60,10 +60,10 @@ module "eks" {
 
 
 
-module "efs_storage" {
-  source = "./modules/ebs-storage"
+module "ebs_storage" {
+  source = "../modules/ebs-storage"
   
-  cluster_name                                  = var.cluster_name
+  cluster_name                                  = "${var.cluster_name}-${var.environment}"
   eks_kms_secret_encryption_alias_arn           =  module.kms_aws.eks_kms_secret_encryption_alias_arn  
 
   depends_on = [module.eks]
@@ -71,13 +71,13 @@ module "efs_storage" {
 
 
 module "efs_storage" {
-  source = "./modules/efs-storage"
+  source = "../modules/efs-storage"
   
-  cluster_name                                  = var.cluster_name
-  vpc_id                                        = var.vpc_id
-  private_subnet_ids                            = var.private_subnet_ids
-  eks_cluster_security_group_id                 = var.eks_cluster_security_group_id
-  eks_kms_secret_encryption_alias_arn           =  module.kms_aws.eks_kms_secret_encryption_alias_arn  
+  cluster_name                                  =   "${var.cluster_name}-${var.environment}"
+  vpc_id                                        =   module.vpc.vpc_id
+  private_subnet_ids                            =   module.vpc.aws_subnets_private_ids
+  eks_cluster_security_group_id                 =   module.eks.eks_cluster_primary_security_group_id
+  eks_kms_secret_encryption_alias_arn           =   module.kms_aws.eks_kms_secret_encryption_alias_arn  
 
    depends_on = [module.eks]
 }
