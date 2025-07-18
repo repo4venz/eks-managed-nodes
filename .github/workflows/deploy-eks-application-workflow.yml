@@ -6,6 +6,7 @@ on:
       - 'application-build/**'
       - 'modules/kubernetes-app/**'
       - 'modules/kubernetes-app-secured/**'
+      - 'modules/app-ext-secrets/**'
 
   pull_request:
     branches: [ main ] # input your banch name here
