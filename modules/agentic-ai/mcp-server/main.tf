@@ -6,7 +6,7 @@ resource "helm_release" "mcp_server" {
   namespace  = var.namespace
   repository = var.helm_repo_url
   chart      = "mcp-server"
-  version    = var.mcp_server_chart_version
+  #version    = var.mcp_server_chart_version
   create_namespace = true
   atomic           = true
   cleanup_on_fail  = true
