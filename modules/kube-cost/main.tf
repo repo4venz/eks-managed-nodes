@@ -40,32 +40,10 @@ values = [
             enabled = true
             size = var.storage_size
             storageClass = var.storage_class
-            accessModes = ["ReadWriteMany"]
+            accessModes = ["ReadWriteMany"]  #["ReadWriteOnce"]  # for EBS use ReadWriteOnce and for EFS use ReadWriteMany
           }
         }
-      }
-      
-     /* # Ingress config
-      ingress = {
-        enabled = true
-        path = "/"
-        pathType = "Prefix"
-        className = "nginx"
-        hosts = [var.ingress_host]
-        annotations = {
-          "nginx.ingress.kubernetes.io/backend-protocol" = "HTTP"
-          "cert-manager.io/cluster-issuer" = "letsencrypt-${var.environment}"
-          "external-dns.alpha.kubernetes.io/hostname" = var.ingress_host
-          "nginx.ingress.kubernetes.io/force-ssl-redirect" = "true"
-          "nginx.ingress.kubernetes.io/rewrite-target" = "/"
-        }
-        tls = {
-          enabled = true
-          hosts = [var.ingress_host]
-          secretName = "kubecost-tls"
-        }
-      }*/
-      
+      }   
       # Service and resources
       service = { type = "ClusterIP" }
       resources = {
@@ -200,7 +178,8 @@ resource "kubernetes_ingress_v1" "kubecost" {
   }
 
   depends_on = [
-    helm_release.kubecost 
+    helm_release.kubecost,
+    time_sleep.wait_120_seconds
   ]
 }
 

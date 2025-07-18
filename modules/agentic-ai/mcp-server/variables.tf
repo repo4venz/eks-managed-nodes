@@ -3,17 +3,16 @@ variable "k8s_cluster_name" {
   type        = string
 }
 
- 
-variable "helm_repo_url" {
-  description = "Helm repository URL for MCP server chart"
+variable "namespace" {
+  description = "Kubernetes namespace for MCP server"
   type        = string
-  default     = "https://aws.github.io/eks-charts"
+  default     = "agentic-ai"
 }
 
-variable "mcp_server_chart_version" {
-  description = "Version of the Helm chart for MCP server"
+variable "service_account_name" {
+  description = "Name of the service account for MCP server"
   type        = string
-  default     = "0.1.0"
+  default     = "mcp-server-sa"
 }
 
 variable "mcp_image_repo" {
@@ -51,48 +50,42 @@ variable "mcp_memory_request" {
   type        = string
   default     = "512Mi"
 }
+
 variable "mcp_cpu_limit" {
   description = "CPU limit for MCP server"
   type        = string
-  default     = "1"
+  default     = "1000m"
 }
+
 variable "mcp_memory_limit" {
   description = "Memory limit for MCP server"
   type        = string
   default     = "1Gi"
 }
 
-variable "policy_arns" {
-  description = "List of policy ARNs to attach to the role"
-  type        = list(string)
-  default = [
-          "arn:aws:iam::aws:policy/IAMFullAccess",
-          "arn:aws:iam::aws:policy/AmazonVPCFullAccess",
-          "arn:aws:iam::aws:policy/AWSCloudFormationFullAccess"
-  ]
-}
-
-
-variable "namespace" {
-  description = "Kubernetes namespace for the service account"
-  type        = string
-  default     = "agentic-ai"
-}
-
-variable "service_account_name" {
-  description = "Name of the Kubernetes service account"
-  type        = string
-  default     = "mcp-server-sa"
-}
-
 variable "ingress_host" {
-  description = "Hostname for the ingress"
+  description = "Hostname for MCP server ingress"
   type        = string
-  default = "mcpserver.suvendupublicdomain.fun"
 }
 
 variable "environment" {
-  description = "Environemnt of MCP Server"
+  description = "Environment name (dev, test, prod)"
   type        = string
-  default = "dev"
+  default     = "dev"
+}
+
+variable policy_arns {
+  description = "List of IAM policy ARNs to attach to the MCP server IAM role"
+  type        = list(string)
+  default     = [
+    "arn:aws:iam::aws:policy/AmazonEC2ReadOnlyAccess",
+    "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess",
+    "arn:aws:iam::aws:policy/AWSResourceGroupsReadOnlyAccess"
+  ]
+}
+
+variable "ingress_host" {
+  description = "Hostname for MCP server ingress"
+  type        = string
+  default = "mcpserver.suvendupublicdomain.fun"
 }

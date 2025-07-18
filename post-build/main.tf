@@ -59,7 +59,7 @@ module "kube-cost" {
   depends_on = [module.lets-encrypt, module.external-dns, module.prometheus]
 }
 
-/*
+ 
 # Add the agentic-ai module for MCP server
 module "mcp_server" {
    count = var.include_mcp_server_module ? 1 : 0
@@ -67,10 +67,9 @@ module "mcp_server" {
   source = "../modules/agentic-ai/mcp-server"
   k8s_cluster_name = "${var.cluster_name}-${var.environment}"  
   # Helm chart configuration
-  mcp_server_chart_version = var.mcpserver_chart_version
   environment               =  var.environment
   ingress_host              =  "mcpserver.${var.public_domain_name}"
   
   depends_on = [ module.external-dns, module.lets-encrypt]
 }
-*/
+ 
