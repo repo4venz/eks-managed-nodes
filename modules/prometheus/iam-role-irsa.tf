@@ -70,5 +70,5 @@ resource "aws_iam_role_policy_attachment" "prometheus_policy_attachment" {
 
 resource "aws_iam_role_policy_attachment" "prometheus_policy_custom" {
   role       = aws_iam_role.prometheus_role.name
-  policy_arn = aws_iam_policy.kubecost_policy.arn
+  policy_arn = aws_iam_policy.prometheus_policy.arn
 }
