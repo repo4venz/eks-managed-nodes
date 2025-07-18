@@ -23,6 +23,8 @@ resource "aws_iam_role" "efs_csi_driver_role" {
   assume_role_policy = data.aws_iam_policy_document.efs_csi_assume_role_policy.json
 }
 
+
+/*
 resource "aws_iam_policy" "efs_csi_driver_policy" {
   name        = "${var.k8s_cluster_name}-efs-csi-driver-policy"
   description = "Policy for EFS CSI driver"
@@ -67,9 +69,18 @@ resource "aws_iam_policy" "efs_csi_driver_policy" {
     ]
   })
 }
+*/
 
+resource "aws_iam_role_policy_attachment" "efs_csi_driver_policy" {
+  role       = aws_iam_role.efs_csi_driver_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEFSCSIDriverPolicy"
+}
+
+
+/*
 resource "aws_iam_role_policy_attachment" "efs_csi_driver_policy" {
   role       = aws_iam_role.efs_csi_driver_role.name
   policy_arn = aws_iam_policy.efs_csi_driver_policy.arn
 }
  
+ */
