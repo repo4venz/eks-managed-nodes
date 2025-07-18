@@ -105,6 +105,8 @@ prometheus:
   # Enable Grafana
 grafana:
   Enabled: true
+  initChownData:
+      enabled: false  # Disable the permission-changing init container  (only applicable for EFS)
   adminUser: 'admin'  # Default admin user
   adminPassword: 'admin123'  # Default admin password, change this in production
   persistence:      # Enable persistence for Grafana
