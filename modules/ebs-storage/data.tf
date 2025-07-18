@@ -7,12 +7,14 @@ data "aws_eks_cluster" "this" {
  
  data "aws_iam_policy_document" "eks_use_kms_policy_ebs" {
 	  statement {
-	    sid = "KMSUsagePolicy-EBS"
+	    sid = "KMSUsagePolicyEBS"
 	    actions = [
 	      "kms:Encrypt",
 	      "kms:Decrypt",
+	      "kms:GenerateDataKey*",
 	      "kms:Describe*",
-		    "kms:CreateGrant",
+		  "kms:CreateGrant",
+		  "kms:ReEncrypt*",
 	    ]
 	
 	    resources = [

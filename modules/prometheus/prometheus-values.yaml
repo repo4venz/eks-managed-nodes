@@ -34,10 +34,14 @@ prometheus:
       volumeClaimTemplate:
         spec:
           storageClassName: ${storage_class_name} #ebs-sc
-          accessModes: ["ReadWriteOnce"]
+          accessModes:  ["ReadWriteMany"] # ["ReadWriteOnce"]    # for EBS use ReadWriteOnce and for EFS use ReadWriteMany
           resources:
             requests:
-              storage: ${storage_size} 
+              storage: ${storage_size}
+    podMetadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9090"
     serviceMonitorSelectorNilUsesHelmValues: false
     podMonitorSelectorNilUsesHelmValues: false
     scrapeInterval: 30s
@@ -106,7 +110,7 @@ grafana:
   persistence:      # Enable persistence for Grafana
     enabled: true
     storageClassName: ${storage_class_name} #ebs-sc
-    accessModes: ["ReadWriteOnce"]
+    accessModes:  ["ReadWriteMany"]  #["ReadWriteOnce"] # for EBS use ReadWriteOnce and for EFS use ReadWriteMany
     size: ${storage_size}  #5Gi
   ingress:
     enabled: true
@@ -139,8 +143,56 @@ alertmanager:
       volumeClaimTemplate:
         spec:
           storageClassName: ${storage_class_name} #ebs-sc
-          accessModes: ["ReadWriteOnce"]
+          accessModes:  ["ReadWriteMany"] #["ReadWriteOnce"]  # for EBS use ReadWriteOnce and for EFS use ReadWriteMany
           resources:
             requests:
               storage: 2Gi
 
+
+
+prometheus:
+  prometheusSpec:
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: efs-sc
+          accessModes: ["ReadWriteMany"]
+          resources:
+            requests:
+              storage: 10Gi
+    podMetadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9090"
+    affinity:
+      podAntiAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          podAffinityTerm:
+            labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - prometheus
+            topologyKey: kubernetes.io/hostname
+    tolerations:
+    - operator: Exists  # Tolerate all taints
+
+alertmanager:
+  alertmanagerSpec:
+    storage:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: efs-sc
+          accessModes: ["ReadWriteMany"]
+          resources:
+            requests:
+              storage: 2Gi
+
+grafana:
+  persistence:
+    enabled: true
+    storageClassName: efs-sc
+    accessModes: ["ReadWriteMany"]
+    size: 5Gi

@@ -46,10 +46,16 @@ variable "prometheus_retention" {
   default     = "3d"
 }
 
-variable "storage_class_name" {
-  description = "Storage class name for persistent volumes"
+variable "ebs_storage_class_name" {
+  description = "EBS Storage class name for persistent volumes for Prometheus"
   type        = string
   default     = "ebs-gp3-sc"
+}
+
+variable "efs_storage_class_name" {
+  description = "EFS Storage class name for persistent volumes for Prometheus"
+  type        = string
+  default     = "efs-sc"
 }
 
 variable "prometheus_role_arn" {

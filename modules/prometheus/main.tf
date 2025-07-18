@@ -76,7 +76,7 @@ data "template_file" "prometheus_values" {
   vars = {
     service_account_name = var.prometheus_service_account_name
     prometheus_role_arn  = aws_iam_role.prometheus_role.arn
-    storage_class_name = var.storage_class_name
+    storage_class_name = var.efs_storage_class_name #var.ebs_storage_class_name
     grafana_ingress_hostname = var.grafana_ingress_hostname
     environment = var.environment
     storage_size = var.storage_size

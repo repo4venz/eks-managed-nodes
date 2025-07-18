@@ -10,8 +10,10 @@ data "aws_eks_cluster" "this" {
 	    actions = [
 	      "kms:Encrypt",
 	      "kms:Decrypt",
+	      "kms:GenerateDataKey*",
 	      "kms:Describe*",
-		    "kms:CreateGrant",
+		  "kms:CreateGrant",
+		  "kms:ReEncrypt*",
 	    ]
 	
 	    resources = [
