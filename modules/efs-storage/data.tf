@@ -16,7 +16,9 @@ data "aws_eks_cluster" "this" {
 		  "kms:ReEncrypt*",
 	    ]
 	
-	    resources = "*"
+	    resources = [
+	     var.eks_kms_secret_encryption_key_arn
+	    ]
 	  }
 	}
 
