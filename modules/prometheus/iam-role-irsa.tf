@@ -6,7 +6,7 @@ resource "aws_iam_role" "prometheus_role" {
 }
 
  
-resource "aws_iam_policy" "kubecost_policy" {
+resource "aws_iam_policy" "prometheus_policy" {
   name   = substr("${var.k8s_cluster_name}-prometheus-policy",0,64)
   description = "IAM Custom policy for Prometheus"
   policy = jsonencode({
