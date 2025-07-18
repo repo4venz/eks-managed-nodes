@@ -35,6 +35,6 @@ variable "ebs_csi_helm_chart_version" {
 }
 
  
-variable "eks_kms_secret_encryption_alias_arn" {
-	    description = "kms key (alias) arn for eks"
+variable "eks_kms_secret_encryption_key_arn" {
+	    description = "kms key id arn for eks"
 	}

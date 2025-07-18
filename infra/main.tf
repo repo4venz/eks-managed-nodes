@@ -66,7 +66,7 @@ module "ebs_storage" {
   
   k8s_cluster_name                              = "${var.cluster_name}-${var.environment}"
   ebs_csi_helm_chart_version                    =  var.ebs_csi_helm_chart_version
-  eks_kms_secret_encryption_alias_arn           =  module.kms_aws.eks_kms_secret_encryption_alias_arn  
+  eks_kms_secret_encryption_key_arn           =  module.kms_aws.eks_kms_secret_encryption_key_arn  
 
   depends_on = [module.eks]
 }
@@ -81,7 +81,7 @@ module "efs_storage" {
   vpc_id                                        =   module.vpc.vpc_id
   private_subnet_ids                            =   module.vpc.aws_subnets_private_ids
   eks_cluster_security_group_id                 =   module.eks.eks_cluster_primary_security_group_id
-  eks_kms_secret_encryption_alias_arn           =   module.kms_aws.eks_kms_secret_encryption_alias_arn  
+  eks_kms_secret_encryption_key_arn             =   module.kms_aws.eks_kms_secret_encryption_key_arn  
 
    depends_on = [module.eks]
 }

@@ -18,7 +18,7 @@ variable "eks_cluster_security_group_id" {
   type        = string
 }
 
-variable "eks_kms_secret_encryption_alias_arn" {
+variable "eks_kms_secret_encryption_key_arn" {
   description = "KMS key (alias) ARN for EKS"
   type        = string
 }
