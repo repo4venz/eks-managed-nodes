@@ -15,101 +15,66 @@ resource "helm_release" "kubecost" {
   
 values = [
   yamlencode({
-    global = {
-      clusterName = var.k8s_cluster_name
-    }
+    global = { clusterName = var.k8s_cluster_name }
     
     serviceAccount = {
       create = true
-      name   = var.service_account_name
-      annotations = {
-        "eks.amazonaws.com/role-arn" = aws_iam_role.kubecost.arn
-      }
+      name = var.service_account_name
+      annotations = { "eks.amazonaws.com/role-arn" = aws_iam_role.kubecost.arn }
     }
-    
+
     kubecostProductConfigs = {
-      clusterName       = var.k8s_cluster_name
+      clusterName = var.k8s_cluster_name
       awsAthenaProjectID = data.aws_caller_identity.current.account_id
-      awsRegion        = data.aws_region.current.id
-      metricResolution = "1m"  # Set to 1 minute for more granular metrics
-      etlDailyStoreDurationDays = "10"
-      etlHourlyStoreDurationHours = "720" # 30 days
+      awsRegion = data.aws_region.current.id
+      
+      # Storage settings
+      metricResolution = "1m"
+      etlDailyStoreDurationDays = "30"
+      etlHourlyStoreDurationHours = "720"
+      
+      # Prometheus config
+      prometheus = {
+        server = {
+          persistentVolume = {
+            enabled = true
+            size = var.storage_size
+            storageClass = var.storage_class
+            accessModes = ["ReadWriteMany"]
+          }
+        }
+      }
+      
+      # Ingress config
       ingress = {
         enabled = true
-        path    = "/"
+        path = "/"
         pathType = "Prefix"
-        className = "nginx" # Ensure you have an NGINX Ingress Controller
-        hosts   = [var.ingress_host]
+        className = "nginx"
+        hosts = [var.ingress_host]
         annotations = {
-          #"kubernetes.io/ingress.class"                  = "nginx"
           "nginx.ingress.kubernetes.io/backend-protocol" = "HTTP"
-          "cert-manager.io/cluster-issuer"               = "letsencrypt-${var.environment}"
-          "external-dns.alpha.kubernetes.io/hostname"    = var.ingress_host
+          "cert-manager.io/cluster-issuer" = "letsencrypt-${var.environment}"
+          "external-dns.alpha.kubernetes.io/hostname" = var.ingress_host
           "nginx.ingress.kubernetes.io/force-ssl-redirect" = "true"
-          "nginx.ingress.kubernetes.io/rewrite-target"     = "/"
+          "nginx.ingress.kubernetes.io/rewrite-target" = "/"
         }
-        tls     = {
+        tls = {
           enabled = true
-          secretName = "kubecost-tls" # Ensure this secret is created with the TLS certificate
+          secretName = "kubecost-tls"
         }
       }
-    }
-   
-    prometheus = {
-      server = {
-        persistentVolume = {
-          enabled      = true
-          storageClass = var.storage_class
-          size         = var.storage_size
-          accessModes  = ["ReadWriteMany"]  #  ["ReadWriteOnce"] # for ebs use ReadWriteOnce. For efs use ReadWriteMany
-        }
-        retention = var.prometheus_retention
+      
+      # Service and resources
+      service = { type = "ClusterIP" }
+      resources = {
+        requests = { cpu = "200m", memory = "512Mi" }
+        limits = { cpu = "1000m", memory = "2Gi" }
       }
-
-      /*  nodeExporter = {
-          enabled = true
-          port    = 19100 # Custom Node Exporter port. Change to custom port if needed 
-          # Use the same port for service and serviceMonitor
-          service = {
-            port = 19100 # Service port
-            targetPort = 19100 # Container port
-          }
-          serviceMonitor = {
-            enabled = true
-            port    = "http-metrics" # Reference the port name
-          }
-        }
-
-        # Kube-State-Metrics Configuration
-        kubeStateMetrics = {
-          enabled = true
-          service = {
-            port = 18080 # Custom KSM port
-            targetPort = 18080 # Container port
-          }
-          serviceMonitor = {
-            enabled = true
-            port    = "http-metrics" # Reference the port name
-          }
-        }
-      alertmanager = {
-        enabled = false # Disable internal Alertmanager
-      }
-      operator = {
-        enabled = false # Disable Prometheus Operator
-      }
-      serviceMonitor = {
-        enabled = true
-        interval = "30s"
-        scrapeTimeout = "10s"
-      }
-      service = {
-        enabled = true
-        type    = "ClusterIP"
-      }
-      pushgateway = {
-        enabled = false # Disable Pushgateway
-      }*/
+      
+      # Features
+      networkCosts = { enabled = true }
+      serviceMonitor = { enabled = true }
     }
   })
   
