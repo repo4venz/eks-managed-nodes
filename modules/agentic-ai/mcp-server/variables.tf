@@ -63,10 +63,6 @@ variable "mcp_memory_limit" {
   default     = "1Gi"
 }
 
-variable "ingress_host" {
-  description = "Hostname for MCP server ingress"
-  type        = string
-}
 
 variable "environment" {
   description = "Environment name (dev, test, prod)"
