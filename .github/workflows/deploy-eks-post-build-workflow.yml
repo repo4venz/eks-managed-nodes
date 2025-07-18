@@ -8,6 +8,8 @@ on:
       - 'modules/prometheus/**'
       - 'modules/external-secrets-controller/**'
       - 'modules/kube-cost/**'
+      - 'modules/agentic-ai/**'
+      
   pull_request:
     branches: [ main ] # input your banch name here
 

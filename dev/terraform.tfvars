@@ -25,7 +25,9 @@ prometheus_chart_version     = "75.10.0"
 kubecost_chart_version       = "2.8.0"
 certmanager_chart_version    = "1.18.2"
 external_secret_chart_version = "0.18.2"
-ebs_csi_helm_chart_version = "2.46.0"   
+ebs_csi_helm_chart_version = "2.46.0"
+mcpserver_chart_version     = "0.1.0"
+external_dns_chart_version = "6.0.0"
 
 
 app_namespace        =  ["myapps1", "myapps2"]
@@ -62,6 +64,8 @@ include_k8s_app_secured_module = true
 include_kubecost_module = true    
 include_external_secrets_module = true
 application-external-secrets_module = true
+
+include_mcp_server_module = true
 
 
 

@@ -1,0 +1,19 @@
+output "mcp_service_name" {
+  description = "Name of the MCP server service"
+  value       = "mcp-server"
+}
+
+output "mcp_service_namespace" {
+  description = "Namespace of the MCP server service"
+  value       = kubernetes_namespace.agentic_ai.metadata[0].name
+}
+
+output "mcp_service_endpoint" {
+  description = "Endpoint for the MCP server service"
+  value       = "mcp-server.${kubernetes_namespace.agentic_ai.metadata[0].name}.svc.cluster.local:${var.mcp_port}"
+}
+
+output "pod_identity_role_arn" {
+  description = "ARN of the IAM role for pod identity"
+  value       = aws_iam_role.pod_identity_role_mcp_server.arn
+}
