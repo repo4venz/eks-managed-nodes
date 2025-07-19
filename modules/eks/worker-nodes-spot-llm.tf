@@ -3,26 +3,33 @@
 # AWS EKS node group ON_DEMAND
 # The node groupd will work with AWS VPC CNI only
 
-resource "aws_eks_node_group" "demo_eks_nodegroup_ondemand_llm" {
-   count = var.required_llm_ondemand_instances ? 1 : 0
+resource "aws_eks_node_group" "demo_eks_nodegroup_spot_llm" {
+   count = var.required_llm_spot_instances ? 1 : 0
 
   cluster_name    = aws_eks_cluster.demo_eks_cluster.name
-  node_group_name = substr("${var.cluster_name}-${var.environment}-nodegrp-ondemand-llm-gpu" ,0,64)
+  node_group_name = substr("${var.cluster_name}-${var.environment}-nodegrp-spot-llm-gpu" ,0,64)
   node_role_arn   = aws_iam_role.eks_worker_nodes_role.arn
 
   subnet_ids =  var.private_subnets
-  capacity_type = "ON_DEMAND"
+  capacity_type = "SPOT"
   #ami_type = "AL2023_x86_64_NVIDIA" #"AL2_x86_64_GPU" # Amazon Linux 2 with GPU support
 
   launch_template {
-    id      = aws_launch_template.eks_worker_nodes_ondemand_llm.id
+    id      = aws_launch_template.eks_worker_nodes_spot_llm.id
     version = "$Latest"
   }
 
+  # Optional: Add taints to ensure only GPU workloads run on these nodes
+  taint {
+    key    = "nvidia.com/gpu"
+    value  = "llm"
+    effect = "NO_SCHEDULE"
+  } 
+
   scaling_config {
-    desired_size =  var.base_scaling_config_ondemand.desired_size
-    max_size     =  var.base_scaling_config_ondemand.max_size
-    min_size     =  var.base_scaling_config_ondemand.min_size
+    desired_size =  var.base_scaling_config_spot.desired_size
+    max_size     =  var.base_scaling_config_spot.max_size
+    min_size     =  var.base_scaling_config_spot.min_size
   }
 
   update_config {
@@ -31,18 +38,10 @@ resource "aws_eks_node_group" "demo_eks_nodegroup_ondemand_llm" {
   lifecycle {
     create_before_destroy = true
   }
-
-# Optional: Add taints to ensure only GPU workloads run on these nodes
-  taint {
-    key    = "nvidia.com/gpu"
-    value  = "llm"
-    effect = "NO_SCHEDULE"
-  } 
-
   labels = {
-    node = "${var.cluster_name}-${var.environment}-ondemand-worker-node-llm" 
-    lifecycle = "ondemand"
-    type      = "ondemand-node-llm"
+    node = "${var.cluster_name}-${var.environment}-spot-worker-node-llm" 
+    lifecycle = "spot"
+    type      = "spot-node-llm"
     nodegroup = "llm-gpu"
     accelerator = "nvidia"
     instance-type = "gpu"
@@ -54,7 +53,7 @@ resource "aws_eks_node_group" "demo_eks_nodegroup_ondemand_llm" {
     "aws:eks:cluster-name" = "${aws_eks_cluster.demo_eks_cluster.name}"
     "k8s.io/cluster-autoscaler/enabled" = "true"
     "k8s.io/cluster-autoscaler/${aws_eks_cluster.demo_eks_cluster.name}" = "owned"
-    "instance_capacity_type" = "ON_DEMAND"
+    "instance_capacity_type" = "SPOT"
     "node-role.kubernetes.io/worker" = ""
     "monitoring" = "enabled"  # Custom label
     "project" = "llm"  # Custom label
@@ -76,8 +75,8 @@ resource "aws_eks_node_group" "demo_eks_nodegroup_ondemand_llm" {
  
 
  # Launch Template for High-Pod-Density Nodes
-resource "aws_launch_template" "eks_worker_nodes_ondemand_llm" { 
-  name_prefix = "${aws_eks_cluster.demo_eks_cluster.name}-llm-gpu-ondemand-" 
+resource "aws_launch_template" "eks_worker_nodes_spot_llm" { 
+  name_prefix = "${aws_eks_cluster.demo_eks_cluster.name}-llm-gpu-spot-" 
   instance_type = var.llm_instance_types[0]
   image_id = data.aws_ssm_parameter.eks_optimized_nvidia_gpu_ami.value
     
@@ -101,7 +100,7 @@ resource "aws_launch_template" "eks_worker_nodes_ondemand_llm" {
   tag_specifications {
     resource_type = "instance"
     tags = {
-      NodeType = "eks-worker-node-ondemand-llm"
+      NodeType = "eks-worker-node-spot-llm"
       Name = substr("${aws_eks_cluster.demo_eks_cluster.name}-worker-node-llm",0,64)
       instance_type = "${var.llm_instance_types[0]}" # Use the first instance type from the list 
     }

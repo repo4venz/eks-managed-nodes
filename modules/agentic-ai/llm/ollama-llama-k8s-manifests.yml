@@ -1,0 +1,87 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ollama-llama
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: ollama-llama
+  template:
+    metadata:
+      labels:
+        app: ollama-llama
+    spec:
+    containers:
+    - name: ollama-llama
+      image: dockersuvendu/ollama-llama3.1-8b:latest
+      env:
+      - name: OLLAMA_NUM_GPU
+        value: "1"
+      ports:
+      - containerPort: 11434
+      resources:
+        limits:
+          nvidia.com/gpu: 1  # Requires GPU nodes
+      livenessProbe:
+        httpGet:
+          path: /api/tags
+          port: 11434
+        initialDelaySeconds: 30
+        periodSeconds: 60
+    nodeSelector:
+      eks.amazonaws.com/nodegroup = nvidia-gpu-llm # Ensure this matches the node group label
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            - key: nvidia.com/gpu
+              operator: Exists
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ollama-llama-service
+spec:
+  selector:
+    app: ollama-llama
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 11434
+	  
+	  
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ollama-llama-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+    cert-manager.io/cluster-issuer: "letsencrypt-dev"
+    external-dns.alpha.kubernetes.io/hostname: ollama.suvendupublicdomain.fun
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: ollama.suvendupublicdomain.fun
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: ollama-llama-service
+            port:
+              number: 80
+  tls:
+  - hosts:
+    - ollama.suvendupublicdomain.fun
+    secretName: ollama-llama-tls
