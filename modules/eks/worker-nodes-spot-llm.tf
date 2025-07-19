@@ -12,7 +12,7 @@ resource "aws_eks_node_group" "demo_eks_nodegroup_spot_llm" {
 
   subnet_ids =  var.private_subnets
   capacity_type = "SPOT"
-  ami_type = "AL2_x86_64_GPU" # Amazon Linux 2 with GPU support
+  ami_type = "AL2023_x86_64_NVIDIA" #"AL2_x86_64_GPU" # Amazon Linux 2 with GPU support
 
   launch_template {
     id      = aws_launch_template.eks_worker_nodes_spot_llm.id
