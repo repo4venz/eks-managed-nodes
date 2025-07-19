@@ -12,7 +12,7 @@ resource "aws_eks_node_group" "demo_eks_nodegroup_ondemand_llm" {
 
   subnet_ids =  var.private_subnets
   capacity_type = "ON_DEMAND"
-  ami_type = "AL2023_x86_64_NVIDIA" #"AL2_x86_64_GPU" # Amazon Linux 2 with GPU support
+  #ami_type = "AL2023_x86_64_NVIDIA" #"AL2_x86_64_GPU" # Amazon Linux 2 with GPU support
 
   launch_template {
     id      = aws_launch_template.eks_worker_nodes_ondemand_llm.id
@@ -36,6 +36,8 @@ resource "aws_eks_node_group" "demo_eks_nodegroup_ondemand_llm" {
     lifecycle = "ondemand"
     type      = "ondemand-node-llm"
     nodegroup = "llm-gpu"
+    "accelerator" = "nvidia"
+    "instance-type" = "gpu"
   }
 
   tags = {
@@ -66,9 +68,9 @@ resource "aws_eks_node_group" "demo_eks_nodegroup_ondemand_llm" {
 
  # Launch Template for High-Pod-Density Nodes
 resource "aws_launch_template" "eks_worker_nodes_ondemand_llm" { 
-  name_prefix = "${aws_eks_cluster.demo_eks_cluster.name}-llm-gpu-" 
+  name_prefix = "${aws_eks_cluster.demo_eks_cluster.name}-llm-gpu-ondemand-" 
   instance_type = var.llm_instance_types[0]
- 
+  image_id = data.aws_ssm_parameter.eks_optimized_nvidia_gpu_ami.value
     
   block_device_mappings {
     #device_name = var.use_bottlerocket ? "/dev/xvda" : "/dev/xvdb"
