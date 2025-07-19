@@ -196,7 +196,7 @@ variable "eks_optimized_ami_type" {
 variable llm_instance_types {
   description = "List of instance types for LLM workloads"
   type        = list(string)
-  default     =  ["g4dn.xlarge"]  #["m5.4xlarge"] #["g5.xlarge", "g5.2xlarge", "g5.4xlarge", "g5.8xlarge", "g5.16xlarge"]
+  default     =  ["g5.2xlarge"]  #["m5.4xlarge"] #["g5.xlarge", "g5.2xlarge", "g5.4xlarge", "g5.8xlarge", "g5.16xlarge"]
 }
 
 variable required_llm_instances {
