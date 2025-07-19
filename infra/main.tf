@@ -55,6 +55,10 @@ module "eks" {
     ebs_volume_size_in_gb                         =  var.ebs_volume_size_in_gb
     ebs_volume_type                               =  var.ebs_volume_type
 
+    #Agentic AI LLM
+    required_llm_instances                        =  var.required_llm_instances  ## Flag to indicate if LLM instances are required
+
+
     depends_on = [module.vpc, module.kms_aws]
 }
 

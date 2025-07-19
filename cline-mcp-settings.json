@@ -1,0 +1,72 @@
+{
+  "mcpServers": {
+    "github.com/awslabs/mcp/tree/main/src/core-mcp-server": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "awslabs-core-mcp-server",
+        "awslabs.core-mcp-server.exe"
+      ],
+      "env": {
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "autoApprove": [],
+      "disabled": false
+    },
+    "github.com/awslabs/mcp/tree/main/src/aws-documentation-mcp-server": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "awslabs-aws-documentation-mcp-server",
+        "awslabs.aws-documentation-mcp-server.exe"
+      ],
+      "env": {
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "disabled": false,
+      "autoApprove": []
+    },
+
+    "github.com/awslabs/mcp/tree/main/src/cost-explorer-mcp-server": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "awslabs.cost-explorer-mcp-server@latest",
+        "awslabs.cost-explorer-mcp-server.exe"
+      ],
+      "env": {
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "disabled": false,
+      "autoApprove": []
+    },
+    "github.com/awslabs/mcp/tree/main/src/aws-pricing-mcp-server": {
+      "command": "uvx",
+      "args": [
+        "--from",
+         "awslabs.aws-pricing-mcp-server@latest",
+         "awslabs.aws-pricing-mcp-server.exe"
+      ],
+      "env": {
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "disabled": false,
+      "autoApprove": []
+    },
+    "github.com/awslabs/mcp/tree/main/src/eks-mcp-server": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "awslabs.eks-mcp-server@latest",
+        "awslabs.eks-mcp-server.exe",
+        "--allow-write",
+        "--allow-sensitive-data-access"
+      ],
+      "env": {
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "disabled": false,
+      "autoApprove": []
+    }
+  }
+}

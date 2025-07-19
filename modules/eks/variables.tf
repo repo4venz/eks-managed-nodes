@@ -192,3 +192,15 @@ variable "eks_optimized_ami_type" {
   description = "AMI Tpes used in EKS worker nodes. It would be a EKS Optimized AMIs"
   default = "AL2023_x86_64"  # Amazon Linux 2023 (AL2023)
 }
+
+variable llm_instance_types {
+  description = "List of instance types for LLM workloads"
+  type        = list(string)
+  default     =  ["g4dn.xlarge"]  #["m5.4xlarge"] #["g5.xlarge", "g5.2xlarge", "g5.4xlarge", "g5.8xlarge", "g5.16xlarge"]
+}
+
+variable required_llm_instances {
+  description = "Flag to indicate if LLM instances are required"
+  type        = bool
+  default     = false
+}

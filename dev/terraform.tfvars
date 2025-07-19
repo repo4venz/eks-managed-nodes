@@ -69,7 +69,10 @@ include_kubecost_module = true
 include_external_secrets_module = true
 application-external-secrets_module = true
 
-include_mcp_server_module = true
+#Agentic AI LLM
+include_mcp_server_module = false
+
+
 
 
 
@@ -157,6 +160,11 @@ overrides_ondemand_node_scale_config = {
     max_pods = 50   
   }
 }
+
+
+##################### Agentic AI LLM - EKS Worker Nodes Configs ####################
+required_llm_instances = true
+
 
 ####################  END of EKS Worker Nodes configs with VPC CNI ###################
 
