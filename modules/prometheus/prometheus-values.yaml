@@ -44,6 +44,10 @@ prometheus:
         prometheus.io/port: "9090"
     serviceMonitorSelectorNilUsesHelmValues: false
     podMonitorSelectorNilUsesHelmValues: false
+    serviceMonitorSelector: {}  # Selects all ServiceMonitors
+    serviceMonitorNamespaceSelector: {}  # Looks in all namespaces
+    podMonitorSelector: {}  # Selects all PodMonitors
+    podMonitorNamespaceSelector: {}  # Looks in all namespaces
     scrapeInterval: 30s
     evaluationInterval: 30s
     ruleSelectorNilUsesHelmValues: false
@@ -81,6 +85,25 @@ prometheus:
             regex: (.+):(?:\d+);(\d+)
             replacement: $1:$2
             target_label: __address__
+
+      - job_name: 'kubernetes-services'
+        kubernetes_sd_configs:
+        - role: service
+        relabel_configs:
+        - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scrape]
+          action: keep
+          regex: true
+        - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
+          action: replace
+          target_label: __metrics_path__
+          regex: (.+)
+        - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
+          action: replace
+          regex: ([^:]+)(?::\d+)?;(\d+)
+          replacement: $1:$2
+          target_label: __address__
+        - action: labelmap
+          regex: __meta_kubernetes_service_label_(.+)
 
   # Configure Prometheus to scrape metrics from Kubecost
   #    - job_name: 'kubecost'

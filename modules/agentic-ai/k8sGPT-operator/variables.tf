@@ -1,0 +1,53 @@
+variable "environment" {
+  description = "Environemnt of Lets Encrypt"
+  type        = string
+  default = "dev"
+}
+
+
+variable "namespace" {
+  description = "Kubernetes namespace for NVIDIA device plugin"
+  type        = string
+  default     = "agentic-ai"
+}
+variable "nvidia_service_account_name" {
+  description = "Name of the service account for NVIDIA device plugin"
+  type        = string
+  default     = "nvidia-device-sa"
+}
+
+variable "k8s_cluster_name" {
+  description = "Name of the EKS cluster"
+  type        = string
+}
+
+variable nvvidia_device_plugin_version {
+  description = "Version of the NVIDIA device plugin Helm chart"
+  type        = string
+  default     = "0.14.1"
+}
+
+variable "k8sgpt_namespace" {
+  description = "Kubernetes namespace for k8sgpt"
+  type        = string
+  default     = "k8sgpt-operator-system"
+}
+
+
+variable k8sgpt_service_account_name {
+  description = "Service account name for k8sgpt"
+  type        = string
+  default     = "k8sgpt-operator-sa"
+}
+
+variable ingress_host {
+  description = "Ingress host for k8sgpt"
+  type        = string
+  default     = "k8sgpt.suvendupublicdomain.fun" # Replace with your actual domain
+}
+
+variable k8sgpt_device_plugin_version {
+  description = "Version of the k8sgpt Helm chart"
+  type        = string
+  default     = "0.2.22"
+}
