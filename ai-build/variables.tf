@@ -308,7 +308,7 @@ variable "nvidia_device_plugin_helm_version" {
 variable "k8sgpt_helm_version" {
   type        = string
   description = "Helm chart version for k8sgpt"
-  default     = "0.4.22"
+  default     = "0.2.22"
 }
 variable "nvidia_plugin_namespace" {
   description = "Kubernetes namespace for NVIDIA device plugin"
