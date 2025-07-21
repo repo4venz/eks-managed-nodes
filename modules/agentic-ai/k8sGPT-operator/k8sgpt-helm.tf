@@ -4,7 +4,7 @@ resource "helm_release" "k8sgpt" {
   name       = "k8sgpt"
   namespace  =  var.k8sgpt_namespace
   repository = "https://charts.k8sgpt.ai"
-  chart      = "k8sgpt/k8sgpt-operator"
+  chart      = "k8sgpt-operator"
   version    =  var.k8sgpt_helm_version
   create_namespace = true
   atomic           = true
