@@ -5,13 +5,15 @@ on:
     paths:
       - 'ai-build/**'
       - 'modules/agentic-ai/**'
+      - 'modules/agentic-ai/k8sGPT-operator/**'
+      - 'modules/agentic-ai/mcp-server/**'
       
   pull_request:
     branches: [ main ] # input your banch name here
 
 jobs:
   terraform-infra:
-    name:   ${{matrix.runner}} - ${{matrix.environment }} - Post Build Deploy
+    name:   ${{matrix.runner}} - ${{matrix.environment }} - Agentic AI Deploy
     runs-on: [ '${{ matrix.runner }}']
     strategy:
       max-parallel: 1
