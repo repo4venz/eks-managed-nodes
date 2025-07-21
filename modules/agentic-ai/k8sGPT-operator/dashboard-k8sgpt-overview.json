@@ -1,0 +1,102 @@
+{
+  "uid": "k8sgpt-overview",
+  "title": "K8sGPT Overview",
+  "tags": ["k8sgpt", "ai", "kubernetes"],
+  "timezone": "browser",
+  "editable": true,
+  "schemaVersion": 36,
+  "version": 1,
+  "refresh": "30s",
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "panels": [
+    {
+      "type": "stat",
+      "title": "Total Analyses",
+      "gridPos": { "x": 0, "y": 0, "w": 4, "h": 4 },
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "sum(k8sgpt_analysis_total)",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "title": "Errors Detected",
+      "gridPos": { "x": 4, "y": 0, "w": 4, "h": 4 },
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "sum(k8sgpt_errors_total)",
+          "refId": "B"
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "title": "Average Duration (sec)",
+      "gridPos": { "x": 8, "y": 0, "w": 4, "h": 4 },
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "rate(k8sgpt_analysis_duration_seconds_sum[5m]) / rate(k8sgpt_analysis_duration_seconds_count[5m])",
+          "refId": "C"
+        }
+      ]
+    },
+    {
+      "type": "piechart",
+      "title": "Error Distribution by Namespace",
+      "gridPos": { "x": 0, "y": 4, "w": 6, "h": 6 },
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "sum by (namespace) (k8sgpt_errors_total)",
+          "refId": "D"
+        }
+      ],
+      "options": {
+        "pieType": "donut",
+        "legend": {
+          "displayMode": "table",
+          "placement": "right"
+        }
+      }
+    },
+    {
+      "type": "piechart",
+      "title": "Error Distribution by Resource Kind",
+      "gridPos": { "x": 6, "y": 4, "w": 6, "h": 6 },
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "sum by (kind) (k8sgpt_errors_total)",
+          "refId": "E"
+        }
+      ],
+      "options": {
+        "pieType": "donut",
+        "legend": {
+          "displayMode": "table",
+          "placement": "right"
+        }
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "Analysis Duration Over Time",
+      "gridPos": { "x": 0, "y": 10, "w": 12, "h": 6 },
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "rate(k8sgpt_analysis_duration_seconds_sum[5m]) / rate(k8sgpt_analysis_duration_seconds_count[5m])",
+          "refId": "F"
+        }
+      ]
+    }
+  ]
+}

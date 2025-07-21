@@ -1,61 +1,15 @@
 
+
+
+
+
+
+
+
+
+
+
 /*
-# IAM Role for k8sgpt Service Account (IRSA)
-resource "aws_iam_role" "k8sgpt_role" {
-  name  = "${var.k8s_cluster_name}-k8sgpt-irsa-role"
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [{
-      Effect    = "Allow"
-      Principal = {
-        Federated = data.aws_iam_openid_connect_provider.oidc.arn
-      }
-      Action    = "sts:AssumeRoleWithWebIdentity"
-      Condition = {
-        StringEquals = {
-          "${replace(data.aws_iam_openid_connect_provider.oidc.url, "https://", "")}:sub" = "system:serviceaccount:${var.k8sgpt_namespace}:${var.k8sgpt_service_account_name}"
-        }
-      }
-    }]
-  })
-  
-}
-
-
-
-## 2. Create IAM Policy for Pod Access
-resource "aws_iam_policy" "pod_access_policy_for_k8sgpt" {
-  name        = substr("${var.k8s_cluster_name}-eks-pod-access-policy-k8sgpt",0,64)  
-  description = "Policy for EKS pod access to AWS services"
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Action = [
-            "bedrock:InvokeModel",
-            "bedrock:InvokeModelWithResponseStream"
-             ]
-        Resource = [
-          "arn:aws:bedrock:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:foundation-model/anthropic.claude-3-7-sonnet-20250219-v1:0",
-          "arn:aws:bedrock:eu-central-1:${data.aws_caller_identity.current.account_id}:foundation-model/*",
-
-        ]
-      }
-    ]
-  })
-}
-
- 
-resource "aws_iam_role_policy_attachment" "kubecost_custom" {
-  role       = aws_iam_role.kubecost.name
-  policy_arn = aws_iam_policy.kubecost_policy.arn
-}
- 
-
-*/
-
 
 # Namespace for K8sGPT
 resource "kubernetes_namespace" "k8sgpt" {
@@ -147,3 +101,5 @@ resource "aws_eks_pod_identity_association" "k8sgpt_association" {
         kubernetes_service_account.k8sgpt_sa
     ]
 }
+
+*/

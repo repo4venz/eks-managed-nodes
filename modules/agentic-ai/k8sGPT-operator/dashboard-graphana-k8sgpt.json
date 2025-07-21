@@ -1,0 +1,113 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "type": "dashboard",
+        "name": "Annotations & Alerts",
+        "enable": true
+      }
+    ]
+  },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": null,
+  "iteration": 165,
+  "links": [],
+  "panels": [
+    {
+      "title": "K8sGPT Analysis Count",
+      "type": "stat",
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      },
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "sum(k8sgpt_analysis_total)",
+          "legendFormat": "Total Analyses",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "title": "K8sGPT Errors Found",
+      "type": "stat",
+      "gridPos": {
+        "x": 6,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      },
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "sum(k8sgpt_errors_total)",
+          "legendFormat": "Errors",
+          "refId": "B"
+        }
+      ]
+    },
+    {
+      "title": "Analysis Duration",
+      "type": "graph",
+      "gridPos": {
+        "x": 0,
+        "y": 4,
+        "w": 12,
+        "h": 6
+      },
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "rate(k8sgpt_analysis_duration_seconds_sum[5m]) / rate(k8sgpt_analysis_duration_seconds_count[5m])",
+          "legendFormat": "Duration (avg)",
+          "refId": "C"
+        }
+      ]
+    },
+    {
+      "title": "K8sGPT Analysis by Namespace",
+      "type": "piechart",
+      "gridPos": {
+        "x": 0,
+        "y": 10,
+        "w": 12,
+        "h": 6
+      },
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "sum by (namespace) (k8sgpt_analysis_total)",
+          "legendFormat": "{{namespace}}",
+          "refId": "D"
+        }
+      ],
+      "options": {
+        "pieType": "pie",
+        "legend": {
+          "displayMode": "table",
+          "placement": "right"
+        }
+      }
+    }
+  ],
+  "refresh": "30s",
+  "schemaVersion": 36,
+  "style": "dark",
+  "tags": ["k8sgpt"],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "title": "K8sGPT Dashboard",
+  "uid": "k8sgpt-dashboard",
+  "version": 1
+}

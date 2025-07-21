@@ -6,7 +6,7 @@ resource "helm_release" "k8sgpt" {
   repository = "https://charts.k8sgpt.ai"
   chart      = "k8sgpt-operator"
   version    =  var.k8sgpt_helm_version
-  create_namespace = false
+  create_namespace = true
   atomic           = true
   cleanup_on_fail  = true
   timeout    = 900
@@ -14,10 +14,14 @@ resource "helm_release" "k8sgpt" {
   values = [
     yamlencode({
       serviceAccount = {
-        create = false
-        name   = kubernetes_service_account.k8sgpt_sa.metadata[0].name
+        create = true
+        name   = var.k8sgpt_service_account_name
+        annotations = {
+          "eks.amazonaws.com/role-arn" = aws_iam_role.k8sgpt_irsa_role.arn
+        }   
       }
-      serviceMonitor = {
+      controller = {
+        serviceMonitor = {
           enabled   = true
           namespace = var.prometheus_namespace  # Where Prometheus is installed
           interval  = "30s"
@@ -25,6 +29,15 @@ resource "helm_release" "k8sgpt" {
             release = "kube-prometheus-stack"
           }
         }
+      }
+      prometheus = {
+        enabled = true
+        namespace = var.prometheus_namespace  # Where Prometheus is installed
+      }
+      grafana = {
+        enabled = true
+        namespace = var.prometheus_namespace  # Where Grafana is installed
+      }
       interplex = {
         enabled = true
       } 
@@ -33,7 +46,7 @@ resource "helm_release" "k8sgpt" {
   ]
 
   depends_on = [
-    aws_iam_role_policy_attachment.pod_policy_k8sgpt_attach
+    aws_iam_role_policy_attachment.k8sgpt_policy_attach
   ]
 }
 
