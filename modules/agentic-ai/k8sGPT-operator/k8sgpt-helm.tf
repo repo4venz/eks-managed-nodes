@@ -13,6 +13,11 @@ resource "helm_release" "k8sgpt" {
 
   values = [
     yamlencode({
+      serviceAccount = {
+        create = true
+        name = var.k8sgpt_service_account_name
+        annotations = { "eks.amazonaws.com/role-arn" = aws_iam_role.pod_identity_role_k8sgpt.arn }
+      }
       controller = {
         serviceMonitor = {
           enabled   = true
@@ -22,17 +27,12 @@ resource "helm_release" "k8sgpt" {
             release = "kube-prometheus-stack"
           }
         }
-      }
-      serviceAccount = {
-        create = true
-        name   = var.k8sgpt_service_account_name
-      }
-     
+      }     
     })
   ]
 
   depends_on = [
-    aws_eks_pod_identity_association.k8sgpt_association
+    aws_iam_role_policy_attachment.pod_policy_k8sgpt_attach
   ]
 }
 

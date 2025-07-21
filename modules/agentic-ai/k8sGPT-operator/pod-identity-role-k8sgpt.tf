@@ -1,21 +1,26 @@
- 
-/*resource "null_resource" "create_k8sgpt_namespace_if_not_exists" {
- 
-  provisioner "local-exec" {
-    command = <<EOT
-      if ! kubectl get namespace ${var.k8sgpt_namespace} >/dev/null 2>&1; then
-        kubectl create namespace ${var.k8sgpt_namespace}
-        echo "Created namespace: ${var.k8sgpt_namespace}"
-      else
-        echo "Namespace ${var.k8sgpt_namespace} already exists"
-      fi
-    EOT
-  }
-    triggers = {
-    always_run = timestamp() # Forces re-run on every `apply`; can be improved
-  }
+
+/*
+# IAM Role for k8sgpt Service Account (IRSA)
+resource "aws_iam_role" "k8sgpt_role" {
+  name  = "${var.k8s_cluster_name}-k8sgpt-irsa-role"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect    = "Allow"
+      Principal = {
+        Federated = data.aws_iam_openid_connect_provider.oidc.arn
+      }
+      Action    = "sts:AssumeRoleWithWebIdentity"
+      Condition = {
+        StringEquals = {
+          "${replace(data.aws_iam_openid_connect_provider.oidc.url, "https://", "")}:sub" = "system:serviceaccount:${var.k8sgpt_namespace}:${var.k8sgpt_service_account_name}"
+        }
+      }
+    }]
+  })
+  
 }
-*/
+
 
 
 ## 2. Create IAM Policy for Pod Access
@@ -32,8 +37,46 @@ resource "aws_iam_policy" "pod_access_policy_for_k8sgpt" {
             "bedrock:InvokeModel",
             "bedrock:InvokeModelWithResponseStream"
              ]
-        Resource = ["arn:aws:bedrock:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:foundation-model/anthropic.claude-3-7-sonnet-20250219-v1:0"]
+        Resource = [
+          "arn:aws:bedrock:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:foundation-model/anthropic.claude-3-7-sonnet-20250219-v1:0",
+          "arn:aws:bedrock:eu-central-1:${data.aws_caller_identity.current.account_id}:foundation-model/*",
+
+        ]
       }
+    ]
+  })
+}
+
+ 
+resource "aws_iam_role_policy_attachment" "kubecost_custom" {
+  role       = aws_iam_role.kubecost.name
+  policy_arn = aws_iam_policy.kubecost_policy.arn
+}
+ 
+
+*/
+
+
+
+## 2. Create IAM Policy for Pod Access
+resource "aws_iam_policy" "pod_access_policy_for_k8sgpt" {
+  name        = substr("${var.k8s_cluster_name}-eks-pod-access-policy-k8sgpt",0,64)  
+  description = "Policy for EKS pod access to AWS services"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+            "bedrock:InvokeModel",
+            "bedrock:InvokeModelWithResponseStream"
+             ]
+                Resource = [
+          "arn:aws:bedrock:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:foundation-model/anthropic.claude-3-7-sonnet-20250219-v1:0",
+          "arn:aws:bedrock:eu-central-1:${data.aws_caller_identity.current.account_id}:foundation-model/*"
+        ]
+        }
     ]
   })
 }
@@ -81,6 +124,6 @@ resource "aws_eks_pod_identity_association" "k8sgpt_association" {
   role_arn        = aws_iam_role.pod_identity_role_k8sgpt.arn
 
     depends_on = [
-        aws_iam_role_policy_attachment.pod_policy_k8sgpt_attach 
+        helm_release.k8sgpt
     ]
 }
