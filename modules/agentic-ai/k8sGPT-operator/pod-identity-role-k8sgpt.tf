@@ -1,4 +1,22 @@
  
+/*resource "null_resource" "create_k8sgpt_namespace_if_not_exists" {
+ 
+  provisioner "local-exec" {
+    command = <<EOT
+      if ! kubectl get namespace ${var.k8sgpt_namespace} >/dev/null 2>&1; then
+        kubectl create namespace ${var.k8sgpt_namespace}
+        echo "Created namespace: ${var.k8sgpt_namespace}"
+      else
+        echo "Namespace ${var.k8sgpt_namespace} already exists"
+      fi
+    EOT
+  }
+    triggers = {
+    always_run = timestamp() # Forces re-run on every `apply`; can be improved
+  }
+}
+*/
+
 
 ## 2. Create IAM Policy for Pod Access
 resource "aws_iam_policy" "pod_access_policy_for_k8sgpt" {
@@ -22,7 +40,7 @@ resource "aws_iam_policy" "pod_access_policy_for_k8sgpt" {
 
 ## 3. Create IAM Role for Pod Identity
 resource "aws_iam_role" "pod_identity_role_k8sgpt" {
-  name = "eks-pod-identity-role"
+  name =  substr("${var.k8s_cluster_name}-eks-pod-identity-role-k8sgpt",0,64)  
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -63,6 +81,6 @@ resource "aws_eks_pod_identity_association" "k8sgpt_association" {
   role_arn        = aws_iam_role.pod_identity_role_k8sgpt.arn
 
     depends_on = [
-        aws_iam_role_policy_attachment.pod_policy_k8sgpt_attach
+        aws_iam_role_policy_attachment.pod_policy_k8sgpt_attach 
     ]
 }

@@ -1,15 +1,10 @@
-name: "Deploy-Post Build Only TF Workflow"
+name: "Deploy-Agentic AI Only TF Workflow"
 on:
   workflow_dispatch:
   push:
     paths:
-      - 'post-build/**'
-      - 'modules/external-dns/**'
-      - 'modules/prometheus/**'
-      - 'modules/external-secrets-controller/**'
-      - 'modules/kube-cost/**'
+      - 'ai-build/**'
       - 'modules/agentic-ai/**'
-      - 'modules/lets-encrypt/**'
       
   pull_request:
     branches: [ main ] # input your banch name here
@@ -101,38 +96,33 @@ jobs:
         with:
           terraform_wrapper: false
 
-      - name: Format Terraform
-        run: terraform -chdir=post-build fmt
+      - name: Format Terraform (Agentic AI Build Only)
+        run: terraform -chdir=ai-build fmt
 
-      - name: Terraform Init 
+      - name: Terraform Init (Agentic AI Build Only)
         id: init
         run: |
            rm -rf .terraform
-           terraform -chdir=post-build init -upgrade
+           terraform -chdir=ai-build init -upgrade
 
-      - name: Terraform Validate
-        run: terraform -chdir=post-build validate
+      - name: Terraform Validate (Agentic AI Build Only)         
+        run: terraform -chdir=ai-build validate
 
-      - name: Terraform Plan (Post Build Only)
-        #if: always()
-        if: "!contains(github.event.head_commit.message, 'destroy') && !contains(github.event.head_commit.message, 'remove')"
-        id: plan
-        run: TF_LOG=DEBUG terraform -chdir=post-build plan -input=false -var-file=$(pwd)/${{ matrix.environment }}/terraform.tfvars -no-color
+      - name: Terraform Plan (Agentic AI Build Only)
+        if: "!contains(github.event.head_commit.message, 'destroy')"
+        id: plan_agentic_ai
+        run: TF_LOG=DEBUG terraform -chdir=ai-build plan -input=false -var-file=$(pwd)/${{ matrix.environment }}/terraform.tfvars -no-color
 
-      - name: Terraform Apply (Post Build Only)
-       #if: always()
-       #if: github.ref == 'refs/heads/master'
-        if: "!contains(github.event.head_commit.message, 'destroy') &&  !contains(github.event.head_commit.message, 'remove')"
-        id: apply
-        run: TF_LOG=DEBUG terraform -chdir=post-build apply -auto-approve -input=false -var-file=$(pwd)/${{matrix.environment }}/terraform.tfvars
+      - name: Terraform Apply (Agentic AI Build Only)
+        if: "!contains(github.event.head_commit.message, 'destroy')"
+        id: apply_agentic_ai
+        run: TF_LOG=DEBUG terraform -chdir=ai-build apply -auto-approve -input=false -var-file=$(pwd)/${{matrix.environment }}/terraform.tfvars
 
-      - name: Terraform Destroy (Post Build Only)
-        #if: github.ref == 'refs/heads/master'
-        if: "contains(github.event.head_commit.message, 'destroy post build')"
-        id: destroy_post_build
-        run: TF_LOG=DEBUG terraform -chdir=post-build destroy -auto-approve -input=false -var-file=$(pwd)/${{ matrix.environment }}/terraform.tfvars   
+      - name: Terraform Destroy (Agentic AI Build Only)
+        id: destroy_agentic_ai
+        if: "contains(github.event.head_commit.message, 'destroy agentic ai build')"
+        run: TF_LOG=DEBUG terraform -chdir=ai-build destroy -auto-approve -input=false -var-file=$(pwd)/${{ matrix.environment }}/terraform.tfvars   
  
-
   comment:
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'

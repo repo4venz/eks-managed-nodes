@@ -5,7 +5,7 @@ variable "environment" {
 }
 
 
-variable "namespace" {
+variable "nvidia_plugin_namespace" {
   description = "Kubernetes namespace for NVIDIA device plugin"
   type        = string
   default     = "agentic-ai"
@@ -21,7 +21,7 @@ variable "k8s_cluster_name" {
   type        = string
 }
 
-variable nvvidia_device_plugin_version {
+variable nvidia_device_plugin_helm_version {
   description = "Version of the NVIDIA device plugin Helm chart"
   type        = string
   default     = "0.14.1"
@@ -46,8 +46,20 @@ variable ingress_host {
   default     = "k8sgpt.suvendupublicdomain.fun" # Replace with your actual domain
 }
 
-variable k8sgpt_device_plugin_version {
+variable k8sgpt_helm_version {
   description = "Version of the k8sgpt Helm chart"
   type        = string
   default     = "0.2.22"
+}
+
+variable prometheus_namespace {
+  description = "Kubernetes namespace for Prometheus"
+  type        = string
+  default     = "monitoring"
+}
+
+variable install_nvidia_device_plugin {
+  description = "Flag to install NVIDIA device plugin"
+  type        = bool
+  default     = false
 }

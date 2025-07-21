@@ -1,9 +1,11 @@
 resource "helm_release" "nvidia_device_plugin" {
+  count = var.install_nvidia_device_plugin ? 1 : 0
+
   name       = "nvidia-device-plugin"
   repository = "https://nvidia.github.io/k8s-device-plugin"
   chart      = "nvidia-device-plugin"
-  version    = var.nvvidia_device_plugin_version
-  namespace  = var.namespace
+  version    = var.nvidia_device_plugin_helm_version
+  namespace  = var.nvidia_plugin_namespace
   create_namespace = true
   atomic           = true
   cleanup_on_fail  = true

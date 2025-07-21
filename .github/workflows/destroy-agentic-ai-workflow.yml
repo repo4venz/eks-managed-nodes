@@ -1,10 +1,10 @@
-name: Destory-All (Infra, Post-Build and Application) TF Workflow
+name: Destroy-Agentic AI Only TF Workflow
 on:
   workflow_dispatch:  # Manual trigger via GitHub UI
 
 jobs:
   terraform-destroy:
-    name:   ${{matrix.runner}} - ${{matrix.environment }} - Destroy All
+    name:   ${{matrix.runner}} - ${{matrix.environment }} - Destroy Post Build
     runs-on: [ '${{ matrix.runner }}']
     strategy:
       max-parallel: 1
@@ -61,13 +61,6 @@ jobs:
         with:
           terraform_wrapper: false
 
-      - name: Terraform Init (Application Only)
-        id: init_application
-        run: terraform -chdir=application-build init
-
-      - name: Terraform Destroy (Application Only)
-        id: destroy_application
-        run: TF_LOG=DEBUG terraform -chdir=application-build destroy -auto-approve -input=false -var-file=$(pwd)/${{ matrix.environment }}/terraform.tfvars   
 
       - name: Terraform Init (Agentic AI Only)
         id: init_agentic_ai
@@ -76,21 +69,3 @@ jobs:
       - name: Terraform Destroy (Agentic AI Only)
         id: destroy_agentic_ai
         run: TF_LOG=DEBUG terraform -chdir=ai-build destroy -auto-approve -input=false -var-file=$(pwd)/${{ matrix.environment }}/terraform.tfvars   
-
-      - name: Terraform Init (Post Build Only)
-        id: init_post_build
-        run: terraform -chdir=post-build init
-
-      - name: Terraform Destroy (Post Build Only)
-        id: destroy_post_build
-        run: TF_LOG=DEBUG terraform -chdir=post-build destroy -auto-approve -input=false -var-file=$(pwd)/${{ matrix.environment }}/terraform.tfvars   
-
-      - name: Terraform Init (Infra Only)
-        id: init_infra
-        run: terraform -chdir=infra init
-
-      - name: Terraform Destroy (Infra Only)
-        id: destroy_infra
-        run: TF_LOG=DEBUG terraform -chdir=infra destroy -auto-approve -input=false -var-file=$(pwd)/${{ matrix.environment }}/terraform.tfvars   
-
-

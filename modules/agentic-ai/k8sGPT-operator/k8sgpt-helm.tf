@@ -5,7 +5,7 @@ resource "helm_release" "k8sgpt" {
   namespace  =  var.k8sgpt_namespace
   repository = "https://charts.k8sgpt.ai"
   chart      = "k8sgpt-operator"
-  version    =  var.k8sgpt_device_plugin_version
+  version    =  var.k8sgpt_helm_version
   create_namespace = true
   atomic           = true
   cleanup_on_fail  = true
@@ -16,7 +16,7 @@ resource "helm_release" "k8sgpt" {
       controller = {
         serviceMonitor = {
           enabled   = true
-          namespace = "monitoring"  # Where Prometheus is installed
+          namespace = "${var.prometheus_namespace}"  # Where Prometheus is installed
           interval  = "30s"
           additionalLabels = {
             release = "kube-prometheus-stack"

@@ -293,3 +293,42 @@ variable "mcpserver_chart_version" {
   default     = "0.1.0"
   
 }
+
+variable include_k8sGPT_module {
+  type        = bool
+  default     = true
+  description = "Execute module or not. true = execute and false = don't execute"
+}
+
+variable "nvidia_device_plugin_helm_version" {
+  type        = string
+  description = "Helm chart version for NVIDIA device plugin"
+  default     = "0.14.1"
+}
+variable "k8sgpt_helm_version" {
+  type        = string
+  description = "Helm chart version for k8sgpt"
+  default     = "0.2.22"
+}
+variable "nvidia_plugin_namespace" {
+  description = "Kubernetes namespace for NVIDIA device plugin"
+  type        = string
+  default     = "agentic-ai"
+}
+
+variable "nvidia_device_plugin_enabled" {
+  description = "Flag to enable NVIDIA device plugin installation"
+  type        = bool
+  default     = false
+}
+variable "k8sgpt_namespace" {
+  description = "Kubernetes namespace for k8sgpt"
+  type        = string
+  default     = "k8sgpt-operator-system"
+}
+
+variable install_nvidia_device_plugin {
+  description = "Flag to install NVIDIA device plugin"
+  type        = bool
+  default     = false
+}
