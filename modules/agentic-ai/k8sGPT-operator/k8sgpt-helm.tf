@@ -19,7 +19,7 @@ resource "helm_release" "k8sgpt" {
         annotations = { "eks.amazonaws.com/role-arn" = aws_iam_role.pod_identity_role_k8sgpt.arn }
       }
       serviceMonitor = {
-          enabled   = false
+          enabled   = true
           namespace = var.prometheus_namespace  # Where Prometheus is installed
           interval  = "30s"
           additionalLabels = {
