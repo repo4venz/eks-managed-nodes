@@ -18,7 +18,7 @@ resource "helm_release" "nvidia_device_plugin" {
         create = true
         name   = "${var.nvidia_service_account_name}"
         annotations = {
-          "eks.amazonaws.com/role-arn" = aws_eks_pod_identity_association.nvidia_device_plugin_association.arn
+          "eks.amazonaws.com/role-arn" = aws_eks_pod_identity_association.nvidia_device_plugin_association[0].arn
         }
       }
       tolerations = [

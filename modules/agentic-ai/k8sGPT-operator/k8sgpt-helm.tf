@@ -56,7 +56,7 @@ resource "helm_release" "k8sgpt" {
   ]
 
   depends_on = [
-    aws_eks_pod_identity_association.k8sgpt_device_plugin_association
+    aws_eks_pod_identity_association.k8sgpt_association
   ]
 }
 
