@@ -26,9 +26,6 @@ resource "helm_release" "k8sgpt" {
       serviceAccount = {
         create = true
         name   = "${var.k8sgpt_service_account_name}"
-        annotations = {
-          "eks.amazonaws.com/role-arn" = aws_eks_pod_identity_association.k8sgpt_association.arn
-        }
       }
       ingress = {
         enabled = true
