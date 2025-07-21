@@ -30,14 +30,14 @@ variable nvidia_device_plugin_helm_version {
 variable "k8sgpt_namespace" {
   description = "Kubernetes namespace for k8sgpt"
   type        = string
-  default     = "k8sgpt-operator-system1"
+  default     = "k8sgpt-operator-system"
 }
 
 
 variable k8sgpt_service_account_name {
   description = "Service account name for k8sgpt"
   type        = string
-  default     = "k8sgpt-operator-sa1"
+  default     = "k8sgpt-operator-sa"
 }
 
 variable ingress_host {
