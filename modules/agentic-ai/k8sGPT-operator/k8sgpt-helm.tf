@@ -18,13 +18,16 @@ resource "helm_release" "k8sgpt" {
           enabled   = true
           namespace = "monitoring"  # Where Prometheus is installed
           interval  = "30s"
+          additionalLabels = {
+            release = "kube-prometheus-stack"
+          }
         }
       }
       serviceAccount = {
         create = true
         name   = "${var.k8sgpt_service_account_name}"
         annotations = {
-          "eks.amazonaws.com/role-arn" = aws_eks_pod_identity_association.k8sgpt_device_plugin_association.arn
+          "eks.amazonaws.com/role-arn" = aws_eks_pod_identity_association.k8sgpt_association.arn
         }
       }
       ingress = {

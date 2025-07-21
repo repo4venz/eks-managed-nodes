@@ -71,15 +71,19 @@ resource "kubernetes_deployment" "this" {
 # SERVICE
 # -------------------
 resource "kubernetes_service" "this" {
-  metadata {
-    name      = "game-2048-svc-secured"
-    namespace = var.app_namespace
+metadata {
+  name      = "game-2048-svc-secured"
+  namespace = var.app_namespace
+  annotations = {
+    "prometheus.io/scrape" = "true"
+    "prometheus.io/port"   = "9090"  # Your metrics port
+    "prometheus.io/path"   = "/metrics"  # Your metrics path
   }
-
-  spec {
-    selector = {
-      app = "game-2048-secured"
-    }
+}
+spec {
+  selector = {
+    app = "game-2048-secured"
+  }
 
     port {
       port        = 80

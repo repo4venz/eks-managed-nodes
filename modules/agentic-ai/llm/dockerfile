@@ -1,0 +1,25 @@
+FROM ubuntu:22.04
+
+RUN apt-get update && \
+    apt-get install -y ca-certificates curl && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN curl -fsSL https://ollama.com/install.sh | sh
+
+RUN mkdir -p /root/.ollama && \
+    chmod -R 777 /root/.ollama
+
+#RUN ollama pull llama3
+
+# Start Ollama server and pull model in one layer
+RUN (ollama serve &) && \
+    sleep 15 && \
+    ollama pull llama3.1  
+
+EXPOSE 11434
+HEALTHCHECK --interval=30s --timeout=5s \
+  CMD curl -f http://localhost:11434 || exit 1
+
+CMD ["sh", "-c", "sleep 5 && ollama serve"]
+# Note: The Ollama server is started in the CMD to ensure it runs in the foreground.
+# This allows the container to remain running and respond to requests.

@@ -56,7 +56,7 @@ resource "aws_iam_role_policy_attachment" "pod_policy_k8sgpt_attach" {
 
 
 ## 5. Create EKS Pod Identity Association
-resource "aws_eks_pod_identity_association" "k8sgpt_device_plugin_association" {
+resource "aws_eks_pod_identity_association" "k8sgpt_association" {
   cluster_name    = var.k8s_cluster_name
   namespace       = var.k8sgpt_namespace
   service_account = var.k8sgpt_service_account_name
