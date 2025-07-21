@@ -42,7 +42,7 @@ resource "helm_release" "k8sgpt" {
   ]
 
   depends_on = [
-    aws_iam_role_policy_attachment.k8sgpt_policy_attach
+    aws_iam_role_policy_attachment.pod_policy_k8sgpt_attach
   ]
 }
 
