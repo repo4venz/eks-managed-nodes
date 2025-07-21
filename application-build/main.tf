@@ -1,5 +1,6 @@
 
- 
+# application-build/main.tf
+# This file contains the main configuration for the application build process.
 
 module "kubernetes_app" {
     count = var.include_k8s_app_module ? 1 : 0

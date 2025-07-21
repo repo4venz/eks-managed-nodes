@@ -1,4 +1,9 @@
+# infra/local.tf
+# This file contains the local variables for the EKS cluster and its associated resources.
+## They are used to set the values for the following variables:
+
 locals {
+    k8s_cluster_name               = "${var.cluster_name}-${var.environment}"  
     aws_caller_identity_account_id = data.aws_caller_identity.current.account_id
     aws_caller_identity_arn        = data.aws_caller_identity.current.arn
     aws_eks_cluster_endpoint       = module.eks.eks_cluster_endpoint

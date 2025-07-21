@@ -1,0 +1,34 @@
+# agentic-ai/main.tf
+# This file contains the main configuration for the Agentic AI modules.
+ 
+ # Add the agentic-ai module for MCP server
+module "mcp_server" {
+   count = var.include_mcp_server_module ? 1 : 0
+
+  source = "../modules/agentic-ai/mcp-server"
+  k8s_cluster_name = local.k8s_cluster_name
+  # Helm chart configuration
+  environment               =  var.environment
+  ingress_host              =  "mcpserver.${var.public_domain_name}"
+  
+  depends_on = [ module.external-dns, module.lets-encrypt]
+}
+ 
+
+  
+ 
+ # Add the agentic-ai module for k8sGPT
+module "mcp_server" {
+   count = var.include_k8sGPT_module ? 1 : 0
+
+  source = "../modules/agentic-ai/k8sGPT-operator"
+  k8s_cluster_name = local.k8s_cluster_name
+  # Helm chart configuration
+  environment               =  var.environment
+  ingress_host              =  "mcpserver.${var.public_domain_name}"
+  
+  depends_on = [ module.external-dns, module.lets-encrypt]
+}
+ 
+
+ 

@@ -1,4 +1,9 @@
+# post-build/local.tf
+# This file contains the local variables for the post-build configuration.  
+# These variables are used to configure the post-build process.
+
 locals {
+    k8s_cluster_name               = "${var.cluster_name}-${var.environment}"  
     aws_caller_identity_account_id = data.aws_caller_identity.current.account_id
     aws_caller_identity_arn        = data.aws_caller_identity.current.arn
     aws_eks_cluster_endpoint       = data.aws_eks_cluster.this.endpoint

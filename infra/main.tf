@@ -1,4 +1,5 @@
-
+# infra/main.tf
+# This file contains the main configuration for the EKS cluster and its associated resources.
 module "vpc" {
     source                              = "../modules/vpc"
     environment                         =  var.environment
@@ -24,7 +25,7 @@ module kms_aws {
 
 module "eks" {
     source                                        =  "../modules/eks"
-    cluster_name                                  =  "${var.cluster_name}-${var.environment}" #var.cluster_name
+    cluster_name                                  =  local.k8s_cluster_name
     cluster_version                               =  var.cluster_version
     environment                                   =  var.environment
     private_subnets                               =  module.vpc.aws_subnets_private_ids    
@@ -69,7 +70,7 @@ module "ebs_storage" {
   source = "../modules/ebs-storage"
   count = var.include_ebs_csi_driver_module ? 1 : 0 
   
-  k8s_cluster_name                              = "${var.cluster_name}-${var.environment}"
+  k8s_cluster_name                              =   local.k8s_cluster_name
   ebs_csi_helm_chart_version                    =  var.ebs_csi_helm_chart_version
 
   depends_on = [module.eks]
@@ -80,7 +81,7 @@ module "efs_storage" {
     count = var.include_efs_csi_driver_module ? 1 : 0 
 
   source = "../modules/efs-storage"  
-  k8s_cluster_name                              =   "${var.cluster_name}-${var.environment}"
+  k8s_cluster_name                              =   local.k8s_cluster_name
   efs_csi_helm_chart_version                    =   var.efs_csi_helm_chart_version
   vpc_id                                        =   module.vpc.vpc_id
   private_subnet_ids                            =   module.vpc.aws_subnets_private_ids
@@ -93,8 +94,8 @@ module "efs_storage" {
 module "metrics_server" {
   count = var.include_metrics_server_module ? 1 : 0
   source             = "../modules/metrics-server"
-  k8s_cluster_name   = "${var.cluster_name}-${var.environment}" #module.eks.eks_cluster_name
-  k8s_namespace  = "kube-system"
+  k8s_cluster_name   = local.k8s_cluster_name
+  k8s_namespace      = "kube-system"
   metrics_server_chart_version = var.metrics_server_chart_version
 
   depends_on = [module.eks]
@@ -104,7 +105,7 @@ module "metrics_server" {
 module "vpc-cni-addon" {
   count = var.include_vpc_cni_addon_module ? 1 : 0
   source                                        = "../modules/eks-add-ons/vpc-cni"
-  k8s_cluster_name                              =  "${var.cluster_name}-${var.environment}" #module.eks.eks_cluster_name
+  k8s_cluster_name                              =  local.k8s_cluster_name
 
   depends_on = [module.eks]
 }
@@ -112,7 +113,7 @@ module "vpc-cni-addon" {
 module "kube-proxy-addon" {
   count = var.include_kube_proxy_addon_module ? 1 : 0
   source                                        = "../modules/eks-add-ons/kube-proxy"
-  k8s_cluster_name                              =  "${var.cluster_name}-${var.environment}" #module.eks.eks_cluster_name
+  k8s_cluster_name                              =  local.k8s_cluster_name
 
   depends_on = [module.eks]
 }
@@ -120,7 +121,7 @@ module "kube-proxy-addon" {
 module "coredns-addon" {
   count = var.include_coredns_addon_module ? 1 : 0
   source                                        = "../modules/eks-add-ons/coredns"
-  k8s_cluster_name                              =  "${var.cluster_name}-${var.environment}" #module.eks.eks_cluster_name
+  k8s_cluster_name                              =  local.k8s_cluster_name
 
   depends_on = [module.eks]
 }
@@ -128,7 +129,7 @@ module "coredns-addon" {
 module "pod_indentity_agent" {
   count = var.include_pod_identity_agent_addon_module ? 1 : 0
   source                                        = "../modules/eks-add-ons/pod-identity-agent"
-  k8s_cluster_name                              =  "${var.cluster_name}-${var.environment}" #module.eks.eks_cluster_name
+  k8s_cluster_name                              =  local.k8s_cluster_name
 
   depends_on = [module.eks]
 }
@@ -137,7 +138,7 @@ module "pod_indentity_agent" {
 module "calico" {
   count = var.include_calico_module ? 1 : 0
   source                                        = "../modules/calico"
-  k8s_cluster_name                              =  "${var.cluster_name}-${var.environment}" #module.eks.eks_cluster_name
+  k8s_cluster_name                              =  local.k8s_cluster_name
   calico_chart_version                          =  var.calico_chart_version
 
   depends_on = [module.eks, module.vpc-cni-addon, module.coredns-addon, module.kube-proxy-addon, module.pod_indentity_agent]
@@ -156,7 +157,7 @@ module "nginx_alb_controller" {
 module "eks-cluster-autoscaler" {
   count = var.include_eks_cluster_autoscaler_module ? 1 : 0
   source                                        = "../modules/eks-cluster-autoscaler"
-  k8s_cluster_name                              = "${var.cluster_name}-${var.environment}" #module.eks.eks_cluster_name
+  k8s_cluster_name                              = local.k8s_cluster_name
   k8s_namespace                                 = "kube-system"
 
   depends_on = [module.eks]
@@ -166,7 +167,7 @@ module "eks-cluster-autoscaler" {
  module "fluentbit" {
   count = var.include_fluentbit_module ? 1 : 0
   source                                        = "../modules/fluentbit"
-  k8s_cluster_name                              =  "${var.cluster_name}-${var.environment}" #module.eks.eks_cluster_name
+  k8s_cluster_name                              =  local.k8s_cluster_name
   k8s_namespace                                 =  var.k8s_observability_namespace
   fluentbit_chart_version                       =  var.fluentbit_chart_version
 
@@ -178,7 +179,7 @@ module "cert-manager" {
   count = var.include_cert_manager_module ? 1 : 0
   source                                        = "../modules/cert-manager"
   certmanager_chart_version                     =  var.certmanager_chart_version
-  k8s_cluster_name                              =  "${var.cluster_name}-${var.environment}" #module.eks.eks_cluster_name
+  k8s_cluster_name                              =  local.k8s_cluster_name
   
   depends_on = [module.eks, module.nginx_alb_controller]
 }
