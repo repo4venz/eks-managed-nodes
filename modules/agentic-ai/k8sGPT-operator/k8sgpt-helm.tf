@@ -15,20 +15,22 @@ resource "helm_release" "k8sgpt" {
     yamlencode({
       serviceAccount = {
         create = true
-        name = var.k8sgpt_service_account_name
+        name = "k8sgpt-operator-sa" #var.k8sgpt_service_account_name
         annotations = { "eks.amazonaws.com/role-arn" = aws_iam_role.pod_identity_role_k8sgpt.arn }
       }
-      controller = {
-        serviceMonitor = {
-          enabled   = true
+      serviceMonitor = {
+          enabled   = false
           namespace = var.prometheus_namespace  # Where Prometheus is installed
           interval  = "30s"
           additionalLabels = {
             release = "kube-prometheus-stack"
           }
         }
-      }     
-    })
+      interplex = {
+        enabled = true
+      } 
+    }    
+  )
   ]
 
   depends_on = [
