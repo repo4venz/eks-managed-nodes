@@ -49,7 +49,7 @@ variable ingress_host {
 variable k8sgpt_helm_version {
   description = "Version of the k8sgpt Helm chart"
   type        = string
-  default     = "0.2.22"
+  default     = "0.4.22"
 }
 
 variable prometheus_namespace {

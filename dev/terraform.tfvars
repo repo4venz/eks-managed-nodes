@@ -164,7 +164,7 @@ overrides_ondemand_node_scale_config = {
 ##################### Agentic AI LLM - EKS Worker Nodes Configs ####################
 
 nvidia_device_plugin_helm_version = "0.14.1"
-k8sgpt_helm_version = "0.2.22"  
+k8sgpt_helm_version = "0.4.22"  
 
 # Agentic AI Module Configs
 include_mcp_server_module = false

@@ -16,7 +16,7 @@ resource "helm_release" "nvidia_device_plugin" {
     yamlencode({
     serviceAccount = {
         create = true
-        name   = "${var.nvidia_service_account_name}"
+        name   = var.nvidia_service_account_name
       }
       tolerations = [
         {

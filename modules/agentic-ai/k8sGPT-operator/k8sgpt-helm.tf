@@ -16,7 +16,7 @@ resource "helm_release" "k8sgpt" {
       controller = {
         serviceMonitor = {
           enabled   = true
-          namespace = "${var.prometheus_namespace}"  # Where Prometheus is installed
+          namespace = var.prometheus_namespace  # Where Prometheus is installed
           interval  = "30s"
           additionalLabels = {
             release = "kube-prometheus-stack"
@@ -25,30 +25,9 @@ resource "helm_release" "k8sgpt" {
       }
       serviceAccount = {
         create = true
-        name   = "${var.k8sgpt_service_account_name}"
+        name   = var.k8sgpt_service_account_name
       }
-      ingress = {
-        enabled = true
-        annotations = {
-            "kubernetes.io/ingress.class"                  = "nginx"
-            "nginx.ingress.kubernetes.io/backend-protocol" = "HTTP"
-            "cert-manager.io/cluster-issuer"               = "letsencrypt-${var.environment}"
-            "external-dns.alpha.kubernetes.io/hostname"    = var.ingress_host
-            "nginx.ingress.kubernetes.io/force-ssl-redirect" = "true"
-            "nginx.ingress.kubernetes.io/rewrite-target"     = "/"
-        }
-        hosts = [{
-          host  = var.ingress_host
-          paths = [{
-            path     = "/"
-            pathType = "Prefix"
-          }]
-        }]
-        tls = [{
-          secretName = "k8sgpt-tls"
-          hosts      = [var.ingress_host]
-        }]
-      }
+     
     })
   ]
 
