@@ -4,7 +4,7 @@ resource "helm_release" "k8sgpt" {
   name       = "k8sgpt"
   namespace  =  var.k8sgpt_namespace
   repository = "https://charts.k8sgpt.ai"
-  chart      = "k8sgpt-operator"
+  chart      = "k8sgpt/k8sgpt-operator"
   version    =  var.k8sgpt_helm_version
   create_namespace = true
   atomic           = true
@@ -14,20 +14,16 @@ resource "helm_release" "k8sgpt" {
   values = [
     yamlencode({
       serviceAccount = {
-        create = true
-        name   = var.k8sgpt_service_account_name
         annotations = {
-          "eks.amazonaws.com/role-arn" = aws_iam_role.k8sgpt_irsa_role.arn
+          "eks.amazonaws.com/role-arn" = aws_iam_role.pod_identity_role_k8sgpt.arn
         }   
       }
-      controller = {
-        serviceMonitor = {
-          enabled   = true
-          namespace = var.prometheus_namespace  # Where Prometheus is installed
-          interval  = "30s"
-          additionalLabels = {
+      serviceMonitor = {
+        enabled   = true
+        namespace = var.prometheus_namespace  # Where Prometheus is installed
+        interval  = "30s"
+        additionalLabels = {
             release = "kube-prometheus-stack"
-          }
         }
       }
       prometheus = {

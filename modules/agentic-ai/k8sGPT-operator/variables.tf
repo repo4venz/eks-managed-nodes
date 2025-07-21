@@ -37,7 +37,7 @@ variable "k8sgpt_namespace" {
 variable k8sgpt_service_account_name {
   description = "Service account name for k8sgpt"
   type        = string
-  default     = "k8sgpt-operator-sa"
+  default     = "k8sgpt-k8sgpt-operator-system"  
 }
 
 variable ingress_host {

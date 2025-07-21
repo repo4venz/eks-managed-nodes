@@ -7,10 +7,8 @@
 
 
 
-
-
 /*
-
+ 
 # Namespace for K8sGPT
 resource "kubernetes_namespace" "k8sgpt" {
   metadata {
@@ -29,6 +27,7 @@ resource "kubernetes_service_account" "k8sgpt_sa" {
   }
   depends_on = [kubernetes_namespace.k8sgpt]
 }
+*/
 
 
 ## 2. Create IAM Policy for Pod Access
@@ -45,9 +44,8 @@ resource "aws_iam_policy" "pod_access_policy_for_k8sgpt" {
             "bedrock:InvokeModel",
             "bedrock:InvokeModelWithResponseStream"
              ]
-                Resource = [
-          "arn:aws:bedrock:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:foundation-model/anthropic.claude-3-7-sonnet-20250219-v1:0",
-          "arn:aws:bedrock:eu-central-1:${data.aws_caller_identity.current.account_id}:foundation-model/*"
+                Resource = [ 
+          "arn:aws:bedrock:eu-central-1::foundation-model/anthropic*"
         ]
         }
     ]
@@ -97,9 +95,10 @@ resource "aws_eks_pod_identity_association" "k8sgpt_association" {
   role_arn        = aws_iam_role.pod_identity_role_k8sgpt.arn
 
     depends_on = [
-        helm_release.k8sgpt,
-        kubernetes_service_account.k8sgpt_sa
+    aws_iam_role_policy_attachment.pod_policy_k8sgpt_attach,
+    aws_iam_role.pod_identity_role_k8sgpt,
+    helm_release.k8sgpt
     ]
 }
 
-*/
+ 

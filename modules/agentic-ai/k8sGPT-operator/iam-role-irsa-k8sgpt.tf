@@ -1,6 +1,6 @@
 # modules/k8sGPT/main.tf
  
-
+/*
 # IAM Role for k8sGPT Service Account (IRSA)
 resource "aws_iam_role" "k8sgpt_irsa_role" {
   name  = "${var.k8s_cluster_name}-k8sgpt-irsa-role"
@@ -50,3 +50,4 @@ resource "aws_iam_role_policy_attachment" "k8sgpt_policy_attach" {
   role       = aws_iam_role.k8sgpt_irsa_role.name
   policy_arn = aws_iam_policy.k8sgpt_policy.arn
 }
+*/
