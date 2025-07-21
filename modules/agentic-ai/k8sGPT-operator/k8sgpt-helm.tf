@@ -6,7 +6,7 @@ resource "helm_release" "k8sgpt" {
   repository = "https://charts.k8sgpt.ai"
   chart      = "k8sgpt-operator"
   version    =  var.k8sgpt_helm_version
-  create_namespace = true
+  create_namespace = false
   atomic           = true
   cleanup_on_fail  = true
   timeout    = 900
@@ -14,9 +14,8 @@ resource "helm_release" "k8sgpt" {
   values = [
     yamlencode({
       serviceAccount = {
-        create = true
-        name = "k8sgpt-operator-sa" #var.k8sgpt_service_account_name
-        annotations = { "eks.amazonaws.com/role-arn" = aws_iam_role.pod_identity_role_k8sgpt.arn }
+        create = false
+        name   = kubernetes_service_account.k8sgpt_sa.metadata[0].name
       }
       serviceMonitor = {
           enabled   = true

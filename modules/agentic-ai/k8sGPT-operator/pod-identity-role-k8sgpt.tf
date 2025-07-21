@@ -57,6 +57,25 @@ resource "aws_iam_role_policy_attachment" "kubecost_custom" {
 */
 
 
+# Namespace for K8sGPT
+resource "kubernetes_namespace" "k8sgpt" {
+  metadata {
+    name = var.k8sgpt_namespace
+  }
+}
+
+# Kubernetes ServiceAccount with IRSA annotation
+resource "kubernetes_service_account" "k8sgpt_sa" {
+  metadata {
+    name      = var.k8sgpt_service_account_name
+    namespace = kubernetes_namespace.k8sgpt.metadata[0].name
+    annotations = {
+      "eks.amazonaws.com/role-arn" = aws_iam_role.pod_identity_role_k8sgpt.arn
+    }
+  }
+  depends_on = [kubernetes_namespace.k8sgpt]
+}
+
 
 ## 2. Create IAM Policy for Pod Access
 resource "aws_iam_policy" "pod_access_policy_for_k8sgpt" {
@@ -124,6 +143,7 @@ resource "aws_eks_pod_identity_association" "k8sgpt_association" {
   role_arn        = aws_iam_role.pod_identity_role_k8sgpt.arn
 
     depends_on = [
-        helm_release.k8sgpt
+        helm_release.k8sgpt,
+        kubernetes_service_account.k8sgpt_sa
     ]
 }
