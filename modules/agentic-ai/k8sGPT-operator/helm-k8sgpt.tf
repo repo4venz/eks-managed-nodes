@@ -20,7 +20,7 @@ resource "helm_release" "k8sgpt" {
 
 
 data "template_file" "k8sgpt_values" {
-  template = file("${path.module}/values-k8sgpt.yaml")
+  template = file("${path.module}/k8sgpt-values.yaml")
   
   vars = {
     ai_foundation_model_service = var.ai_foundation_model_service
