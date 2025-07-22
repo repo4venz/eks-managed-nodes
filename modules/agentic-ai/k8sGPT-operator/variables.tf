@@ -37,7 +37,7 @@ variable "k8sgpt_namespace" {
 variable k8sgpt_service_account_name {
   description = "Service account name for k8sgpt"
   type        = string
-  default     = "k8sgpt-operator-system-sa"  #"k8sgpt-k8sgpt-operator-system"  # 
+  default     = "k8sgpt-k8sgpt-operator-system"  # This is the default service account name created by the k8sgpt Helm chart
 }
 
 variable k8sgpt_helm_version {

@@ -26,6 +26,16 @@ resource "helm_release" "k8sgpt" {
             release = "kube-prometheus"
         }
       }
+    resources = {
+      limits = {
+        cpu = "500m"
+        memory = "512Mi"
+      }
+       requests = {
+         cpu = "250m"
+         memory = "256Mi"
+      }
+    }
       prometheus = {
         enabled = true
         namespace = var.prometheus_namespace  # Where Prometheus is installed
