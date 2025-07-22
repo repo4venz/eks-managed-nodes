@@ -34,7 +34,8 @@ resource "kubernetes_manifest" "k8sgpt_bedrock" {
     }
   }
  depends_on = [
-    aws_eks_pod_identity_association.k8sgpt_association
+    aws_eks_pod_identity_association.k8sgpt_association,
+    helm_release.k8sgpt
   ]
 }
 

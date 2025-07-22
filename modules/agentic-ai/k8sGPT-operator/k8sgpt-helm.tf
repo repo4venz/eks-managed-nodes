@@ -10,6 +10,7 @@ resource "helm_release" "k8sgpt" {
   atomic           = true
   cleanup_on_fail  = true
   timeout    = 900
+  wait = true
 
   values = [
     yamlencode({
