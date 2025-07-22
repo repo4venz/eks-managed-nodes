@@ -63,7 +63,7 @@ resource "aws_eks_pod_identity_association" "k8sgpt_association" {
   namespace       = var.k8sgpt_namespace
   service_account = var.k8sgpt_service_account_name
   role_arn        = aws_iam_role.pod_identity_role_k8sgpt.arn
-
+ 
     depends_on = [
     aws_iam_role_policy_attachment.pod_policy_k8sgpt_attach,
     aws_iam_role.pod_identity_role_k8sgpt,
