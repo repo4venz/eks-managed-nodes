@@ -1,0 +1,54 @@
+k8sgpt-operator:
+  rbac:
+    create: true
+  
+  ai:
+    enabled: true
+    backend: "${ai_foundation_model_service}"  #"bedrock"
+    model: "${ai_foundation_model_name}" #"anthropic.claude-v2"
+    region: "${ai_foundation_model_region}" # "eu-central-1"
+    noCache: true
+
+  serviceAccount:
+    annotations:
+      eks.amazonaws.com/role-arn: "${k8sgpt_pod_identity_role_arn}"
+
+  config:
+    analyse:
+      baselineThreshold: 90
+      enableAI: true
+      filters:
+        - "Pods"
+        - "Nodes"
+        - "Services"
+        - "Deployments"
+        - "StatefulSets"
+      language: "en"
+      
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 250m
+      memory: 256Mi
+
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      namespace: "${prometheus_namespace}"
+      interval: "30s"
+      additionalLabels:
+        release: "kube-prometheus"
+  prometheus:
+    enabled: true
+    namespace: "${prometheus_namespace}"
+  grafana:
+    enabled: true 
+    namespace: "${prometheus_namespace}"
+  interplex:
+    enabled: true
+
+
+ 

@@ -1,5 +1,5 @@
  
-
+/*
 resource "helm_release" "k8sgpt" {
   name       = "k8sgpt"
   namespace  =  var.k8sgpt_namespace
@@ -47,3 +47,4 @@ resource "helm_release" "k8sgpt" {
 }
 
  
+ */

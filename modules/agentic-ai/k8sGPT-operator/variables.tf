@@ -57,3 +57,20 @@ variable install_nvidia_device_plugin {
   type        = bool
   default     = false
 }
+
+variable "ai_foundation_model_service" {
+  description = "Service for AI foundation model (e.g., bedrock)"
+  type        = string
+  default     = "bedrock"
+}
+variable "ai_foundation_model_name" {
+  description = "Name of the AI foundation model (e.g., anthropic.claude-v2)"
+  type        = string
+  default     = "anthropic.claude-3-5-sonnet-20240620-v1:0"
+}
+variable "ai_foundation_model_region" {
+  description = "Region for the AI foundation model service"
+  type        = string
+  default     = "eu-central-1"
+} 
+ 
