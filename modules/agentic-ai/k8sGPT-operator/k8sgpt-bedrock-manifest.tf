@@ -1,3 +1,5 @@
+/*
+
 resource "time_sleep" "wait_120_seconds" {
   create_duration = "120s"  # 2 minutes
 
@@ -6,6 +8,28 @@ resource "time_sleep" "wait_120_seconds" {
     helm_release.k8sgpt
   ]
 }
+
+
+#kubectl patch k8sgpt bedrock -n k8sgpt-operator-system -p '{"metadata":{"finalizers":[]}}' --type=merge
+# -------------------
+
+resource "null_resource" "create_namespace_if_not_exists" {
+ 
+  provisioner "local-exec" {
+    command = <<EOT
+      if ! kubectl get namespace ${var.app_namespace} >/dev/null 2>&1; then
+        kubectl create namespace ${var.app_namespace}
+        echo "Created namespace: ${var.app_namespace}"
+      else
+        echo "Namespace ${var.app_namespace} already exists"
+      fi
+    EOT
+  }
+    triggers = {
+    always_run = timestamp() # Forces re-run on every `apply`; can be improved
+  }
+}
+
 
 resource "kubernetes_manifest" "k8sgpt_bedrock" {
   manifest = {
@@ -39,4 +63,4 @@ resource "kubernetes_manifest" "k8sgpt_bedrock" {
   ]
 }
 
- 
+*/
