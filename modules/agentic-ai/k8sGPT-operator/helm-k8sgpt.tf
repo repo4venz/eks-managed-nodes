@@ -1,3 +1,5 @@
+/*
+
 resource "helm_release" "k8sgpt" {
   name             = "k8sgpt-operator"
   repository       = "https://charts.k8sgpt.ai"
@@ -30,3 +32,6 @@ data "template_file" "k8sgpt_values" {
     prometheus_namespace = var.prometheus_namespace
   }
 }
+
+
+*/

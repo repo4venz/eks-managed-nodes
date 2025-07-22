@@ -16,7 +16,7 @@ resource "aws_iam_policy" "pod_access_policy_for_k8sgpt" {
             "bedrock:InvokeModelWithResponseStream"
              ]
                 Resource = [ 
-          "arn:aws:bedrock:eu-central-1::foundation-model/anthropic*"
+          "arn:aws:bedrock:${var.ai_foundation_model_region}::foundation-model/${var.ai_foundation_model_name}"
         ]
         }
     ]
