@@ -37,13 +37,7 @@ variable "k8sgpt_namespace" {
 variable k8sgpt_service_account_name {
   description = "Service account name for k8sgpt"
   type        = string
-  default     = "k8sgpt-k8sgpt-operator-system"  
-}
-
-variable ingress_host {
-  description = "Ingress host for k8sgpt"
-  type        = string
-  default     = "k8sgpt.suvendupublicdomain.fun" # Replace with your actual domain
+  default     = "k8sgpt-operator-system-sa"  
 }
 
 variable k8sgpt_helm_version {

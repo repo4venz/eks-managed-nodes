@@ -1,35 +1,6 @@
-
-
-
-
-
-
-
-
-
-/*
- 
-# Namespace for K8sGPT
-resource "kubernetes_namespace" "k8sgpt" {
-  metadata {
-    name = var.k8sgpt_namespace
-  }
-}
-
-# Kubernetes ServiceAccount with IRSA annotation
-resource "kubernetes_service_account" "k8sgpt_sa" {
-  metadata {
-    name      = var.k8sgpt_service_account_name
-    namespace = kubernetes_namespace.k8sgpt.metadata[0].name
-    annotations = {
-      "eks.amazonaws.com/role-arn" = aws_iam_role.pod_identity_role_k8sgpt.arn
-    }
-  }
-  depends_on = [kubernetes_namespace.k8sgpt]
-}
-*/
-
-
+# k8sGPT Operator Pod Identity Role Configuration
+# This Terraform configuration sets up the necessary IAM roles and policies for the k8sGPT operator
+# Terraform configuration for EKS Pod Identity Role for k8sGPT
 ## 2. Create IAM Policy for Pod Access
 resource "aws_iam_policy" "pod_access_policy_for_k8sgpt" {
   name        = substr("${var.k8s_cluster_name}-eks-pod-access-policy-k8sgpt",0,64)  
@@ -70,8 +41,7 @@ resource "aws_iam_role" "pod_identity_role_k8sgpt" {
             ]
         Condition = {
           StringEquals = {
-            "aws:SourceAccount" : "${data.aws_caller_identity.current.account_id}",
-            "eks:cluster-name" : "${var.k8s_cluster_name}"
+            "aws:SourceAccount" : "${data.aws_caller_identity.current.account_id}" 
           }
         }
       }

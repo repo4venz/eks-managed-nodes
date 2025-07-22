@@ -1,0 +1,42 @@
+k8sgpt-operator:
+  rbac:
+    create: true
+  
+  ai:
+    enabled: true
+    backend: "bedrock"
+    model: "anthropic.claude-v2"
+    region: "eu-central-1"
+    noCache: true
+
+  serviceAccount:
+    create: true
+    name: "k8sgpt-operator-controller-manager"
+    annotations:
+      eks.amazonaws.com/role-arn: "${pod_identity_role_arn}"
+
+  config:
+    analyse:
+      baselineThreshold: 90
+      enableAI: true
+      filters:
+        - "Pods"
+        - "Nodes"
+        - "Services"
+        - "Deployments"
+        - "StatefulSets"
+      language: "en"
+      
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 250m
+      memory: 256Mi
+
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      namespace: "monitoring"
