@@ -102,9 +102,9 @@ resource "helm_release" "loki" {
 
             serviceAccount = {
                 create      = true
-                name        = "${var.loki_service_account_name}"
+                name        = var.loki_service_account_name
                 annotations = {
-                    "eks.amazonaws.com/role-arn" = "${aws_iam_role.loki_role.arn}"
+                    "eks.amazonaws.com/role-arn" = aws_iam_role.loki_role.arn
                 }
             }
 
@@ -137,7 +137,7 @@ resource "helm_release" "loki" {
                 storageConfig = {
                     aws = {
                         s3               = "s3://${aws_s3_bucket.loki_storage.id}"
-                        region           = "${data.aws_region.current.id}"
+                        region           = data.aws_region.current.id
                         s3forcepathstyle = true
                     }
 
@@ -168,7 +168,7 @@ resource "helm_release" "loki" {
                 persistence = {
                     enabled      = true
                     size         = "10Gi"
-                    storageClass = "${var.ebs_storage_class_name}"
+                    storageClass = var.ebs_storage_class_name
                 }
             }
 
@@ -233,3 +233,5 @@ resource "helm_release" "loki" {
         aws_s3_bucket.loki_storage
     ]
 }
+
+ 
