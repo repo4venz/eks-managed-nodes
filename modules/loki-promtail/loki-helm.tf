@@ -396,7 +396,7 @@ resource "helm_release" "loki" {
   chart            = "loki"
   namespace        = var.k8s_namespace
   create_namespace = true
-  atomic           = true
+  atomic           = false
   cleanup_on_fail  = true
   timeout          = 300
 
