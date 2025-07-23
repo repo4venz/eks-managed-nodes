@@ -210,6 +210,21 @@ resource "helm_release" "loki" {
     frontendWorker = {
         enabled = true
     }
+    backend = {
+        enabled = false
+        replicas = 0
+    }
+
+    read = {
+        enabled = false
+        replicas = 0
+    }
+
+    write = {
+        enabled = false
+        replicas = 0
+    }
+
 
     })
 ]
