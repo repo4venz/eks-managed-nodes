@@ -389,7 +389,7 @@ resource "helm_release" "loki" {
 }
 
 */
-
+/*
 resource "helm_release" "loki" {
   name             = "loki"
   repository       = "https://grafana.github.io/helm-charts"
@@ -485,11 +485,7 @@ values = [
       }
 
       ruler = {
-        enabled  = true
-        replicas = 1
-        directories = {
-          rules = "/etc/loki/rules"
-        }
+        enabled  = false
       }
 
       gateway = {
@@ -526,5 +522,128 @@ values = [
     aws_s3_bucket.loki_storage
   ]
 }
+*/
 
+resource "helm_release" "loki" {
+  name             = "loki"
+  repository       = "https://grafana.github.io/helm-charts"
+  chart            = "loki"
+  namespace        = var.k8s_namespace
+  create_namespace = true
+  atomic           = false
+  cleanup_on_fail  = true
+  timeout          = 300
+
+  values = [
+    yamlencode({
+      deploymentMode = "Distributed"
+      
+      loki = {
+        auth_enabled = false
+        commonConfig = { replication_factor = 1 }
+
+        # Use raw HEREDOC string instead of yamlencode()
+        config = <<-EOT
+          limits_config:
+            allow_structured_metadata: true
+          schema_config:
+            configs:
+            - from: "2024-01-01"
+              store: tsdb
+              object_store: aws
+              schema: v13
+              index:
+                prefix: loki_index_
+                period: 24h
+          storage_config:
+            aws:
+              s3: "s3://${aws_s3_bucket.loki_storage.id}"
+              region: ${data.aws_region.current.id}
+              s3forcepathstyle: true
+            tsdb_shipper:
+              active_index_directory: /var/loki/index
+              cache_location: /var/loki/cache
+        EOT
+
+        storage = {
+          type = "s3"
+          bucketNames = {
+            chunks = aws_s3_bucket.loki_storage.id
+            ruler  = aws_s3_bucket.loki_storage.id
+            admin  = aws_s3_bucket.loki_storage.id
+          }
+        }
+      }
+
+       distributor = {
+        replicas       = 2
+        maxUnavailable = 1
+      }
+
+      ingester = {
+        replicas = 2
+        persistence = {
+          enabled      = true
+          size         = "10Gi"
+          storageClass = var.ebs_storage_class_name
+        }
+      }
+
+      querier = {
+        replicas       = 2
+        maxUnavailable = 1
+      }
+
+      queryFrontend = {
+        replicas       = 2
+        maxUnavailable = 1
+      }
+
+      compactor = {
+        enabled                       = true
+        retention_enabled             = true
+        retention_delete_delay        = "2h"
+        retention_delete_worker_count = 150
+        working_directory             = "/var/loki/compactor"
+        shared_store                  = "aws"
+      }
+
+      ruler = {
+        enabled  = false
+      }
+
+      gateway = {
+        enabled = true
+      }
+
+      queryScheduler = {
+        enabled = true
+      }
+
+      frontendWorker = {
+        enabled = true
+      }
+
+      backend = {
+        enabled  = false
+        replicas = 0
+      }
+
+      read = {
+        enabled  = false
+        replicas = 0
+      }
+
+      write = {
+        enabled  = false
+        replicas = 0
+      }
+    })
+  ]
+
+  depends_on = [
+    aws_iam_role_policy_attachment.loki_policy_attachment,
+    aws_s3_bucket.loki_storage
+  ]
+}
 
