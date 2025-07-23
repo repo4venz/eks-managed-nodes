@@ -193,6 +193,11 @@ variable "eks_optimized_ami_type" {
   default = "AL2023_x86_64"  # Amazon Linux 2023 (AL2023)
 }
 
+variable "eks_optimized_gpu_ami_type" {
+  description = "AMI Tpes used in EKS worker nodes. It would be a EKS Optimized AMIs"
+  default = "AL2023_x86_64_NVIDIA"  # Amazon Linux 2023 (AL2023)
+}
+
 variable llm_instance_types {
   description = "List of instance types for LLM workloads"
   type        = list(string)

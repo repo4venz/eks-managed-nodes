@@ -9,15 +9,20 @@ resource "aws_eks_node_group" "demo_eks_nodegroup_spot_llm" {
   cluster_name    = aws_eks_cluster.demo_eks_cluster.name
   node_group_name = substr("${var.cluster_name}-${var.environment}-nodegrp-spot-llm-gpu" ,0,64)
   node_role_arn   = aws_iam_role.eks_worker_nodes_role.arn
+  instance_types =  var.llm_instance_types #["g5.2xlarge"] # GPU instance types  #"${var.llm_instance_types[0]}" # GPU instance types
 
+
+  ami_type =  var.eks_optimized_gpu_ami_type # Amazon Linux 2023 with GPU support
   subnet_ids =  var.private_subnets
   capacity_type = "SPOT"
   #ami_type = "AL2023_x86_64_NVIDIA" #"AL2_x86_64_GPU" # Amazon Linux 2 with GPU support
-
+  
+  /*
   launch_template {
     id      = aws_launch_template.eks_worker_nodes_spot_llm.id
     version = "$Latest"
   }
+  */
 
   # Optional: Add taints to ensure only GPU workloads run on these nodes
   taint {
@@ -73,7 +78,7 @@ resource "aws_eks_node_group" "demo_eks_nodegroup_spot_llm" {
 }
 
  
- 
+ /*
 
  # Launch Template for High-Pod-Density Nodes
 resource "aws_launch_template" "eks_worker_nodes_spot_llm" { 
@@ -108,6 +113,7 @@ resource "aws_launch_template" "eks_worker_nodes_spot_llm" {
   }
    
 }
+*/
 
  
  
