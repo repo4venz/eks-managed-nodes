@@ -85,7 +85,7 @@ resource "helm_release" "loki" {
   name       = "loki"
   repository = "https://grafana.github.io/helm-charts"
   chart      = "loki"
-  version    = var.loki_chart_version
+  #version    = var.loki_chart_version
   namespace        = var.k8s_namespace
   create_namespace = true
   atomic           = true
@@ -179,6 +179,7 @@ resource "helm_release" "loki" {
 
     queryFrontend = {
       replicas = 2
+      maxUnavailable = 1
     }
 
     compactor = {
