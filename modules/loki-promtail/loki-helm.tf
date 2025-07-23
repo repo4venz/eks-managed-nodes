@@ -102,7 +102,7 @@ resource "helm_release" "loki" {
         create = true
         name   = var.loki_service_account_name
         annotations = {
-          "eks.amazonaws.com/role-arn" = aws_iam_role.loki.arn
+          "eks.amazonaws.com/role-arn" = aws_iam_role.loki_role.arn
         }
       }
       serviceMonitor = {
