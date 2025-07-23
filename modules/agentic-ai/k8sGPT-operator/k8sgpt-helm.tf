@@ -24,7 +24,7 @@ resource "helm_release" "k8sgpt" {
         namespace = var.prometheus_namespace  # Where Prometheus is installed
         interval  = "30s"
         additionalLabels = {
-            release = "kube-prometheus"
+            release = "kube-prometheus-stack"  # Adjust this label based on your Prometheus setup
         }
       }
     resources = {
@@ -40,6 +40,10 @@ resource "helm_release" "k8sgpt" {
       prometheus = {
         enabled = true
         namespace = var.prometheus_namespace  # Where Prometheus is installed
+      }
+      prometheusOperator = {
+        enabled = true
+        namespace = var.prometheus_namespace  # Where Prometheus Operator is installed
       }
       grafana = {
         enabled = true
