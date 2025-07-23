@@ -95,6 +95,7 @@ resource "helm_release" "loki" {
 
   values = [
     yamlencode({
+      deploymentMode = "Distributed"
       singleBinary = {
         enabled = false
       }
