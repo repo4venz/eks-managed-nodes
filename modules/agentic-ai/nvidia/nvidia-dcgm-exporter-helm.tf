@@ -48,9 +48,10 @@ resource "helm_release" "nvidia_dcgm_exporter" {
   ]
 }
 
-
+/*
 resource "grafana_dashboard" "nvidia_gpu" {
   config_json = file("${path.module}/NVIDIA-DCGM-Exporter-Dashboard.json")
   folder      = "GPU"
   depends_on  = [helm_release.nvidia_dcgm_exporter]
 }
+*/
