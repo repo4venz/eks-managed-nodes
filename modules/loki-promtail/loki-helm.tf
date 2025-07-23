@@ -20,7 +20,7 @@ resource "helm_release" "loki" {
       }
       persistence = {
         enabled = true
-        storageClassName = var.efs_storage_class_name
+        storageClassName = var.ebs_storage_class_name
         size = var.loki_storage_size
       }
       loki = {

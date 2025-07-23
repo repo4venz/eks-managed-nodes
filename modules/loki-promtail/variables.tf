@@ -64,3 +64,9 @@ variable "efs_storage_class_name" {
   type        = string
   default     = "efs-sc"
 }
+
+variable "ebs_storage_class_name" {
+  description = "EBS Storage class name for persistent volumes for Prometheus"
+  type        = string
+  default     = "ebs-gp3-sc"
+}

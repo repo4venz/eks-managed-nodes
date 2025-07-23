@@ -182,11 +182,6 @@ grafana:
 loki:
   enabled: true
   namespace: ${k8s_namespace}  # Default namespace for Loki
-  persistence:
-    enabled: true
-    storageClassName: ${storage_class_name}
-    accessModes: ["ReadWriteMany"]
-    size: ${loki_storage_size}
 
 # Configure Promtail
 promtail:
