@@ -438,7 +438,7 @@ values = [
           tsdb_shipper = {
             active_index_directory = "/var/loki/index"
             cache_location         = "/var/loki/cache"
-            shared_store           = "aws"
+            #shared_store           = "aws"
           }
         }
       }
