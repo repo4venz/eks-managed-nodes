@@ -414,13 +414,13 @@ variable "overrides_ondemand_node_scale_config" {
   }
 }
 
-variable required_llm_ondemand_instances {
+variable required_gpu_ondemand_instances {
   description = "Flag to indicate if LLM instances are required"
   type        = bool
   default     = false
 }
 
-variable required_llm_spot_instances {
+variable required_gpu_spot_instances {
   description = "Flag to indicate if LLM instances are required"
   type        = bool
   default     = false

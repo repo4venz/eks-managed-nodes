@@ -57,8 +57,8 @@ module "eks" {
     ebs_volume_type                               =  var.ebs_volume_type
 
     #Agentic AI LLM
-    required_llm_ondemand_instances                        =  var.required_llm_ondemand_instances  ## Flag to indicate if LLM instances are required
-    required_llm_spot_instances                            =  var.required_llm_spot_instances  ## Flag to indicate if LLM instances are required
+    required_gpu_ondemand_instances                        =  var.required_gpu_ondemand_instances  ## Flag to indicate if LLM instances are required
+    required_gpu_spot_instances                            =  var.required_gpu_spot_instances  ## Flag to indicate if LLM instances are required
 
 
     depends_on = [module.vpc, module.kms_aws]

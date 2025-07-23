@@ -146,6 +146,13 @@ variable "ebs_volume_size_in_gb" {
   default     = 20
 }
 
+variable "ebs_volume_size_in_gb_for_gpu" {
+  type        = number
+  description = "EKS Worker Node EBS Volume Size for SPOT and On_DEMAND instances. Only for NVIDIA GPU Instances."
+  default     = 50
+}
+
+
 variable "ebs_volume_type" {
   type        = string
   description = "EKS Worker Node EBS Volume Type for SPOT and On_DEMAND instances"
@@ -198,19 +205,25 @@ variable "eks_optimized_gpu_ami_type" {
   default = "AL2023_x86_64_NVIDIA"  # Amazon Linux 2023 (AL2023)
 }
 
-variable llm_instance_types {
+variable gpu_spot_instance_types {
+  description = "List of instance types for LLM workloads"
+  type        = list(string)
+  default     =  ["g5.xlarge"]  #["m5.4xlarge"] #["g5.xlarge", "g5.2xlarge", "g5.4xlarge", "g5.8xlarge", "g5.16xlarge"]
+}
+
+variable gpu_ondemand_instance_types {
   description = "List of instance types for LLM workloads"
   type        = list(string)
   default     =  ["g5.2xlarge"]  #["m5.4xlarge"] #["g5.xlarge", "g5.2xlarge", "g5.4xlarge", "g5.8xlarge", "g5.16xlarge"]
 }
 
-variable required_llm_ondemand_instances {
+variable required_gpu_ondemand_instances {
   description = "Flag to indicate if LLM instances are required"
   type        = bool
   default     = false
 }
 
-variable required_llm_spot_instances {
+variable required_gpu_spot_instances {
   description = "Flag to indicate if LLM Spot instances are required"
   type        = bool
   default     = false
