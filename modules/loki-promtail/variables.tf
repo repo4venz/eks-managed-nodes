@@ -43,7 +43,7 @@ variable "loki_storage_size" {
 variable "loki_storage_bucket" {
   description = "S3 bucket name for Loki storage (optional)"
   type        = string
-  default     = ""
+  default     = "loki-storage"
 }
 
 variable "environment" {

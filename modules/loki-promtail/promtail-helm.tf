@@ -11,17 +11,46 @@ resource "helm_release" "promtail" {
   cleanup_on_fail  = true
   timeout          = 300
 
-  values = [
+ values = [
     yamlencode({
-      serviceAccount = {
-        name = var.promtail_service_account_name
-      }
+    serviceAccount = {
+            name = var.promtail_service_account_name
+    }
+    serviceMonitor = {
+        enabled = true
+        additionalLabels = {
+          release = "kube-prometheus-stack"
+        }   
+        }
       config = {
-        clients = [
-          {
-            url = "http://loki:3100/loki/api/v1/push"
-          }
-        ]
+        clients = [{
+          url = "http://loki.${var.k8s_namespace}.svc.cluster.local:3100/loki/api/v1/push"
+        }]
+        snippets = {
+          pipelineStages = [
+            { cri = {} }
+          ]
+          scrape_configs = [{
+            job_name = "kubernetes-pods"
+            kubernetes_sd_configs = [{
+              role = "pod"
+            }]
+            relabel_configs = [
+              {
+                source_labels = ["__meta_kubernetes_namespace"]
+                target_label  = "namespace"
+              },
+              {
+                source_labels = ["__meta_kubernetes_pod_name"]
+                target_label  = "pod"
+              },
+              {
+                source_labels = ["__meta_kubernetes_pod_container_name"]
+                target_label  = "container"
+              }
+            ]
+          }]
+        }
       }
     })
   ]
@@ -30,3 +59,4 @@ resource "helm_release" "promtail" {
     helm_release.loki
   ]
 }
+

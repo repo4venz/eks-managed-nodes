@@ -14,7 +14,7 @@ resource "aws_iam_role_policy_attachment" "loki_policy_attachment" {
 
 # Create IAM policy for Loki
 resource "aws_iam_policy" "loki_policy" {
-  name        = "${var.k8s_cluster_name}-loki-policy"
+  name        = "${var.k8s_cluster_name}-loki-s3-access-policy"
   description = "IAM policy for Loki"
   policy      = jsonencode({
     Version = "2012-10-17"
@@ -22,14 +22,15 @@ resource "aws_iam_policy" "loki_policy" {
       {
         Effect = "Allow"
         Action = [
-          "s3:ListBucket",
-          "s3:PutObject",
-          "s3:GetObject",
-          "s3:DeleteObject"
+        "s3:ListBucket",
+        "s3:PutObject",
+        "s3:GetObject",
+        "s3:DeleteObject",
+        "s3:GetBucketLocation"
         ]
         Resource = [
-          "arn:aws:s3:::${var.loki_storage_bucket}",
-          "arn:aws:s3:::${var.loki_storage_bucket}/*"
+          aws_s3_bucket.loki_storage.arn,
+          "${aws_s3_bucket.loki_storage.arn}/*"
         ]
       }
     ]
