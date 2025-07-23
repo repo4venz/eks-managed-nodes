@@ -9,7 +9,7 @@ resource "aws_eks_node_group" "demo_eks_nodegroup_ondemand_llm" {
   cluster_name    = aws_eks_cluster.demo_eks_cluster.name
   node_group_name = substr("${var.cluster_name}-${var.environment}-nodegrp-ondemand-llm-gpu" ,0,64)
   node_role_arn   = aws_iam_role.eks_worker_nodes_role.arn
-  instance_types = "${var.llm_instance_types[0]}" # GPU instance types
+  instance_types =  ["g5.2xlarge"] # GPU instance types  #"${var.llm_instance_types[0]}" # GPU instance types
 
   subnet_ids =  var.private_subnets
   capacity_type = "ON_DEMAND"
