@@ -37,7 +37,7 @@ resource "helm_release" "nvidia_dcgm_exporter" {
         {
           key      = "nvidia.com/gpu"
           operator = "Exists"
-          effect   = "NO_SCHEDULE"
+          effect   = "NoSchedule"
         } 
       ]
     })
