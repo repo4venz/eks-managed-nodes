@@ -81,11 +81,11 @@
 */
 
 resource "helm_release" "loki" {
-  name       = "loki"
-  repository = "https://grafana.github.io/helm-charts"
-  chart      = "loki"
-  version    = var.loki_chart_version
-  namespace  = var.k8s_namespace
+  name             = "loki"
+  repository       = "https://grafana.github.io/helm-charts"
+  chart            = "loki"
+  version          = var.loki_chart_version
+  namespace        = var.k8s_namespace
   create_namespace = true
   atomic           = true
   cleanup_on_fail  = true
@@ -93,65 +93,84 @@ resource "helm_release" "loki" {
 
   values = [
     yamlencode({
+      singleBinary = {
+        enabled = false
+      }
+      serviceAccount = {
+        create = true
+        name = var.loki_service_account_name
+        annotations = {
+          "eks.amazonaws.com/role-arn" = aws_iam_role.loki_role.arn
+        }
+      }
+      serviceMonitor = {
+        enabled = true
+        additionalLabels = {
+          release = "kube-prometheus-stack"
+        }
+      }
       loki = {
-        config = yamlencode({
-          auth_enabled = false
-          storage_config = {
-            aws = {
-              s3               = "s3://${aws_s3_bucket.loki_storage.id}"
-              region           = data.aws_region.current.id
-              s3forcepathstyle = true
+        schemaConfig = {
+          configs = [{
+            from = "2020-10-24"
+            store = "boltdb-shipper"
+            object_store = "aws"
+            schema = "v11"
+            index = {
+              prefix = "loki_index_"
+              period = "24h"
             }
+          }]
+        }
+        storageConfig = {
+          aws = {
+            s3 = "s3://${aws_s3_bucket.loki_storage.id}"
+            region = data.aws_region.current.name
+            s3forcepathstyle = true
           }
-          schema_config = {
-            configs = [{
-              from         = "2020-10-24"
-              store        = "boltdb-shipper"
-              object_store = "aws"
-              schema       = "v11"
-              index = {
-                prefix = "loki_index_"
-                period = "24h"
-              }
-            }]
+          boltdb_shipper = {
+            active_index_directory = "/var/loki/index"
+            cache_location = "/var/loki/cache"
+            cache_ttl = "24h"
+            shared_store = "aws"
           }
-          ingester = {
-            lifecycler = {
-              ring = {
-                kvstore = {
-                  store = "inmemory"
-                }
-                replication_factor = 1
-              }
-            }
-          }
-        })
+        }
+      }
+      ingester = {
+        enabled = true
+        replicas = 2
         persistence = {
           enabled = true
-          size    = var.loki_storage_size
-          storageClassName = "gp2"
+          size = "10Gi"
+          storageClass = "gp3"
         }
-        serviceAccount = {
-          create = true
-          annotations = {
-            "eks.amazonaws.com/role-arn" = aws_iam_role.loki_role.arn
-          }
+      }
+      querier = {
+        enabled = true
+        replicas = 2
+      }
+      gateway = {
+        enabled = true
+      }
+      ruler = {
+        enabled = true
+        directories = {
+          rules = "/etc/loki/rules"
         }
-        singleBinary = {
-          enabled = false
-        }
-        serviceMonitor = {
-          enabled = true
-          additionalLabels = {
-            release = "kube-prometheus-stack"
-          }
-        }
+      }
+      compactor = {
+        enabled = true
+        retention_enabled = true
+        retention_delete_delay = "2h"
+        retention_delete_worker_count = 150
+        working_directory = "/var/loki/compactor"
+        shared_store = "aws"
       }
     })
   ]
 
-  depends_on = [ 
+  depends_on = [
     aws_iam_role_policy_attachment.loki_policy_attachment,
-    aws_s3_bucket.loki_storage   
+    aws_s3_bucket.loki_storage
   ]
 }
