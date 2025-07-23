@@ -4,7 +4,7 @@
 
 resource "helm_release" "nvidia_dcgm_exporter" {
   name       = "nvidia-dcgm-exporter"
-  repository = "https://nvidia.github.io/dcgm-exporter"
+  repository = "https://nvidia.github.io/dcgm-exporter/helm-charts"
   chart      = "dcgm-exporter"
   #version    = var.nvidia_dcgm_exporter_helm_version
   namespace  = var.nvidia_plugin_namespace
