@@ -122,7 +122,7 @@ resource "helm_release" "loki" {
         replication_factor = 1
       }
 
-      schema_config = {
+      schemaConfig = {
         configs = [{
           from         = "2020-10-24"
           store        = "boltdb-shipper"
@@ -135,7 +135,7 @@ resource "helm_release" "loki" {
         }]
       }
 
-      storage_config = {
+      storageConfig = {
         aws = {
           s3               = "s3://${aws_s3_bucket.loki_storage.id}"
           region           = data.aws_region.current.id
