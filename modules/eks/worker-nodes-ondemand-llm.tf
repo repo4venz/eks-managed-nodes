@@ -9,15 +9,18 @@ resource "aws_eks_node_group" "demo_eks_nodegroup_ondemand_llm" {
   cluster_name    = aws_eks_cluster.demo_eks_cluster.name
   node_group_name = substr("${var.cluster_name}-${var.environment}-nodegrp-ondemand-llm-gpu" ,0,64)
   node_role_arn   = aws_iam_role.eks_worker_nodes_role.arn
+  instance_types = var.llm_instance_types[0] # GPU instance types
 
   subnet_ids =  var.private_subnets
   capacity_type = "ON_DEMAND"
-  #ami_type = "AL2023_x86_64_NVIDIA" #"AL2_x86_64_GPU" # Amazon Linux 2 with GPU support
+  ami_type = "AL2023_x86_64_NVIDIA" #"AL2_x86_64_GPU" # Amazon Linux 2 with GPU support
 
+  /*
   launch_template {
     id      = aws_launch_template.eks_worker_nodes_ondemand_llm.id
     version = "$Latest"
   }
+  */
 
   scaling_config {
     desired_size =  var.base_scaling_config_ondemand.desired_size
@@ -61,6 +64,7 @@ resource "aws_eks_node_group" "demo_eks_nodegroup_ondemand_llm" {
     "project" = "llm"  # Custom label
     "eks.amazonaws.com/nodegroup" = "nvidia-gpu-llm" # Custom label
     "eks.amazonaws.com/nodegroup-type" = "gpu-llm" # Custom label
+    "gpu-type"       = "nvidia"
   }
 
   depends_on = [
@@ -74,7 +78,7 @@ resource "aws_eks_node_group" "demo_eks_nodegroup_ondemand_llm" {
 }
 
  
- 
+ /*
 
  # Launch Template for High-Pod-Density Nodes
 resource "aws_launch_template" "eks_worker_nodes_ondemand_llm" { 
@@ -109,6 +113,8 @@ resource "aws_launch_template" "eks_worker_nodes_ondemand_llm" {
   }
    
 }
+
+*/
 
  
  
