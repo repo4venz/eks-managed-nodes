@@ -46,6 +46,7 @@ resource "aws_eks_node_group" "demo_eks_nodegroup_spot_llm" {
     accelerator = "nvidia"
     instance-type = "gpu"
     "nvidia.com/gpu" = "true"  # Optional label for node selection
+    "gpu"            = "enabled"
   }
 
   tags = {
