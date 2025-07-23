@@ -106,12 +106,7 @@ variable "ai_foundation_model_region" {
   type        = string
   default     = "eu-central-1"
 }
-
-variable nvidia_device_plugin_helm_version {
-  description = "Version of the NVIDIA device plugin Helm chart"
-  type        = string
-  default     = "0.14.1"
-}
+ 
 variable nvidia_dcgm_exporter_helm_version {
   description = "Version of the NVIDIA DCGM Exporter Helm chart"
   type        = string

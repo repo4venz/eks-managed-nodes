@@ -89,10 +89,10 @@ kubectl apply -f k8sgpt-bedrock.yaml
 */
 
 
-resource "null_resource" "k8sgpt_cleanup" {
+resource "null_resource" "k8sgpt_create" {
 
   provisioner "local-exec" {
-    when    = "create"
+    when    = create
     command = <<EOT
     cat <<EOF | kubectl apply -f -
     apiVersion = "core.k8sgpt.ai/v1alpha1"
@@ -134,8 +134,11 @@ resource "null_resource" "k8sgpt_cleanup" {
 
 resource "null_resource" "k8sgpt_cleanup" {
   provisioner "local-exec" {
-    when    = "destroy"
-    command = "kubectl patch k8sgpt ${var.ai_foundation_model_service} -n ${var.k8sgpt_namespace} -p '{\"metadata\":{\"finalizers\":[]}}' --type=merge --ignore-not-found && kubectl delete k8sgpt ${var.ai_foundation_model_service} -n ${var.k8sgpt_namespace} --ignore-not-found"
+    when    = destroy
+    command = <<EOT
+    kubectl patch k8sgpt ${var.ai_foundation_model_service} -n ${var.k8sgpt_namespace} -p '{\"metadata\":{\"finalizers\":[]}}' --type=merge --ignore-not-found 
+    kubectl delete k8sgpt ${var.ai_foundation_model_service} -n ${var.k8sgpt_namespace} --ignore-not-found
+  EOT
   }
 
   triggers = {
