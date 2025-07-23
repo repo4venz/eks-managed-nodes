@@ -2,7 +2,7 @@
 
 resource "aws_s3_bucket" "loki_storage" {
   bucket = "${var.loki_storage_bucket}-${random_id.suffix.hex}" # Globally unique name
-
+  region =  data.aws_region.current.id
   tags = {
     Name        = "Loki Storage"
     Environment = "Production"

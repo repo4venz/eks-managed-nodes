@@ -18,7 +18,7 @@ resource "helm_release" "loki" {
           storage_config = {
             aws = {
               s3               = "s3://${aws_s3_bucket.loki_storage.id}"
-              region           = data.aws_region.curren.id
+              region           = data.aws_region.current.id
               s3forcepathstyle = true
             }
           }
