@@ -43,19 +43,6 @@ spec:
     backend: "amazonbedrock"
     language: "english"
   noCache: false
-  explain: true
-  anonymize: true
-  maxConcurrency: 5
-  includeFilters:
-    - "Security"
-    - "Networking"
-    - "Pods"
-    - "Nodes"
-    - "Services"
-    - "Deployments"
-    - "StatefulSets"
-  excludeFilters:
-    - "Helm"
   repository: "ghcr.io/k8sgpt-ai/k8sgpt"
   version: "v0.4.12"
 EOF
