@@ -387,3 +387,5 @@ resource "helm_release" "loki" {
     aws_s3_bucket.loki_storage
   ]
 }
+
+ 

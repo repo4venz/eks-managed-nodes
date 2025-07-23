@@ -5,9 +5,9 @@ singleBinary:
 
 serviceAccount:
   create: true
-  name: ${loki_service_account_name}
+  name: "loki-sa"   #${loki_service_account_name}
   annotations:
-    eks.amazonaws.com/role-arn: ${loki_role_arn}
+    eks.amazonaws.com/role-arn: "arn:aws:iam::717949064245:role/eks-managed-clstr-dev-loki-role"  # ${loki_role_arn}
 
 serviceMonitor:
   enabled: true
@@ -31,8 +31,8 @@ loki:
   
   storageConfig:
     aws:
-      s3: "s3://${s3_bucket_name}"
-      region: "${aws_region}"
+      s3:  "s3://loki-storage-0b1303af"   #"s3://${s3_bucket_name}"
+      region: "eu-west-2"  #${aws_region}"
       s3forcepathstyle: true
     boltdb_shipper:
       active_index_directory: "/var/loki/index"
@@ -42,9 +42,9 @@ loki:
   
   storage:
     bucketNames:
-      chunks: "${s3_bucket_name}"
-      ruler: "${s3_bucket_name}"
-      admin: "${s3_bucket_name}"
+      chunks:  "loki-storage-0b1303af"  #"${s3_bucket_name}"
+      ruler: "loki-storage-0b1303af"
+      admin: "loki-storage-0b1303af"
 
 distributor:
   replicas: 2
@@ -55,7 +55,7 @@ ingester:
   persistence:
     enabled: true
     size: "10Gi"
-    storageClass: "${ebs_storage_class_name}"
+    storageClass: "ebs-gp3-sc" #"${ebs_storage_class_name}"
 
 querier:
   replicas: 2
