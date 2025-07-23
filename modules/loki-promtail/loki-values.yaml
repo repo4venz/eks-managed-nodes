@@ -28,17 +28,23 @@ loki:
         index:
           prefix: "loki_index_"
           period: "24h"
+      - from: "2025-07-24"
+        store: "tsdb"
+        object_store: "aws"
+        schema: "v13"
+        index:
+          prefix: "loki_index_"
+          period: "24h"
   
   storageConfig:
+    tsdb_shipper:
+      active_index_directory: /var/loki/tsdb-index
+      shared_store: aws
     aws:
-      s3:  "s3://loki-storage-0b1303af"   #"s3://${s3_bucket_name}"
-      region: "eu-west-2"  #${aws_region}"
+      s3: s3://my-loki-bucket
+      region: eu-west-1
       s3forcepathstyle: true
-    boltdb_shipper:
-      active_index_directory: "/var/loki/index"
-      cache_location: "/var/loki/cache"
-      cache_ttl: "24h"
-      shared_store: "aws"
+
   
   storage:
     bucketNames:
