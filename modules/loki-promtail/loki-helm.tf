@@ -163,13 +163,14 @@ resource "helm_release" "loki" {
         replicas = 2
         persistence = {
           enabled       = true
-          size          = "10Gi"
+          size          = var.loki_storage_size
           storageClass  = var.ebs_storage_class_name
         }
       }
       querier = {
         enabled  = true
         replicas = 2
+        maxUnavailable = 1
       }
       gateway = {
         enabled = true
