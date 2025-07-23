@@ -1,6 +1,12 @@
  
 # Helm Release for Loki with yamlencoded values
-resource "helm_release" "loki" {
+# Loki will be installed using Helm with the specified configuration.
+# Loki is a log aggregation system designed to work with Prometheus.
+# Loki stores logs in a time-series database and allows querying logs using PromQL-like queries.
+#Loki stores logs in S3, and the configuration includes storage settings, schema, and service account details.
+ 
+
+ resource "helm_release" "loki" {
   name       = "loki"
   repository = "https://grafana.github.io/helm-charts"
   chart      = "loki"
@@ -14,7 +20,8 @@ resource "helm_release" "loki" {
   values = [
     yamlencode({
       loki = {
-        config = {
+        # Convert config to YAML string using nested yamlencode
+        config = yamlencode({
           storage_config = {
             aws = {
               s3               = "s3://${aws_s3_bucket.loki_storage.id}"
@@ -25,16 +32,16 @@ resource "helm_release" "loki" {
           schema_config = {
             configs = [{
               from         = "2020-10-24"  # Starting date for this schema
-              store        = "boltdb-shipper" # Index storage method
+              store        = "boltdb-shipper"   # Index storage method
               object_store = "aws"  # Where chunks (log data) are stored
               schema       = "v11"   # Schema version
               index = {
-                prefix = "loki_index_" # S3 prefix for index files
-                period = "24h"  # How often to rotate index files
+                prefix = "loki_index_"   # S3 prefix for index files
+                period = "24h"    # How often to rotate index files
               }
             }]
           }
-        }
+        })
         persistence = {
           enabled = true
           size    = var.loki_storage_size
@@ -70,4 +77,3 @@ resource "helm_release" "loki" {
     aws_s3_bucket.loki_storage   
   ]
 }
- 
