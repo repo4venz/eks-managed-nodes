@@ -34,15 +34,18 @@ resource "helm_release" "nvidia_device_plugin" {
         create = true
         name   = var.nvidia_service_account_name
       }
+      nodeSelector = {
+        "nvidia.com/gpu.present" = "true"
+      }
       tolerations = [
         {
           key      = "nvidia.com/gpu"
           operator = "Exists"
           effect   = "NoSchedule"
-        },
+        } /*,
         {
           operator = "Exists" # tolerates all
-        }
+        } */
       ]
     })
   ]

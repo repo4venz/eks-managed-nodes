@@ -28,7 +28,7 @@ resource "aws_eks_node_group" "demo_eks_nodegroup_spot_llm" {
   taint {
     key    = "nvidia.com/gpu"
     value  = "true"
-    effect = "NO_SCHEDULE"
+    effect = "NoSchedule"
   } 
 
   scaling_config {
@@ -52,6 +52,7 @@ resource "aws_eks_node_group" "demo_eks_nodegroup_spot_llm" {
     instance-type = "gpu"
     "nvidia.com/gpu" = "true"  # Optional label for node selection
     "gpu"            = "enabled"
+    "nvidia.com/gpu.present" = "true"
   }
 
   tags = {

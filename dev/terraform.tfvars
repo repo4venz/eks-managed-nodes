@@ -175,7 +175,7 @@ include_nvidia_gpu_module = true
 
 # Agentic AI LLM Worker Nodes
 required_gpu_ondemand_instances = true
-required_gpu_spot_instances = true
+required_gpu_spot_instances = false
 
 
 ####################  END of EKS Worker Nodes configs with VPC CNI ###################
