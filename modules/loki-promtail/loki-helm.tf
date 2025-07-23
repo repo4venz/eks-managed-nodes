@@ -94,95 +94,124 @@ resource "helm_release" "loki" {
 
 
   values = [
-    yamlencode({
-      deploymentMode = "Distributed"
-      singleBinary = {
-        enabled = false
+  yamlencode({
+    deploymentMode = "Distributed"
+
+    singleBinary = {
+      enabled = false
+    }
+
+    serviceAccount = {
+      create = true
+      name   = var.loki_service_account_name
+      annotations = {
+        "eks.amazonaws.com/role-arn" = aws_iam_role.loki_role.arn
       }
-      serviceAccount = {
-        create = true
-        name   = var.loki_service_account_name
-        annotations = {
-          "eks.amazonaws.com/role-arn" = aws_iam_role.loki_role.arn
-        }
+    }
+
+    serviceMonitor = {
+      enabled = true
+      additionalLabels = {
+        release = "kube-prometheus-stack"
       }
-      serviceMonitor = {
-        enabled = true
-        additionalLabels = {
-          release = "kube-prometheus-stack"
-        }
+    }
+
+    loki = {
+      auth_enabled = false
+      commonConfig = {
+        replication_factor = 1
       }
-      loki = {
-        auth_enabled = false
-        commonConfig = {
-          replication_factor = 1
-        }
-        schema_config = {
-          configs = [{
-            from         = "2020-10-24"
-            store        = "boltdb-shipper"
-            object_store = "aws"
-            schema       = "v11"
-            index = {
-              prefix = "loki_index_"
-              period = "24h"
-            }
-          }]
-        }
-        storage_config = {
-          aws = {
-            s3               = "s3://${aws_s3_bucket.loki_storage.id}"
-            region           = data.aws_region.current.id
-            s3forcepathstyle = true
+
+      schema_config = {
+        configs = [{
+          from         = "2020-10-24"
+          store        = "boltdb-shipper"
+          object_store = "aws"
+          schema       = "v11"
+          index = {
+            prefix = "loki_index_"
+            period = "24h"
           }
-          boltdb_shipper = {
-            active_index_directory = "/var/loki/index"
-            cache_location         = "/var/loki/cache"
-            cache_ttl              = "24h"
-            shared_store           = "aws"
-          }
+        }]
+      }
+
+      storage_config = {
+        aws = {
+          s3               = "s3://${aws_s3_bucket.loki_storage.id}"
+          region           = data.aws_region.current.id
+          s3forcepathstyle = true
         }
-        storage = {
-          bucketNames = {
-            chunks = aws_s3_bucket.loki_storage.id
-            ruler  = aws_s3_bucket.loki_storage.id
-            admin  = aws_s3_bucket.loki_storage.id
-          }
+
+        boltdb_shipper = {
+          active_index_directory = "/var/loki/index"
+          cache_location         = "/var/loki/cache"
+          cache_ttl              = "24h"
+          shared_store           = "aws"
         }
       }
-      compactor = {
-        enabled                   = true
-        retention_enabled         = true
-        retention_delete_delay    = "2h"
-        retention_delete_worker_count = 150
-        working_directory         = "/var/loki/compactor"
-        shared_store              = "aws"
+
+      storage = {
+        bucketNames = {
+          chunks = aws_s3_bucket.loki_storage.id
+          ruler  = aws_s3_bucket.loki_storage.id
+          admin  = aws_s3_bucket.loki_storage.id
+        }
       }
-      ingester = {
+    }
+
+    distributor = {
+      replicas = 2
+    }
+
+    ingester = {
+      replicas = 2
+      persistence = {
+        enabled       = true
+        size          = "10Gi"
+        storageClass  = var.ebs_storage_class_name
+      }
+    }
+
+    querier = {
+      replicas       = 2
+      maxUnavailable = 1
+    }
+
+    queryFrontend = {
+      replicas = 2
+    }
+
+    compactor = {
+      enabled                     = true
+      retention_enabled           = true
+      retention_delete_delay      = "2h"
+      retention_delete_worker_count = 150
+      working_directory           = "/var/loki/compactor"
+      shared_store                = "aws"
+    }
+
+    ruler = {
+      enabled = true
+      replicas = 1
+      directories = {
+        rules = "/etc/loki/rules"
+      }
+    }
+
+    gateway = {
+      enabled = true
+    }
+    queryScheduler = {
         enabled = true
-        replicas = 2
-        persistence = {
-          enabled       = true
-          size          = var.loki_storage_size
-          storageClass  = var.ebs_storage_class_name
-        }
-      }
-      querier = {
-        enabled  = true
-        replicas = 2
-        maxUnavailable = 1
-      }
-      gateway = {
+    }
+
+    frontendWorker = {
         enabled = true
-      }
-      ruler = {
-        enabled = true
-        directories = {
-          rules = "/etc/loki/rules"
-        }
-      }
+    }
+
     })
-  ]
+]
+
 
     depends_on = [
     aws_iam_role_policy_attachment.loki_policy_attachment,
