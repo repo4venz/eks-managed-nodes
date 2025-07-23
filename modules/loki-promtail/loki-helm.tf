@@ -94,7 +94,7 @@ resource "helm_release" "loki" {
   values = [
     yamlencode({
       loki = {
-        config = {
+        config = yamlencode({
           auth_enabled = false
           storage_config = {
             aws = {
@@ -125,7 +125,7 @@ resource "helm_release" "loki" {
               }
             }
           }
-        }
+        })
         persistence = {
           enabled = true
           size    = var.loki_storage_size
@@ -139,15 +139,6 @@ resource "helm_release" "loki" {
         }
         singleBinary = {
           enabled = false
-        }
-        write = {
-          replicas = 3
-        }
-        read = {
-          replicas = 3
-        }
-        backend = {
-          replicas = 3
         }
         serviceMonitor = {
           enabled = true
