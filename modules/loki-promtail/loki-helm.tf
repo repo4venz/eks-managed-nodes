@@ -433,8 +433,6 @@ values = [
             region           = data.aws_region.current.id
             s3forcepathstyle = true
           }
-          # Moved shared_store to index_shipper
-          #shared_store = "aws"
           tsdb_shipper = {
             active_index_directory = "/var/loki/index"
             cache_location         = "/var/loki/cache"
@@ -444,14 +442,14 @@ values = [
       }
 
       # Keep storage settings for Helm chart internals
-      storage = {
+      #storage = {
         #type = "s3"  # Add storage type
-        bucketNames = {
-          chunks = aws_s3_bucket.loki_storage.id
-          ruler  = aws_s3_bucket.loki_storage.id
-          admin  = aws_s3_bucket.loki_storage.id
-        }
-      }
+       # bucketNames = {
+       #   chunks = aws_s3_bucket.loki_storage.id
+       #   ruler  = aws_s3_bucket.loki_storage.id
+       #   admin  = aws_s3_bucket.loki_storage.id
+       # }
+      #}
     }
     distributor = {
         replicas       = 2
