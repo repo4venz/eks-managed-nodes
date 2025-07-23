@@ -18,7 +18,7 @@ resource "helm_release" "loki" {
           storage_config = {
             aws = {
               s3               = "s3://${aws_s3_bucket.loki_storage.id}"
-              region           = data.region.current.id
+              region           = data.aws_region.curren.id
               s3forcepathstyle = true
             }
           }
@@ -42,7 +42,7 @@ resource "helm_release" "loki" {
         serviceAccount = {
           create = true
           annotations = {
-            "eks.amazonaws.com/role-arn" = module.loki_irsa.iam_role_arn
+            "eks.amazonaws.com/role-arn" = aws_iam_role.loki_role.arn
           }
         }
         singleBinary = {
@@ -66,7 +66,7 @@ resource "helm_release" "loki" {
     })
   ]
   depends_on = [ 
-    aws_iam_role_policy_attachment.loki_s3_access_attachment,
+    aws_iam_role_policy_attachment.loki_policy_attachment,
     aws_s3_bucket.loki_storage   
   ]
 }
