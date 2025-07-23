@@ -359,7 +359,7 @@ resource "helm_release" "loki" {
     ]
 }
 */
-/*
+ 
 resource "helm_release" "loki" {
   name             = "loki"
   repository       = "https://grafana.github.io/helm-charts"
@@ -387,10 +387,10 @@ resource "helm_release" "loki" {
     aws_s3_bucket.loki_storage
   ]
 }
-*/
 
 
 
+/*
 resource "helm_release" "loki" {
   name             = "loki"
   repository       = "https://grafana.github.io/helm-charts"
@@ -565,5 +565,5 @@ resource "helm_release" "loki" {
     aws_s3_bucket.loki_storage
   ]
 }
-
+*/
  
