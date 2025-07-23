@@ -445,7 +445,7 @@ values = [
 
       # Keep storage settings for Helm chart internals
       storage = {
-        type = "s3"  # Add storage type
+        #type = "s3"  # Add storage type
         bucketNames = {
           chunks = aws_s3_bucket.loki_storage.id
           ruler  = aws_s3_bucket.loki_storage.id
