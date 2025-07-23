@@ -45,6 +45,7 @@ data "template_file" "prometheus_values" {
     environment = var.environment
     storage_size = var.storage_size
     prometheus_retention = var.prometheus_retention
+    k8s_namespace = var.k8s_namespace
   }
 }
  

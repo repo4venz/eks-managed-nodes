@@ -35,6 +35,8 @@ resource "aws_iam_policy" "prometheus_policy" {
                     "pricing:GetProducts",
                     "s3:Get*",
                     "s3:List*",
+                    "s3:PutObject",
+                    "s3:DeleteObject",
                     "organizations:Describe*",
                     "organizations:List*",
                     "cur:DescribeReportDefinitions",

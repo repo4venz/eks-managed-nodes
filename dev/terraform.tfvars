@@ -60,6 +60,7 @@ include_external_dns_module = true
 include_metrics_server_module = true
 include_fluentbit_module = false
 include_prometheus_module = true
+include_loki_promtail_module = true
 
 include_cert_manager_module = true
 include_lets_encrypt_ca_module = true   

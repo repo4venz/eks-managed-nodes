@@ -59,4 +59,21 @@ module "kube-cost" {
   depends_on = [module.lets-encrypt, module.external-dns, module.prometheus]
 }
 
- 
+
+/*
+ # Add the loki-promtail module
+module "loki-promtail" {
+  count = var.include_loki_promtail_module ? 1 : 0
+
+  source = "../modules/loki-promtail"
+  k8s_cluster_name = local.k8s_cluster_name
+  environment = var.environment
+  
+  # Optional: customize these values as needed
+  # loki_chart_version = "6.32.0"
+  # promtail_chart_version = "6.17.0"
+  # storage_class_name = "gp3"
+  # loki_storage_size = "10Gi"
+  depends_on = [module.prometheus]
+}
+*/

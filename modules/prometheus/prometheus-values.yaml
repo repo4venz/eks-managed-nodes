@@ -128,6 +128,7 @@ prometheus:
   # Enable Grafana
 grafana:
   Enabled: true
+  namespace: ${k8s_namespace}  # Default namespace for Grafana
   initChownData:
       enabled: false  # Disable the permission-changing init container  (only applicable for EFS)
   adminUser: 'admin'  # Default admin user
@@ -159,6 +160,83 @@ grafana:
       nginx.ingress.kubernetes.io/proxy-connect-timeout: "60"
       nginx.ingress.kubernetes.io/proxy-read-timeout: "60"
       nginx.ingress.kubernetes.io/client-body-buffer-size: "8k"
+  # Configure Loki as default logs datasource
+  additionalDataSources:
+    - name: Loki
+      type: loki
+      url: http://loki.${k8s_namespace}.svc.cluster.local:3100
+      access: proxy
+      isDefault: true  # Make Loki the default for logs
+      jsonData:
+        maxLines: 10000
+        httpMethod: POST
+        timeout: 30s
+      version: 1
+  # Sidecar to auto-discover dashboards
+  sidecar:
+    datasources:
+      enabled: true
+      label: grafana_datasource
+
+# Enable Loki stacks. Loki Stack Configuration (if installing alongside)
+loki:
+  enabled: true
+  namespace: ${k8s_namespace}  # Default namespace for Grafana
+  stack:
+    enabled: true  # For Loki Stack v2.x
+    storage:
+      enabled: true
+      storageClassName: ${storage_class_name} #ebs-sc
+      accessModes: ["ReadWriteMany"]  #["ReadWriteOnce"] # for EBS use ReadWriteOnce and for EFS use ReadWriteMany
+      size: ${loki_storage_size}  # 5Gi  
+  # Configure Promtail
+  promtail:
+    enabled: true
+    config:
+      clients:
+        - url: http://loki.${k8s_namespace}.svc.cluster.local:3100/loki/api/v1/push
+      
+      # Basic scraping config for Kubernetes pods
+      scrape_configs:
+      - job_name: kubernetes-pods
+        kubernetes_sd_configs:
+          - role: pod
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_namespace]
+            target_label: namespace
+          - source_labels: [__meta_kubernetes_pod_name]
+            target_label: pod
+          - source_labels: [__meta_kubernetes_pod_container_name]
+            target_label: container
+          - action: replace
+            replacement: $1
+            separator: /
+            source_labels:
+              - __meta_kubernetes_namespace
+              - __meta_kubernetes_pod_name
+            target_label: job
+          - action: replace
+            source_labels: [__meta_kubernetes_namespace]
+            target_label: namespace
+          - action: replace
+            source_labels: [__meta_kubernetes_pod_name]
+            target_label: pod
+          - action: replace
+            source_labels: [__meta_kubernetes_pod_container_name]
+            target_label: container
+
+# ServiceMonitors for scraping
+serviceMonitor:
+  loki:
+    enabled: true
+    namespace: ${k8s_namespace}
+    endpoints:
+      - port: http-metrics
+        interval: 30s
+    selector:
+      matchLabels:
+        app.kubernetes.io/name: loki
+        app.kubernetes.io/instance: loki
 
   # Enable Alertmanager
 alertmanager:
@@ -172,3 +250,6 @@ alertmanager:
           resources:
             requests:
               storage: 2Gi
+
+
+

@@ -293,3 +293,9 @@ variable "mcpserver_chart_version" {
   default     = "0.1.0"
   
 }
+
+variable "include_loki_promtail_module" {
+  description = "Whether to include the Loki and Promtail module"
+  type        = bool
+  default     = true
+}

@@ -6,6 +6,7 @@ on:
       - 'post-build/**'
       - 'modules/external-dns/**'
       - 'modules/prometheus/**'
+      - 'modules/loki-promtail/**'
       - 'modules/external-secrets-controller/**'
       - 'modules/kube-cost/**'
       - 'modules/lets-encrypt/**'
