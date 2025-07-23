@@ -7,7 +7,7 @@ resource "aws_eks_node_group" "demo_eks_nodegroup_spot_llm" {
    count = var.required_gpu_spot_instances ? 1 : 0
 
   cluster_name    = aws_eks_cluster.demo_eks_cluster.name
-  node_group_name = substr("${var.cluster_name}-${var.environment}-nodegrp-spot-llm-gpu" ,0,64)
+  node_group_name = substr("${var.cluster_name}-nodegrp-spot-llm-gpu" ,0,64)
   node_role_arn   = aws_iam_role.eks_worker_nodes_role.arn
   instance_types =  var.gpu_spot_instance_types #["g5.2xlarge"] # GPU instance types  #"${var.llm_instance_types[0]}" # GPU instance types
 

@@ -6,7 +6,7 @@ resource "aws_eks_node_group" "demo_eks_nodegroup_spot" {
   count = var.required_spot_instances ? 1 : 0
 
   cluster_name    = aws_eks_cluster.demo_eks_cluster.name
-  node_group_name = substr("${var.cluster_name}-${var.environment}-nodes-group-spot",0,64)  
+  node_group_name = substr("${var.cluster_name}-nodes-group-spot",0,64)  
   node_role_arn   = aws_iam_role.eks_worker_nodes_role.arn
 
   subnet_ids =  var.private_subnets

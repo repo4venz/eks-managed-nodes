@@ -8,7 +8,7 @@ resource "aws_eks_node_group" "demo_eks_nodegroup_spot_high_pod" {
   for_each = var.spot_node_groups_customised_config
 
   cluster_name    = aws_eks_cluster.demo_eks_cluster.name
-  node_group_name = substr("${var.cluster_name}-${var.environment}-${replace(each.key, ".", "")}-nodegrp-spot-high-pods" ,0,64)
+  node_group_name = substr("${var.cluster_name}-${replace(each.key, ".", "")}-nodegrp-spot-high-pods" ,0,64)
   node_role_arn   = aws_iam_role.eks_worker_nodes_role.arn
 
   subnet_ids =  var.private_subnets
