@@ -98,14 +98,14 @@ resource "null_resource" "k8sgpt_create" {
     apiVersion = "core.k8sgpt.ai/v1alpha1"
     kind       = "K8sGPT"
     metadata = {
-      name      = "${var.ai_foundation_model_service}"
-      namespace = "${var.k8sgpt_namespace}"
+      name      = "${self.triggers.service_name}"
+      namespace = "${self.triggers.namespace}"
     }
     spec = {
       ai = {
         enabled  = true
-        model    = "${var.ai_foundation_model_name}"
-        region   = "${var.ai_foundation_model_region}"
+        model    = "${self.triggers.model_name}"
+        region   = "${self.triggers.region}"
         backend  = "amazonbedrock"
         language = "english"
       }
@@ -123,6 +123,12 @@ resource "null_resource" "k8sgpt_create" {
 
   triggers = {
     always_run = timestamp() # Forces re-run on every `apply`; can be improved
+    # Store the values we need in triggers
+    service_name  = var.ai_foundation_model_service
+    namespace     = var.k8sgpt_namespace
+    region        = var.ai_foundation_model_region
+    model_name    = var.ai_foundation_model_name
+    # Add any other values needed for cleanup
   }
   # Ensure this runs after the Helm release and pod identity association
    depends_on = [
@@ -133,15 +139,21 @@ resource "null_resource" "k8sgpt_create" {
 
 
 resource "null_resource" "k8sgpt_cleanup" {
+
+    triggers = {
+    # Store the values we need in triggers
+    service_name  = var.ai_foundation_model_service
+    namespace     = var.k8sgpt_namespace
+    # Add any other values needed for cleanup
+    always_run = timestamp()
+  }
+
   provisioner "local-exec" {
     when    = destroy
     command = <<EOT
-    kubectl patch k8sgpt ${var.ai_foundation_model_service} -n ${var.k8sgpt_namespace} -p '{\"metadata\":{\"finalizers\":[]}}' --type=merge --ignore-not-found 
-    kubectl delete k8sgpt ${var.ai_foundation_model_service} -n ${var.k8sgpt_namespace} --ignore-not-found
+    kubectl patch k8sgpt ${self.triggers.service_name} -n ${self.triggers.namespace} -p '{\"metadata\":{\"finalizers\":[]}}' --type=merge --ignore-not-found 
+    kubectl delete k8sgpt ${self.triggers.service_name} -n ${self.triggers.namespace} --ignore-not-found
   EOT
   }
-
-  triggers = {
-    always_run = timestamp()
-  }
+ 
 }
