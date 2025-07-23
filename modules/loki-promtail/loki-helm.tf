@@ -434,9 +434,7 @@ values = [
             s3forcepathstyle = true
           }
           # Moved shared_store to index_shipper
-          index_shipper = {
-            shared_store = "aws"
-          }
+          shared_store = "aws"
           tsdb_shipper = {
             active_index_directory = "/var/loki/index"
             cache_location         = "/var/loki/cache"
