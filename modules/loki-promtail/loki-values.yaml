@@ -5,9 +5,9 @@ singleBinary:
 
 serviceAccount:
   create: true
-  name: "loki-sa"   #${loki_service_account_name}
+  name: "loki-sa"
   annotations:
-    eks.amazonaws.com/role-arn: "arn:aws:iam::717949064245:role/eks-managed-clstr-dev-loki-role"  # ${loki_role_arn}
+    eks.amazonaws.com/role-arn: "arn:aws:iam::717949064245:role/eks-managed-clstr-dev-loki-role"
 
 serviceMonitor:
   enabled: true
@@ -18,8 +18,10 @@ loki:
   auth_enabled: false
   commonConfig:
     replication_factor: 1
-  limitsConfig:
-    allow_structureed_metadata: false
+  
+  config:
+    limits_config:
+      allow_structured_metadata: false
   
   schemaConfig:
     configs:
@@ -30,31 +32,19 @@ loki:
         index:
           prefix: "loki_index_"
           period: "24h"
-      - from: "2025-07-24"
-        store: "tsdb"
-        object_store: "aws"
-        schema: "v13"
-        index:
-          prefix: "loki_index_"
-          period: "24h"
   
-  storageConfig:
+  storageConfig:  # Changed from storageConfig to storage_config
     aws:
-      s3:  "s3://loki-storage-0b1303af"   #"s3://${s3_bucket_name}"
-      region: "eu-west-2"  #${aws_region}"
+      s3: "s3://loki-storage-0b1303af"
+      region: "eu-west-2"
       s3forcepathstyle: true
     boltdb_shipper:
       active_index_directory: "/var/loki/index"
       cache_location: "/var/loki/cache"
       cache_ttl: "24h"
       shared_store: "aws"
-  
-  storage:
-    bucketNames:
-      chunks:  "loki-storage-0b1303af"  #"${s3_bucket_name}"
-      ruler: "loki-storage-0b1303af"
-      admin: "loki-storage-0b1303af"
 
+# Distributed components (top level)
 distributor:
   replicas: 2
   maxUnavailable: 1
@@ -64,7 +54,7 @@ ingester:
   persistence:
     enabled: true
     size: "10Gi"
-    storageClass: "ebs-gp3-sc" #"${ebs_storage_class_name}"
+    storageClass: "ebs-gp3-sc"
 
 querier:
   replicas: 2
