@@ -161,6 +161,7 @@ resource "helm_release" "loki" {
 
     distributor = {
       replicas = 2
+      maxUnavailable = 1
     }
 
     ingester = {
