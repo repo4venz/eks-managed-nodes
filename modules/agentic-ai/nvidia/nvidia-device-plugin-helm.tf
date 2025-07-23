@@ -1,5 +1,21 @@
+/*
+The nvidia-device-plugin in Kubernetes is a DaemonSet provided by NVIDIA that enables GPU scheduling and management in your Kubernetes cluster.
+
+What it does:
+- When installed, the NVIDIA device plugin:
+- Detects NVIDIA GPUs on each node.
+- Registers GPU resources (nvidia.com/gpu) with the kubelet.
+- Allows Kubernetes to schedule pods requesting GPU resources.
+- Handles GPU resource allocation per container (e.g., 1 GPU per pod).
+- Ensures proper isolation and device access within containers.
+
+How it works:
+- The plugin runs as a DaemonSet: it runs on every node with a GPU.
+- It communicates with the kubelet using the Kubernetes Device Plugin API.
+- It does not install GPU drivers — you must install NVIDIA drivers separately on each GPU node.
+*/
+
 resource "helm_release" "nvidia_device_plugin" {
-  count = var.install_nvidia_device_plugin ? 1 : 0
 
   name       = "nvidia-device-plugin"
   repository = "https://nvidia.github.io/k8s-device-plugin"

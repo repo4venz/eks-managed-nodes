@@ -164,16 +164,18 @@ overrides_ondemand_node_scale_config = {
 ##################### Agentic AI LLM - EKS Worker Nodes Configs ####################
 
 nvidia_device_plugin_helm_version = "0.14.1"
-k8sgpt_helm_version = "0.2.22"  
+nvidia_dcgm_exporter_helm_version = "3.1.8" # Use the latest stable version 
+k8sgpt_helm_version = "0.2.22"
+
 
 # Agentic AI Module Configs
 include_mcp_server_module = false
 include_k8sGPT_module = true
-install_nvidia_device_plugin = false 
+include_nvidia_gpu_module = true
 
 # Agentic AI LLM Worker Nodes
 required_llm_ondemand_instances = false
-required_llm_spot_instances = false
+required_llm_spot_instances = true
 
 
 ####################  END of EKS Worker Nodes configs with VPC CNI ###################

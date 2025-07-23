@@ -25,12 +25,22 @@ module "k8sGPT-operator" {
   k8s_cluster_name = local.k8s_cluster_name
   # Helm chart configuration
   environment                       =  var.environment
-  nvidia_device_plugin_helm_version = var.nvidia_device_plugin_helm_version
   k8sgpt_helm_version               = var.k8sgpt_helm_version
-  install_nvidia_device_plugin      = var.install_nvidia_device_plugin
   
   #depends_on = [ module.external-dns, module.lets-encrypt]
 }
  
 
+ module "nvidia-plugin" {
+   count = var.include_nvidia_gpu_module ? 1 : 0
+
+  source = "../modules/agentic-ai/nvidia"
+  k8s_cluster_name = local.k8s_cluster_name
+  # Helm chart configuration
+  environment                       =  var.environment
+  nvidia_device_plugin_helm_version = var.nvidia_device_plugin_helm_version
+  nvidia_dcgm_exporter_helm_version = var.nvidia_dcgm_exporter_helm_version
+  
+  #depends_on = [ module.external-dns, module.lets-encrypt]
+}
  
