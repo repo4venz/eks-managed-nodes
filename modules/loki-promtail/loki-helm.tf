@@ -400,42 +400,20 @@ resource "helm_release" "loki" {
   cleanup_on_fail  = true
   timeout          = 300
 
-  values = [
-    yamlencode({
-      deploymentMode = "Distributed"
+values = [
+  yamlencode({
+    deploymentMode = "Distributed"
+    # ... (other settings remain the same) ...
+    loki = {
+      auth_enabled = false
+      commonConfig = { replication_factor = 1 }
 
-      singleBinary = {
-        enabled = false
-      }
-
-      serviceAccount = {
-        create = true
-        name   = var.loki_service_account_name
-        annotations = {
-          "eks.amazonaws.com/role-arn" = aws_iam_role.loki_role.arn
+      # Structured configuration replaces both 'config' string and separate blocks
+      structuredConfig = {
+        limits_config = {
+          allow_structured_metadata = true
         }
-      }
-
-      serviceMonitor = {
-        enabled = true
-        additionalLabels = {
-          release = "kube-prometheus-stack"
-        }
-      }
-
-      loki = {
-        auth_enabled = false
-
-        commonConfig = {
-          replication_factor = 1
-        }
-
-        config = <<-EOT
-          limits_config:
-            allow_structured_metadata: true
-        EOT
-
-        schemaConfig = {
+        schema_config = {
           configs = [
             {
               from         = "2024-01-01"
@@ -449,31 +427,30 @@ resource "helm_release" "loki" {
             }
           ]
         }
-
-        storageConfig = {
+        storage_config = {
           aws = {
             s3               = "s3://${aws_s3_bucket.loki_storage.id}"
             region           = data.aws_region.current.id
             s3forcepathstyle = true
           }
-
           tsdb_shipper = {
             active_index_directory = "/var/loki/index"
             cache_location         = "/var/loki/cache"
             shared_store           = "aws"
           }
         }
-
-        storage = {
-          bucketNames = {
-            chunks = aws_s3_bucket.loki_storage.id
-            ruler  = aws_s3_bucket.loki_storage.id
-            admin  = aws_s3_bucket.loki_storage.id
-          }
-        }
       }
 
-      distributor = {
+      # Keep storage settings for Helm chart internals
+      storage = {
+        bucketNames = {
+          chunks = aws_s3_bucket.loki_storage.id
+          ruler  = aws_s3_bucket.loki_storage.id
+          admin  = aws_s3_bucket.loki_storage.id
+        }
+      }
+    }
+    distributor = {
         replicas       = 2
         maxUnavailable = 1
       }
@@ -548,3 +525,5 @@ resource "helm_release" "loki" {
     aws_s3_bucket.loki_storage
   ]
 }
+
+
