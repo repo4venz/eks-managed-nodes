@@ -359,7 +359,7 @@ resource "helm_release" "loki" {
     ]
 }
 */
- 
+ /*
 resource "helm_release" "loki" {
   name             = "loki"
   repository       = "https://grafana.github.io/helm-charts"
@@ -388,9 +388,8 @@ resource "helm_release" "loki" {
   ]
 }
 
+*/
 
-
-/*
 resource "helm_release" "loki" {
   name             = "loki"
   repository       = "https://grafana.github.io/helm-charts"
@@ -427,24 +426,19 @@ resource "helm_release" "loki" {
       loki = {
         auth_enabled = false
 
-        common_config = {
+        commonConfig = {
           replication_factor = 1
         }
 
-        schemaConfig = {
+        config = <<-EOT
+          limits_config:
+            allow_structured_metadata: true
+        EOT
+
+        schema_config = {
           configs = [
             {
-              from         = "2020-10-24"
-              store        = "boltdb-shipper"
-              object_store = "aws"
-              schema       = "v11"
-              index = {
-                prefix = "loki_index_"
-                period = "24h"
-              }
-            },
-            {
-              from         = "2025-07-24"
+              from         = "2024-01-01"
               store        = "tsdb"
               object_store = "aws"
               schema       = "v13"
@@ -456,22 +450,16 @@ resource "helm_release" "loki" {
           ]
         }
 
-        storageConfig = {
+        storage_config = {
           aws = {
             s3               = "s3://${aws_s3_bucket.loki_storage.id}"
             region           = data.aws_region.current.id
             s3forcepathstyle = true
           }
 
-          boltdb_shipper = {
+          tsdb_shipper = {
             active_index_directory = "/var/loki/index"
             cache_location         = "/var/loki/cache"
-            cache_ttl              = "24h"
-            shared_store           = "aws"
-          }
-
-          tsdb_shipper = {
-            active_index_directory = "/var/loki/tsdb-index"
             shared_store           = "aws"
           }
         }
@@ -482,11 +470,6 @@ resource "helm_release" "loki" {
             ruler  = aws_s3_bucket.loki_storage.id
             admin  = aws_s3_bucket.loki_storage.id
           }
-        }
-
-        limits_config = {
-          retention_period             = "168h"
-          allow_structured_metadata   = true
         }
       }
 
@@ -565,5 +548,3 @@ resource "helm_release" "loki" {
     aws_s3_bucket.loki_storage
   ]
 }
-*/
- 
