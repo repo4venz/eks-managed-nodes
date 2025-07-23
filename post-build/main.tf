@@ -60,7 +60,7 @@ module "kube-cost" {
 }
 
 
-/*
+ 
  # Add the loki-promtail module
 module "loki-promtail" {
   count = var.include_loki_promtail_module ? 1 : 0
@@ -76,4 +76,4 @@ module "loki-promtail" {
   # loki_storage_size = "10Gi"
   depends_on = [module.prometheus]
 }
-*/
+ 

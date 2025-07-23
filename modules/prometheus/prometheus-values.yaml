@@ -127,7 +127,7 @@ prometheus:
 
   # Enable Grafana
 grafana:
-  Enabled: true
+  enabled: true
   namespace: ${k8s_namespace}  # Default namespace for Grafana
   initChownData:
       enabled: false  # Disable the permission-changing init container  (only applicable for EFS)
@@ -178,26 +178,24 @@ grafana:
       enabled: true
       label: grafana_datasource
 
-# Enable Loki stacks. Loki Stack Configuration (if installing alongside)
+# Enable Loki stack
 loki:
   enabled: true
-  namespace: ${k8s_namespace}  # Default namespace for Grafana
-  stack:
-    enabled: true  # For Loki Stack v2.x
-    storage:
-      enabled: true
-      storageClassName: ${storage_class_name} #ebs-sc
-      accessModes: ["ReadWriteMany"]  #["ReadWriteOnce"] # for EBS use ReadWriteOnce and for EFS use ReadWriteMany
-      size: ${loki_storage_size}  # 5Gi  
-  # Configure Promtail
-  promtail:
+  namespace: ${k8s_namespace}  # Default namespace for Loki
+  persistence:
     enabled: true
-    config:
-      clients:
-        - url: http://loki.${k8s_namespace}.svc.cluster.local:3100/loki/api/v1/push
-      
-      # Basic scraping config for Kubernetes pods
-      scrape_configs:
+    storageClassName: ${storage_class_name}
+    accessModes: ["ReadWriteMany"]
+    size: ${loki_storage_size}
+
+# Configure Promtail
+promtail:
+  enabled: true
+  namespace: ${k8s_namespace}  # Default namespace for Promtail
+  config:
+    clients:
+      - url: http://loki.${k8s_namespace}.svc.cluster.local:3100/loki/api/v1/push
+    scrape_configs:
       - job_name: kubernetes-pods
         kubernetes_sd_configs:
           - role: pod
