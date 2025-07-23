@@ -39,7 +39,7 @@ resource "aws_eks_node_group" "demo_eks_nodegroup_ondemand_llm" {
   taint {
     key    = "nvidia.com/gpu"
     value  = "true"
-    effect = "NoSchedule"
+    effect = "NO_SCHEDULE"
   } 
 
   labels = {

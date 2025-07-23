@@ -41,7 +41,7 @@ resource "helm_release" "nvidia_device_plugin" {
         {
           key      = "nvidia.com/gpu"
           operator = "Exists"
-          effect   = "NoSchedule"
+          effect   = "NO_SCHEDULE"
         } /*,
         {
           operator = "Exists" # tolerates all

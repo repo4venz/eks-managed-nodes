@@ -30,6 +30,16 @@ resource "helm_release" "nvidia_dcgm_exporter" {
         namespace = var.prometheus_namespace
         interval  = "30s"
       }
+      nodeSelector = {
+        "nvidia.com/gpu.present" = "true"
+      }
+      tolerations = [
+        {
+          key      = "nvidia.com/gpu"
+          operator = "Exists"
+          effect   = "NO_SCHEDULE"
+        } 
+      ]
     })
   ]
 
