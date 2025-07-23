@@ -63,3 +63,15 @@ variable "prometheus_role_arn" {
   type        = string
   default     = ""
 }
+
+variable "loki_storage_size" {
+  description = "Size of persistent volume for Loki"
+  type        = string
+  default     = "10Gi"
+}
+
+variable "loki_storage_bucket" {
+  description = "S3 bucket name for Loki storage (optional)"
+  type        = string
+  default     = ""
+}
