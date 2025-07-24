@@ -103,7 +103,7 @@ values = [
 }
 
 
-
+/*
 resource "time_sleep" "wait_120_seconds" {
   create_duration = "120s"  # 2 minutes
 
@@ -158,3 +158,4 @@ resource "kubernetes_ingress_v1" "kubecost" {
     time_sleep.wait_120_seconds
   ]
 }
+*/

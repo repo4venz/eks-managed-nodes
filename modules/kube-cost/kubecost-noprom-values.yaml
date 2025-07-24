@@ -84,8 +84,10 @@ grafana:
   # Add persistent storage
   persistence:
     enabled: true
-    storageClassName: gp2
-    size: 10Gi
+    storageClassName: ${storage_class}
+    size: ${storage_size}
+    accessModes: ["ReadWriteMany"]
+    
   # Add Ingress
   ingress:
     enabled: true
