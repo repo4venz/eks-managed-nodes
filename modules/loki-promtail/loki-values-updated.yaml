@@ -51,9 +51,9 @@ loki:
       # s3forcepathstyle: false
 
 serviceAccount:
- create: true
- annotations:
-   ${loki_role_arn} # The service role you created
+  create: true
+  name: ${loki_service_account_name} # The service account name you created  
+  annotations: ${loki_role_arn} # The service role you created
 
 deploymentMode: Distributed
 
