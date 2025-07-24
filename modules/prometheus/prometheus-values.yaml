@@ -163,7 +163,7 @@ grafana:
     datasources.yaml:
       apiVersion: 1
       datasources:
-        - name: Prometheus-1
+        - name: Prometheus-Operated
           type: prometheus
           access: proxy
           url: http://prometheus-operated.${k8s_namespace}.svc.cluster.local:9090

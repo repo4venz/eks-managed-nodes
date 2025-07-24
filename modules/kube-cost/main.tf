@@ -15,50 +15,68 @@ resource "helm_release" "kubecost" {
   
 values = [
   yamlencode({
-    global = { clusterName = var.k8s_cluster_name }
-    
+    global = {
+      clusterName = var.k8s_cluster_name
+    }
+
     serviceAccount = {
       create = true
-      name = var.service_account_name
-      annotations = { "eks.amazonaws.com/role-arn" = aws_iam_role.kubecost.arn }
+      name   = var.service_account_name
+      annotations = {
+        "eks.amazonaws.com/role-arn" = aws_iam_role.kubecost.arn
+      }
     }
 
     kubecostProductConfigs = {
-      clusterName = var.k8s_cluster_name
-      awsAthenaProjectID = data.aws_caller_identity.current.account_id
-      awsRegion = data.aws_region.current.id
-      
-      # Storage settings
-      metricResolution = "1m"
-      etlDailyStoreDurationDays = "30"
+      clusterName            = var.k8s_cluster_name
+      awsAthenaProjectID     = data.aws_caller_identity.current.account_id
+      awsRegion              = data.aws_region.current.id
+      metricResolution       = "1m"
+      etlDailyStoreDurationDays  = "30"
       etlHourlyStoreDurationHours = "720"
-      
-      # Prometheus config
+
       prometheus = {
         server = {
           persistentVolume = {
-            enabled = true
-            size = var.storage_size
+            enabled      = true
+            size         = var.storage_size
             storageClass = var.storage_class
-            accessModes = ["ReadWriteMany"]  #["ReadWriteOnce"]  # for EBS use ReadWriteOnce and for EFS use ReadWriteMany
+            accessModes  = ["ReadWriteMany"]
           }
         }
-      }   
-      # Service and resources
-      service = { type = "ClusterIP" }
-      resources = {
-        requests = { cpu = "200m", memory = "512Mi" }
-        limits = { cpu = "1000m", memory = "2Gi" }
       }
-      
-      # Features
-      networkCosts = { enabled = true }
-      serviceMonitor = { enabled = true, namespace = var.prometheus_namespace }
+
+      service = {
+        type = "ClusterIP"
+      }
+
+      resources = {
+        requests = {
+          cpu    = "200m"
+          memory = "512Mi"
+        }
+        limits = {
+          cpu    = "1000m"
+          memory = "2Gi"
+        }
+      }
+
+      networkCosts = {
+        enabled = true
+      }
+
+      serviceMonitor = {
+        enabled = true
+        additionalLabels = {
+          release = "kube-prometheus-stack"  # must match kube-prometheus-stack label
+        }
+        interval = "30s"
+      }
     }
   })
-  
-  #,file("${path.module}/kubecost-advanced-values.yaml")
 ]
+
+ 
   depends_on = [
     aws_iam_role_policy_attachment.kubecost,
     aws_iam_role_policy_attachment.kubecost_custom
