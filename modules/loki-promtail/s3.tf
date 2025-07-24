@@ -36,7 +36,7 @@ resource "aws_s3_bucket_public_access_block" "loki_block_public" {
 
 resource "null_resource" "s3_force_delete" {
   triggers = {
-    bucket_name = aws_s3_bucket.loki_storage.name  # Trigger re-creation if bucket name changes
+    bucket_name = aws_s3_bucket.loki_storage.id  # Trigger re-creation if bucket name changes
     region_name = data.aws_region.current.id
   }
 
