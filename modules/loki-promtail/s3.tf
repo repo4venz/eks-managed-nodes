@@ -31,3 +31,31 @@ resource "aws_s3_bucket_public_access_block" "loki_block_public" {
   ignore_public_acls      = true
   restrict_public_buckets = true
 }
+
+
+
+resource "null_resource" "s3_force_delete" {
+  triggers = {
+    bucket_name = aws_s3_bucket.loki_storage.name  # Trigger re-creation if bucket name changes
+  }
+
+  provisioner "local-exec" {
+    when    = destroy
+    command = <<EOT
+      # Check if bucket exists first
+      if aws s3 ls "s3://${self.triggers.bucket_name}" --no-sign-request 2>&1 | grep -q 'NoSuchBucket'; then
+        echo "Bucket ${self.triggers.bucket_name} does not exist"
+        exit 0
+      fi
+
+      # Empty and delete bucket
+      aws s3 rm "s3://${self.triggers.bucket_name}" --recursive && \
+      aws s3 rb "s3://${self.triggers.bucket_name}" --force
+    EOT
+
+    environment = {
+      AWS_DEFAULT_REGION = aws_region.current.id
+    }
+  }
+  depends_on = [ aws_s3_bucket.loki_storage ]
+}

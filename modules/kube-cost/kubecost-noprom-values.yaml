@@ -1,0 +1,107 @@
+global:
+  clusterName: ${k8s_cluster_name}
+  prometheus:
+    enabled: false  # Disable bundled Prometheus
+    fqdn: http://kube-prometheus-kube-prome-prometheus.${prometheus_namespace}:9090 # Existing Prometheus
+
+serviceAccount:
+  create: true
+  name: ${service_account_name}
+  annotations:
+    eks.amazonaws.com/role-arn: ${kubecost_iam_role_arn}
+
+# Main Kubecost configuration
+kubecostProductConfigs:
+  clusterName: ${k8s_cluster_name}  # Must match global.clusterName
+  prometheus:
+    internal:  # Configure connection to existing Prometheus
+      enabled: false
+      service: prometheus-service
+      namespace: monitoring
+    # Remove storage settings since using existing Prometheus
+
+  model:
+    enabled: true
+    awsAthenaProjectID: ${aws_account_id}
+    awsRegion: ${aws_region}
+
+  networkCosts:
+    enabled: true
+
+  # Cloud integration via IRSA (recommended)
+  cloudIntegrationSecret: "cloud-integration"  # Reference to secret
+
+  # ETL configuration moved to cost-model env
+  # (keep this section clean)
+
+# Resource configuration
+kubecostFrontend:
+  resources:
+    requests:
+      cpu: 200m
+      memory: 512Mi
+    limits:
+      cpu: 1000m
+      memory: 2Gi
+
+kubecostCostModel:
+  resources:
+    requests:
+      cpu: 200m
+      memory: 512Mi
+    limits:
+      cpu: 1000m
+      memory: 2Gi
+  extraEnv:
+    - name: METRIC_RESOLUTION
+      value: "1m"
+    - name: ETL_DAILY_STORE_DURATION_DAYS
+      value: "30"
+    - name: ETL_HOURLY_STORE_DURATION_HOURS
+      value: "720"
+
+# Service configuration
+service:
+  type: ClusterIP
+  annotations: {}
+
+# ServiceMonitor configuration
+serviceMonitor:
+  enabled: true
+  namespace: monitoring  # Create in same ns as Prometheus
+  interval: 30s
+  additionalLabels:
+    release: "kube-prometheus"
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: 30s
+
+grafana:
+  enabled: true
+  adminPassword: "securepassword"  # Change this!
+    
+  # Add persistent storage
+  persistence:
+    enabled: true
+    storageClassName: gp2
+    size: 10Gi
+  # Add Ingress
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      cert-manager.io/cluster-issuer: letsencrypt-${environment}
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+      nginx.ingress.kubernetes.io/backend-protocol: HTTP
+      external-dns.alpha.kubernetes.io/hostname: ${ingress_host}
+      nginx.ingress.kubernetes.io/rewrite-target: /  
+    hosts:
+      - ${ingress_host}
+    path: /
+    pathType: Prefix
+    tls:
+      - hosts:
+          - ${ingress_host}
+        secretName: ${ingress_host}-tls

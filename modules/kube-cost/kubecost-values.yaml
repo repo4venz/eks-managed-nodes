@@ -1,0 +1,75 @@
+global:
+  clusterName: ${k8s_cluster_name}  
+
+serviceAccount:
+  create: true
+  name: ${service_account_name}
+  annotations:
+    eks.amazonaws.com/role-arn: ${kubecost_iam_role_arn}  
+
+# CORRECTED STRUCTURE BELOW
+kubecostProductConfigs:
+  # Cluster configuration
+  clusterName: ${k8s_cluster_name} 
+  
+  # Cost model configuration
+  model:
+    enabled: true
+    awsAthenaProjectID: ${aws_account_id}
+    awsRegion: ${aws_region}
+  
+  # Network costs
+  networkCosts:
+    enabled: true
+
+  # Cloud integration
+  cloudIntegrationSecret: ""  # Use this instead of inline credentials
+
+# Prometheus configuration (TOP-LEVEL KEY)
+prometheus:
+  enabled: true
+  server:
+    persistentVolume:
+      enabled: true
+      storageClass: ${storage_class}
+      size: ${storage_size}
+      accessModes: ["ReadWriteMany"]
+
+# Service configuration (TOP-LEVEL KEY)
+service:
+  type: ClusterIP
+  annotations: {}
+
+# Resource configuration (PER-COMPONENT)
+kubecostFrontend:
+  resources:
+    requests:
+      cpu: 200m
+      memory: 512Mi
+    limits:
+      cpu: 1000m
+      memory: 2Gi
+
+kubecostCostModel:
+  resources:
+    requests:
+      cpu: 200m
+      memory: 512Mi
+    limits:
+      cpu: 1000m
+      memory: 2Gi
+  # ETL settings belong HERE
+  extraEnv:
+    - name: METRIC_RESOLUTION
+      value: "1m"
+    - name: ETL_DAILY_STORE_DURATION_DAYS
+      value: "30"
+    - name: ETL_HOURLY_STORE_DURATION_HOURS
+      value: "720"
+
+# ServiceMonitor (TOP-LEVEL KEY)
+serviceMonitor:
+  enabled: true
+  interval: 30s
+  additionalLabels:
+    release: "kube-prometheus"

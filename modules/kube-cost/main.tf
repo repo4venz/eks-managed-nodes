@@ -13,6 +13,22 @@ resource "helm_release" "kubecost" {
   cleanup_on_fail  = true
   timeout    = 900
   
+    # Use a values file instead of inline values
+  values = [
+    templatefile("${path.module}/kubecost-values.yaml", {
+      k8s_cluster_name = var.k8s_cluster_name
+      service_account_name = var.service_account_name
+      kubecost_iam_role_arn = aws_iam_role.kubecost.arn
+      aws_account_id = data.aws_caller_identity.current.account_id
+      storage_class = var.storage_class
+      storage_size = var.storage_size
+      ingress_host  = var.ingress_host
+      environment = var.environment
+      prometheus_namespace  = var.prometheus_namespace  
+    })
+  ]
+
+  /*
 values = [
   yamlencode({
     global = {
@@ -68,7 +84,7 @@ values = [
       serviceMonitor = {
         enabled = true
         additionalLabels = {
-          release = "kube-prometheus-stack"  # must match kube-prometheus-stack label
+          release = "kube-prometheus"  # must match kube-prometheus label
         }
         interval = "30s"
       }
@@ -76,74 +92,15 @@ values = [
   })
 ]
 
- 
-  depends_on = [
-    aws_iam_role_policy_attachment.kubecost,
-    aws_iam_role_policy_attachment.kubecost_custom
-    ]
-}
- 
-
-
-/*# Kubecost Helm Release ( Use existing Prometheus but own kube-cost bunddled Graphana Server)
-
-#http://prometheus-operated.monitoring.svc.cluster.local:9090 (Existing Prometheus Service)
-
-# Kubecost Helm Release ( Use existing Prometheus but own kube-cost bunddled Graphana Server)
-resource "helm_release" "kubecost" {
-  name       = "kubecost"
-  repository = "https://kubecost.github.io/cost-analyzer/"
-  chart      = "cost-analyzer"
-  version    = var.kubecost_chart_version
-  namespace  = var.namespace
-  create_namespace = true
-  atomic           = true
-  cleanup_on_fail  = true
-  timeout    = 900
-  
-values = [
-  yamlencode({
-    global = {
-      clusterName = var.k8s_cluster_name
-      prometheus  = {
-        url = "http://prometheus-operated.${var.prometheus_namespace}.svc.cluster.local:9090" # Use existing Prometheus Service
-        enabled = false
-      }
-    }
-    
-    serviceAccount = {
-      create = true
-      name   = var.service_account_name
-      annotations = {
-        "eks.amazonaws.com/role-arn" = aws_iam_role.kubecost.arn
-      }
-    }
-    
-    kubecostProductConfigs = {
-      clusterName       = var.k8s_cluster_name
-      awsAthenaProjectID = data.aws_caller_identity.current.account_id
-      awsRegion        = data.aws_region.current.id
-    }
-    
-    prometheus = {
-      enabled = false # Disable internal Prometheus  # Disable Kubecost's bundled Prometheus
-      # Use existing Prometheus Service
-      fqdn = "http://prometheus-operated.${var.prometheus_namespace}.svc.cluster.local"
-      service = {
-        port = 9090
-      }
-      operator = {
-        enabled = false # Disable Prometheus Operator
-      }  
-    }
-  })
-]
-  depends_on = [
-    aws_iam_role_policy_attachment.kubecost,
-    aws_iam_role_policy_attachment.kubecost_custom
-    ]
-}
 */
+
+ 
+  depends_on = [
+    aws_iam_role_policy_attachment.kubecost,
+    aws_iam_role_policy_attachment.kubecost_custom
+    ]
+}
+
 
 
 resource "time_sleep" "wait_120_seconds" {
@@ -200,43 +157,3 @@ resource "kubernetes_ingress_v1" "kubecost" {
     time_sleep.wait_120_seconds
   ]
 }
-
- 
-
-/*
-
-### This is for Vertical Pod Autoscaler (VPA) for Kubecost
-# Vertical Pod Autoscaler (VPA) for Kubecost
-# This is an example configuration for VPA, adjust resource limits as needed
-# Only for testing purpose, not recommended for production
-resource "kubernetes_vertical_pod_autoscaler" "kubecost_vpa" {
-  metadata {
-    name = "kubecost-vpa"
-    namespace = "kubecost"
-  }
-  spec {
-    target_ref {
-      api_version = "apps/v1"
-      kind = "Deployment"
-      name = "kubecost-cost-analyzer"
-    }
-    update_policy {
-      update_mode = "Auto"
-    }
-    resource_policy {
-      container_policies {
-        container_name = "cost-analyzer"
-        min_allowed = {
-          cpu = "200m"
-          memory = "512Mi"
-        }
-        max_allowed = {
-          cpu = "2"
-          memory = "8Gi"
-        }
-      }
-    }
-  }
-}
-
-*/
