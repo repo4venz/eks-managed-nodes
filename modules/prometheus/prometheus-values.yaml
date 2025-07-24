@@ -24,6 +24,9 @@ prometheus-node-exporter:
             values: [amd64, arm64]  # Support both amd64 and arm64 architectures
           - key: nvidia.com/gpu
             operator: Exists
+          - key: "nvidia.com/gpu.present"
+            operator: In
+            values: ["true"]
   hostRootFs:
     enabled: true  # Enable host root filesystem metrics (exposes disk usage, inode stats, etc.; ensure only trusted users can access these metrics to avoid leaking node-level information)
   tolerations:
@@ -160,6 +163,15 @@ grafana:
     datasources.yaml:
       apiVersion: 1
       datasources:
+        - name: Prometheus-1
+          type: prometheus
+          access: proxy
+          url: http://prometheus-operated.${k8s_namespace}.svc.cluster.local:9090
+          isDefault: false
+          jsonData:
+            timeInterval: "5s"
+            tlsSkipVerify: true
+
         - name: Loki
           type: loki
           access: proxy
