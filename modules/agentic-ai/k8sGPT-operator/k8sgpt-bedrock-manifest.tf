@@ -24,7 +24,7 @@ kubectl apply -f k8sgpt-bedrock.yaml
 
 */
 
-/*
+
 resource "null_resource" "k8sgpt_create" {
   # This resource creates the K8sGPT instance using kubectl
   provisioner "local-exec" {
@@ -88,4 +88,3 @@ resource "null_resource" "k8sgpt_cleanup" {
  
 }
 
-*/

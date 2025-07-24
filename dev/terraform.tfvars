@@ -171,8 +171,8 @@ k8sgpt_helm_version = "0.2.22"
 
 # Agentic AI Module Configs
 include_mcp_server_module = false
-include_k8sGPT_module = true
-include_nvidia_gpu_module = true
+include_k8sGPT_module = false
+include_nvidia_gpu_module = false
 
 # Agentic AI LLM Worker Nodes
 required_gpu_ondemand_instances = true
