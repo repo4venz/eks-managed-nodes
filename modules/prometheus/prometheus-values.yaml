@@ -22,6 +22,8 @@ prometheus-node-exporter:
           - key: kubernetes.io/arch
             operator: In
             values: [amd64, arm64]  # Support both amd64 and arm64 architectures
+          - key: nvidia.com/gpu
+            operator: Exists
   hostRootFs:
     enabled: true  # Enable host root filesystem metrics (exposes disk usage, inode stats, etc.; ensure only trusted users can access these metrics to avoid leaking node-level information)
   tolerations:
@@ -30,6 +32,8 @@ prometheus-node-exporter:
       operator: "Equal"
       value: "spot"
       effect: "NoSchedule"
+    - key: nvidia.com/gpu
+      operator: Exists
 
 # Configure Prometheus and Grafana
 # This section configures Prometheus and Grafana for monitoring and visualization
@@ -156,15 +160,6 @@ grafana:
     datasources.yaml:
       apiVersion: 1
       datasources:
-        - name: Prometheus
-          type: prometheus
-          access: proxy
-          url: http://prometheus-operated.${k8s_namespace}.svc.cluster.local:9090
-          isDefault: false
-          jsonData:
-            timeInterval: "5s"
-            tlsSkipVerify: true
-
         - name: Loki
           type: loki
           access: proxy
