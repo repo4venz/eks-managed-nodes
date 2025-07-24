@@ -27,23 +27,6 @@ extraVolumes:
     hostPath:
       path: /var/log/nginx
 
-extraVolumeMounts:
-  - name: varlog
-    mountPath: /var/log
-    readOnly: true
-  - name: journal
-    mountPath: /var/log/journal
-    readOnly: true
-  - name: runlog
-    mountPath: /run/log/journal
-    readOnly: true
-  - name: dockercontainers
-    mountPath: /var/lib/docker/containers
-    readOnly: true
-  - name: nginxlogs
-    mountPath: /var/log/nginx
-    readOnly: true
-
 # Promtail config for Loki scraping
 config:
   server:
