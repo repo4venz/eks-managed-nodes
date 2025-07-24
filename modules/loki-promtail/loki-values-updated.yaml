@@ -11,7 +11,7 @@ loki:
    storage_config:
      aws:
        region: "eu-west-2" # for example, eu-west-2  
-       bucketnames: "loki-storage" # Your actual S3 bucket name, for example, loki-aws-dev-chunks
+       bucketnames: ${s3_bucket_name} # Your actual S3 bucket name, for example, loki-aws-dev-chunks
        s3forcepathstyle: false
    ingester:
        chunk_encoding: snappy

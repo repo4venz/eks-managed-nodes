@@ -175,7 +175,7 @@ include_k8sGPT_module = false
 include_nvidia_gpu_module = false
 
 # Agentic AI LLM Worker Nodes
-required_gpu_ondemand_instances = true
+required_gpu_ondemand_instances = false
 required_gpu_spot_instances = false
 
 
