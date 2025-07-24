@@ -14,7 +14,7 @@ resource "helm_release" "loki" {
   version          = var.loki_chart_version
   namespace        = var.k8s_namespace
   create_namespace = true
-  atomic           = false  # Set to false to debug installation issues
+  atomic           = true  # Set to false to debug installation issues
   cleanup_on_fail  = true
   timeout          = 300
 

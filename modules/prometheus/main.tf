@@ -9,20 +9,9 @@ resource "helm_release" "prometheus" {
   create_namespace = true
   atomic           = true
   cleanup_on_fail  = true
-  timeout    = 900
+  timeout    = 300
 
   values = [
-    /*yamlencode({
-      serviceAccounts = {
-        server = {
-          name        = "${var.prometheus_service_account_name}"
-          annotations = {
-            "eks.amazonaws.com/role-arn" = aws_iam_role.prometheus_role.arn
-          }
-        }
-      } 
-    }),
-    file("${path.module}/prometheus-values.yaml")*/
     data.template_file.prometheus_values.rendered
   ]
 

@@ -68,4 +68,9 @@ variable "efs_storage_class_name" {
   default     = "efs-sc"
 }
 
- 
+
+variable prometheus_namespace {
+  description = "Kubernetes namespace for Prometheus"
+  type        = string
+  default     = "monitoring"
+}

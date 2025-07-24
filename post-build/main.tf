@@ -30,10 +30,8 @@ module "loki-promtail" {
   environment = var.environment
   
   # Optional: customize these values as needed
-  # loki_chart_version = "6.32.0"
-  # promtail_chart_version = "6.17.0"
-  # storage_class_name = "gp3"
-  # loki_storage_size = "10Gi"
+  loki_chart_version = "6.32.0"
+  promtail_chart_version = "6.17.0"
   depends_on = [module.external-dns]
 }
  
