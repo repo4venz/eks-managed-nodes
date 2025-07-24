@@ -53,7 +53,8 @@ loki:
 serviceAccount:
   create: true
   name: ${loki_service_account_name} # The service account name you created  
-  annotations: ${loki_role_arn} # The service role you created
+  annotations: 
+      "eks.amazonaws.com/role-arn": ${loki_role_arn} # The service role you created   
 
 deploymentMode: Distributed
 
@@ -94,7 +95,8 @@ ruler:
 
 
 gateway:
-  enabled: false
+  enabled: true
+  replicas: 2
 
 # Enable minio for storage
 minio:
