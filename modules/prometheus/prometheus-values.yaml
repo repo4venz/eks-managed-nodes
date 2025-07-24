@@ -17,7 +17,8 @@ prometheus-node-exporter:
           - key: kubernetes.io/os  # Only Linux nodes
             operator: In
             values: [linux]
-          - operator: Exists  # Any node with this label
+          - key: kubernetes.io/os 
+            operator: Exists  # Any node with this label
           - key: kubernetes.io/arch
             operator: In
             values: [amd64, arm64]  # Support both amd64 and arm64 architectures

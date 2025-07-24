@@ -18,6 +18,9 @@ aws_admin_role_name          = "suvendu-super-admin-role"
 aws_admin_user_name          = "suvendu_admin_user"
 #github_runner_base_path      = "/home/runner/"
 k8s_observability_namespace  = "monitoring"
+
+
+
 nginx_ingress_chart_version  = "4.12.3"
 fluentbit_chart_version      = "0.1.35"
 metrics_server_chart_version = "3.12.1"
@@ -29,6 +32,8 @@ ebs_csi_helm_chart_version = "2.46.0"
 efs_csi_helm_chart_version = "2.4.0"
 mcpserver_chart_version     = "0.1.0"
 external_dns_chart_version = "1.17.0"
+loki_chart_version = "6.32.0"
+promtail_chart_version = "6.17.0"
 
 
 app_namespace        =  ["myapps1", "myapps2"]

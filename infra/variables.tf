@@ -425,3 +425,18 @@ variable required_gpu_spot_instances {
   type        = bool
   default     = false
 }
+
+variable loki_chart_version {
+  type        = string
+  description = "Helm chart version for Loki"
+  default     = "6.32.0"
+}
+
+  
+variable promtail_chart_version  {
+    type        = string
+  description = "Helm chart version for Promtail"
+  default     = "6.17.0"
+}
+
+

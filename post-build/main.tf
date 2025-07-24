@@ -28,6 +28,7 @@ module "loki-promtail" {
   source = "../modules/loki-promtail"
   k8s_cluster_name = local.k8s_cluster_name
   environment = var.environment
+  prometheus_namespace = var.k8s_observability_namespace
   
   # Optional: customize these values as needed
   loki_chart_version = "6.32.0"
@@ -68,6 +69,7 @@ module "kube-cost" {
   kubecost_chart_version    =  var.kubecost_chart_version
   environment               =  var.environment
   ingress_host              =  "kubecost.${var.public_domain_name}"
+  prometheus_namespace = var.k8s_observability_namespace
 
   depends_on = [module.lets-encrypt, module.external-dns, module.prometheus]
 }
