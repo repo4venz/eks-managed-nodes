@@ -79,9 +79,4 @@ variable prometheus_namespace {
   type        = string
   default     = "monitoring"
 }
-
-variable "prometheus_namespace" {
-  description = "Kubernetes namespace where Prometheus is deployed"
-  type        = string
-  default     = "monitoring"
-}
+ 
