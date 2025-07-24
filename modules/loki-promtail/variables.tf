@@ -21,11 +21,14 @@ variable "promtail_chart_version" {
   default     = "6.17.0"
 }
 
+/*
 variable "loki_service_account_name" {
   description = "Service account name for Loki"
   type        = string
   default     = "loki-sa"
 }
+
+*/
 
 variable "promtail_service_account_name" {
   description = "Service account name for Promtail"
