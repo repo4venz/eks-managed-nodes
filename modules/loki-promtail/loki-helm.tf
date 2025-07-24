@@ -378,7 +378,6 @@ resource "helm_release" "loki" {
       loki_role_arn = aws_iam_role.loki_role.arn
       s3_bucket_name = aws_s3_bucket.loki_storage.id
       aws_region = data.aws_region.current.id
-      ebs_storage_class_name = var.ebs_storage_class_name
     })
   ]
 

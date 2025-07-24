@@ -1,4 +1,6 @@
+
 loki:
+   auth_enabled: false
    schemaConfig:
      configs:
        - from: "2024-04-01"
@@ -10,7 +12,7 @@ loki:
            period: 24h
    storage_config:
      aws:
-       region: "eu-west-2" # for example, eu-west-2  
+       region: ${aws_region} # for example, eu-west-2  
        bucketnames: ${s3_bucket_name} # Your actual S3 bucket name, for example, loki-aws-dev-chunks
        s3forcepathstyle: false
    ingester:
@@ -29,7 +31,7 @@ loki:
     storage:
       type: s3
       s3:
-        region: "eu-west-2" # for example, eu-west-2
+        region: ${aws_region} # for example, eu-west-2
         bucketnames: ${s3_bucket_name} #"loki-storage" # Your actual S3 bucket name, for example, loki-aws-dev-ruler
         s3forcepathstyle: false
       alertmanager_url: http://prom:9093 # The URL of the Alertmanager to send alerts (Prometheus, Mimir, etc.)
@@ -44,17 +46,22 @@ loki:
         ruler: ${s3_bucket_name} #"loki-storage" # Your actual S3 bucket name (loki-aws-dev-ruler)
         # admin: "<Insert s3 bucket name>" # Your actual S3 bucket name (loki-aws-dev-admin) - GEL customers only
       s3:
-        region: "eu-west-2" # eu-west-2
+        region: ${aws_region} # eu-west-2
         #insecure: false
       # s3forcepathstyle: false
 
 serviceAccount:
  create: true
- name: "loki-sa"
+ name: ${loki_service_account_name} # The service account name you created
  annotations:
-   "eks.amazonaws.com/role-arn": "arn:aws:iam::717949064245:role/eks-managed-clstr-dev-loki-role" # The service role you created
+   ${loki_role_arn} # The service role you created
 
 deploymentMode: Distributed
+
+serviceMonitor:
+  enabled: true
+  additionalLabels:
+    release: "kube-prometheus-stack"
 
 ingester:
  replicas: 3
