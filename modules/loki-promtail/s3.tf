@@ -13,6 +13,7 @@ resource "random_id" "suffix" {
   byte_length = 4
 }
 
+/*
 # Enable versioning (recommended for Loki)
 resource "aws_s3_bucket_versioning" "loki_versioning" {
   bucket = aws_s3_bucket.loki_storage.id
@@ -20,7 +21,7 @@ resource "aws_s3_bucket_versioning" "loki_versioning" {
     status = "Enabled"
   }
 }
-
+*/
 # Block public access (security best practice)
 resource "aws_s3_bucket_public_access_block" "loki_block_public" {
   bucket = aws_s3_bucket.loki_storage.id
