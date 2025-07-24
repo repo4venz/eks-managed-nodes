@@ -58,11 +58,6 @@ serviceAccount:
 
 deploymentMode: Distributed
 
-serviceMonitor:
-  enabled: true
-  additionalLabels:
-    release: "kube-prometheus-stack"
-
 ingester:
  replicas: 3
  zoneAwareReplication:
