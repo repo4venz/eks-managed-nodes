@@ -1,0 +1,151 @@
+# Deploy as DaemonSet to run on all nodes
+daemonset:
+  enabled: true
+
+serviceAccount:
+  create: true
+  name: ${promtail_service_account_name}
+
+rbac:
+  create: true
+
+# Mount node-level logs and journal directories
+extraVolumes:
+  - name: varlog
+    hostPath:
+      path: /var/log
+  - name: journal
+    hostPath:
+      path: /var/log/journal
+  - name: runlog
+    hostPath:
+      path: /run/log/journal
+  - name: dockercontainers
+    hostPath:
+      path: /var/lib/docker/containers
+  - name: nginxlogs
+    hostPath:
+      path: /var/log/nginx
+
+extraVolumeMounts:
+  - name: varlog
+    mountPath: /var/log
+    readOnly: true
+  - name: journal
+    mountPath: /var/log/journal
+    readOnly: true
+  - name: runlog
+    mountPath: /run/log/journal
+    readOnly: true
+  - name: dockercontainers
+    mountPath: /var/lib/docker/containers
+    readOnly: true
+  - name: nginxlogs
+    mountPath: /var/log/nginx
+    readOnly: true
+
+# Promtail config for Loki scraping
+config:
+  server:
+    http_listen_port: 9080
+    grpc_listen_port: 0
+
+  positions:
+    filename: /var/log/positions.yaml
+
+  clients:
+    - url: http://loki-gateway.monitoring.svc.cluster.local/loki/api/v1/push   #http://loki.monitoring.svc.cluster.local:3100/loki/api/v1/push
+
+  scrape_configs:
+
+    # Kubernetes Pod logs
+    - job_name: kubernetes-pods
+      kubernetes_sd_configs:
+        - role: pod
+      pipeline_stages:
+        - cri: {}
+      relabel_configs:
+        - source_labels: [__meta_kubernetes_pod_node_name]
+          target_label: node
+        - source_labels: [__meta_kubernetes_namespace]
+          target_label: namespace
+        - source_labels: [__meta_kubernetes_pod_name]
+          target_label: pod
+        - source_labels: [__meta_kubernetes_pod_container_name]
+          target_label: container
+        - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
+          target_label: app
+        - source_labels: [__meta_kubernetes_pod_label_app]
+          target_label: app
+        - source_labels: [__meta_kubernetes_pod_annotation_promtail_io_scrape]
+          regex: "true"
+          action: keep
+        - action: drop
+          source_labels: [__meta_kubernetes_pod_phase]
+          regex: "Succeeded|Failed"
+
+    # Systemd Journal logs
+    - job_name: systemd-journal
+      journal:
+        path: /var/log/journal
+        max_age: 12h
+        labels:
+          job: systemd-journal
+      relabel_configs:
+        - source_labels: ['__journal__systemd_unit']
+          target_label: unit
+        - source_labels: ['__journal__hostname']
+          target_label: hostname
+
+    # Node logs (syslog, messages, etc.)
+    - job_name: varlogs
+      static_configs:
+        - targets:
+            - localhost
+          labels:
+            job: node
+            __path__: /var/log/**/*.log
+
+    # Docker container logs (legacy docker runtime, if used)
+    - job_name: docker-containers
+      static_configs:
+        - targets:
+            - localhost
+          labels:
+            job: docker-containers
+            __path__: /var/lib/docker/containers/*/*.log
+      pipeline_stages:
+        - docker: {}
+
+    # NGINX access/error logs on host
+    - job_name: nginx-host
+      static_configs:
+        - targets:
+            - localhost
+          labels:
+            job: nginx
+            service: ingress-nginx
+            __path__: /var/log/nginx/*.log
+
+    # NGINX Ingress logs from pods (if running as deployment)
+    - job_name: nginx-ingress-controller
+      kubernetes_sd_configs:
+        - role: pod
+      relabel_configs:
+        - source_labels:
+            - __meta_kubernetes_namespace
+            - __meta_kubernetes_pod_label_app_kubernetes_io_component
+            - __meta_kubernetes_pod_label_app_kubernetes_io_name
+          separator: ;
+          regex: ingress-nginx;controller;ingress-nginx
+          action: keep
+        - source_labels: [__meta_kubernetes_pod_node_name]
+          target_label: node
+        - source_labels: [__meta_kubernetes_namespace]
+          target_label: namespace
+        - source_labels: [__meta_kubernetes_pod_name]
+          target_label: pod
+        - source_labels: [__meta_kubernetes_pod_container_name]
+          target_label: container
+      pipeline_stages:
+        - cri: {}

@@ -105,7 +105,6 @@ prometheus:
         - action: labelmap
           regex: __meta_kubernetes_service_label_(.+)
 
-  # Configure Prometheus to scrape metrics from Kubecost
   #    - job_name: 'kubecost'
   #      honor_labels: true
   #      scrape_interval: 1m
@@ -161,7 +160,35 @@ grafana:
       nginx.ingress.kubernetes.io/proxy-read-timeout: "60"
       nginx.ingress.kubernetes.io/client-body-buffer-size: "8k"
  
-
+    dataSources:
+      datasources.yaml:
+        apiVersion: 1
+        datasources:
+          - name: Prometheus
+            type: prometheus
+            access: proxy
+            url: http://prometheus-operated.${k8s_namespace}.svc.cluster.local:9090  # Replace with your Prometheus service URL
+            isDefault: true
+            jsonData:
+              timeInterval: "5s"
+              tlsSkipVerify: true  # Skip TLS verification for self-signed certificates
+          - name: Loki
+            type: loki    
+            access: proxy
+            url: http://loki-gateway.${k8s_namespace}.svc.cluster.local  # Replace with your Loki service URL
+            jsonData:
+              maxLines: 1000
+              timeInterval: "5s"
+              tlsSkipVerify: true  # Skip TLS verification for self-signed certificates 
+            isDefault: false      
+          - name: Kubernetes
+            type: prometheus
+            access: proxy
+            url: http://kube-state-metrics.${k8s_namespace}.svc.cluster.local:8080  # Replace with your kube-state-metrics service URL
+            jsonData:
+              timeInterval: "5s"
+              tlsSkipVerify: true  # Skip TLS verification for self-signed certificates
+            isDefault: false
 
   # Enable Alertmanager
 alertmanager:

@@ -53,7 +53,7 @@ values = [
       
       # Features
       networkCosts = { enabled = true }
-      serviceMonitor = { enabled = true }
+      serviceMonitor = { enabled = true, namespace = var.prometheus_namespace }
     }
   })
   

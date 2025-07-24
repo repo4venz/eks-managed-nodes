@@ -21,7 +21,22 @@ module "lets-encrypt" {
   depends_on = [module.external-dns ]
 }
 
+ # Add the loki-promtail module
+module "loki-promtail" {
+  count = var.include_loki_promtail_module ? 1 : 0
 
+  source = "../modules/loki-promtail"
+  k8s_cluster_name = local.k8s_cluster_name
+  environment = var.environment
+  
+  # Optional: customize these values as needed
+  # loki_chart_version = "6.32.0"
+  # promtail_chart_version = "6.17.0"
+  # storage_class_name = "gp3"
+  # loki_storage_size = "10Gi"
+  depends_on = [module.external-dns]
+}
+ 
 
 module "prometheus" {
   count = var.include_prometheus_module ? 1 : 0
@@ -32,7 +47,7 @@ module "prometheus" {
   prometheus_chart_version                      =  var.prometheus_chart_version
   grafana_ingress_hostname                      =  "grafana.${var.public_domain_name}"
 
-  depends_on = [module.external-dns, module.lets-encrypt]
+  depends_on = [module.external-dns, module.lets-encrypt, module.loki-promtail]
 }
 
 
@@ -60,20 +75,4 @@ module "kube-cost" {
 }
 
 
- 
- # Add the loki-promtail module
-module "loki-promtail" {
-  count = var.include_loki_promtail_module ? 1 : 0
-
-  source = "../modules/loki-promtail"
-  k8s_cluster_name = local.k8s_cluster_name
-  environment = var.environment
-  
-  # Optional: customize these values as needed
-  # loki_chart_version = "6.32.0"
-  # promtail_chart_version = "6.17.0"
-  # storage_class_name = "gp3"
-  # loki_storage_size = "10Gi"
-  depends_on = [module.prometheus]
-}
  
