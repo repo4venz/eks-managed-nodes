@@ -24,7 +24,8 @@ resource "helm_release" "kubecost" {
       storage_size = var.storage_size
       ingress_host  = var.ingress_host
       environment = var.environment
-      prometheus_namespace  = var.prometheus_namespace  
+      prometheus_namespace  = var.prometheus_namespace
+      aws_region = data.aws_region.current.id
     })
   ]
 
