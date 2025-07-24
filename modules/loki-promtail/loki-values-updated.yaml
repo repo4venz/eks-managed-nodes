@@ -10,8 +10,8 @@ loki:
            period: 24h
    storage_config:
      aws:
-       region: <S3 BUCKET REGION> # for example, eu-west-2  
-       bucketnames: <CHUNK BUCKET NAME> # Your actual S3 bucket name, for example, loki-aws-dev-chunks
+       region: "eu-west-2" # for example, eu-west-2  
+       bucketnames: "loki-storage" # Your actual S3 bucket name, for example, loki-aws-dev-chunks
        s3forcepathstyle: false
    ingester:
        chunk_encoding: snappy
@@ -29,8 +29,8 @@ loki:
     storage:
       type: s3
       s3:
-        region: <S3 BUCKET REGION> # for example, eu-west-2
-        bucketnames: <RULER BUCKET NAME> # Your actual S3 bucket name, for example, loki-aws-dev-ruler
+        region: "eu-west-2" # for example, eu-west-2
+        bucketnames: ${s3_bucket_name} #"loki-storage" # Your actual S3 bucket name, for example, loki-aws-dev-ruler
         s3forcepathstyle: false
       alertmanager_url: http://prom:9093 # The URL of the Alertmanager to send alerts (Prometheus, Mimir, etc.)
 
@@ -40,18 +40,19 @@ loki:
    storage:
       type: s3
       bucketNames:
-        chunks: "<CHUNK BUCKET NAME>" # Your actual S3 bucket name (loki-aws-dev-chunks)
-        ruler: "<RULER BUCKET NAME>" # Your actual S3 bucket name (loki-aws-dev-ruler)
+        chunks: ${s3_bucket_name} #"loki-storage" # Your actual S3 bucket name (loki-aws-dev-chunks)
+        ruler: ${s3_bucket_name} #"loki-storage" # Your actual S3 bucket name (loki-aws-dev-ruler)
         # admin: "<Insert s3 bucket name>" # Your actual S3 bucket name (loki-aws-dev-admin) - GEL customers only
       s3:
-        region: <S3 BUCKET REGION> # eu-west-2
+        region: "eu-west-2" # eu-west-2
         #insecure: false
       # s3forcepathstyle: false
 
 serviceAccount:
  create: true
+ name: "loki-sa"
  annotations:
-   "eks.amazonaws.com/role-arn": "arn:aws:iam::<Account ID>:role/LokiServiceAccountRole" # The service role you created
+   "eks.amazonaws.com/role-arn": "arn:aws:iam::717949064245:role/eks-managed-clstr-dev-loki-role" # The service role you created
 
 deploymentMode: Distributed
 
@@ -86,30 +87,8 @@ ruler:
  maxUnavailable: 1
 
 
-# This exposes the Loki gateway so it can be written to and queried externaly
 gateway:
- service:
-   type: LoadBalancer
- basicAuth: 
-     enabled: true
-     existingSecret: loki-basic-auth
-
-# Since we are using basic auth, we need to pass the username and password to the canary
-lokiCanary:
-  extraArgs:
-    - -pass=$(LOKI_PASS)
-    - -user=$(LOKI_USER)
-  extraEnv:
-    - name: LOKI_PASS
-      valueFrom:
-        secretKeyRef:
-          name: canary-basic-auth
-          key: password
-    - name: LOKI_USER
-      valueFrom:
-        secretKeyRef:
-          name: canary-basic-auth
-          key: username
+  enabled: false
 
 # Enable minio for storage
 minio:

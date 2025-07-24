@@ -359,7 +359,7 @@ resource "helm_release" "loki" {
     ]
 }
 */
- /*
+ 
 resource "helm_release" "loki" {
   name             = "loki"
   repository       = "https://grafana.github.io/helm-charts"
@@ -373,7 +373,7 @@ resource "helm_release" "loki" {
 
   # Use a values file instead of inline values
   values = [
-    templatefile("${path.module}/loki-values.yaml", {
+    templatefile("${path.module}/loki-values-updated.yaml", {
       loki_service_account_name = var.loki_service_account_name
       loki_role_arn = aws_iam_role.loki_role.arn
       s3_bucket_name = aws_s3_bucket.loki_storage.id
@@ -388,8 +388,10 @@ resource "helm_release" "loki" {
   ]
 }
 
-*/
  
+ 
+
+ /*
 resource "helm_release" "loki" {
   name             = "loki"
   repository       = "https://grafana.github.io/helm-charts"
@@ -523,4 +525,4 @@ values = [
   ]
 }
  
- 
+ */
