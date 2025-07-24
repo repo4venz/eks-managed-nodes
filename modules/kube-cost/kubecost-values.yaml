@@ -74,33 +74,23 @@ serviceMonitor:
   additionalLabels:
     release: "kube-prometheus"
 
-grafana:
-  enabled: true
-  #adminPassword: "securepassword"  # Change this!
-    
-  # Add persistent storage
-  persistence:
-    enabled: true
-    storageClassName: ${storage_class}
-    size: ${storage_size}
-    accessModes: ["ReadWriteMany"]
-    
+  
   # Add Ingress
-  ingress:
-    enabled: true
-    annotations:
-      kubernetes.io/ingress.class: nginx
-      cert-manager.io/cluster-issuer: letsencrypt-${environment}
-      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-      nginx.ingress.kubernetes.io/ssl-passthrough: "true"
-      nginx.ingress.kubernetes.io/backend-protocol: HTTP
-      external-dns.alpha.kubernetes.io/hostname: ${ingress_host}
-      nginx.ingress.kubernetes.io/rewrite-target: /  
-    hosts:
-      - ${ingress_host}
-    path: /
-    pathType: Prefix
-    tls:
-      - hosts:
-          - ${ingress_host}
-        secretName: ${ingress_host}-tls
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt-${environment}
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+    nginx.ingress.kubernetes.io/backend-protocol: HTTP
+    external-dns.alpha.kubernetes.io/hostname: ${ingress_host}
+    nginx.ingress.kubernetes.io/rewrite-target: /  
+  hosts:
+    - ${ingress_host}
+  path: /
+  pathType: Prefix
+  tls:
+    - hosts:
+        - ${ingress_host}
+      secretName: ${ingress_host}-tls
