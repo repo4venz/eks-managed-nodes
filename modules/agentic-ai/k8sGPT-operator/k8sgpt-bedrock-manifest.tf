@@ -1,5 +1,5 @@
  
-
+/*
 resource "kubectl_manifest" "k8sgpt_create"  {
     yaml_body = <<YAML
 apiVersion: core.k8sgpt.ai/v1alpha1
@@ -21,7 +21,7 @@ YAML
 }
 
 
-/*
+
 cat > k8sgpt-bedrock.yaml<<EOF
 apiVersion: core.k8sgpt.ai/v1alpha1
 kind: K8sGPT
