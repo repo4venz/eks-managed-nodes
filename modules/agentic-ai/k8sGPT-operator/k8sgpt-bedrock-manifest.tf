@@ -1,5 +1,25 @@
  
 
+resource "kubectl_manifest" "k8sgpt_create"  {
+    yaml_body = <<YAML
+apiVersion: core.k8sgpt.ai/v1alpha1
+kind: K8sGPT
+metadata:
+  name: "${var.ai_foundation_model_service}"
+  namespace: "${var.k8sgpt_namespace}"
+spec:
+  ai:
+    enabled: true
+    model: "${var.ai_foundation_model_name}" 
+    region: "${var.ai_foundation_model_region}"
+    backend: "amazonbedrock"
+    language: "english"
+  noCache: false
+  repository: "ghcr.io/k8sgpt-ai/k8sgpt"
+  version: "v0.4.12"
+YAML
+}
+
 
 /*
 cat > k8sgpt-bedrock.yaml<<EOF
@@ -23,6 +43,8 @@ EOF
 kubectl apply -f k8sgpt-bedrock.yaml
 
 */
+
+
 
 /*
 resource "null_resource" "k8sgpt_create" {
@@ -81,6 +103,15 @@ resource "null_resource" "k8sgpt_cleanup" {
   provisioner "local-exec" {
     when    = destroy
     command = <<EOT
+
+      if ! kubectl get k8sgpt -n ${var.k8sgpt_namespace} >/dev/null 2>&1; then
+        kubectl create namespace ${var.app_namespace}
+        echo "Created namespace: ${var.app_namespace}"
+      else
+        echo "Namespace ${var.app_namespace} already exists"
+      fi
+
+
     kubectl patch k8sgpt ${self.triggers.service_name} -n ${self.triggers.namespace} -p '{\"metadata\":{\"finalizers\":[]}}' --type=merge --ignore-not-found 
     kubectl delete k8sgpt ${self.triggers.service_name} -n ${self.triggers.namespace} --ignore-not-found
   EOT
