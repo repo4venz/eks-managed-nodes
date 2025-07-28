@@ -36,7 +36,6 @@ module "eks" {
     eks_kms_cloudwatch_logs_encryption_alias_arn  =  module.kms_aws.eks_kms_cloudwatch_logs_encryption_alias_arn 
     aws_admin_role_names                          =  var.aws_admin_role_names
     aws_admin_user_names                          =  var.aws_admin_user_names
-    aws_admin_group_names                         =  var.aws_admin_group_names
 
     #include_ebs_csi_driver                        =  var.include_ebs_csi_driver
     #ebs_csi_helm_chart_version                    =  var.ebs_csi_helm_chart_version  

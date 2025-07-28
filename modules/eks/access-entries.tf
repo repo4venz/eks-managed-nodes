@@ -1,36 +1,6 @@
+ #aws eks list-access-policies --output table
+
  
-
-############################# Admin User Groups ####################################################
-## Access Entries Configuration
-resource "aws_eks_access_entry" "admin_group" {
-  count = length(var.aws_admin_group_names)
-
-  cluster_name  = aws_eks_cluster.demo_eks_cluster.name
-  principal_arn = "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:group/${var.aws_admin_group_names[count.index]}"
-
-  # Optional: Specify Kubernetes username and groups
- # kubernetes_groups = ["system:masters"]
- # user_name         = "admin-group-${var.aws_admin_group_names[count.index]}"
-  
-  type = "STANDARD"
-}
-
-
-## Access Policies (RBAC permissions)
-resource "aws_eks_access_policy_association" "admin_policy_groups" {
-  count = length(var.aws_admin_group_names)
-
-  cluster_name  = aws_eks_cluster.demo_eks_cluster.name
-  policy_arn   = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
-  principal_arn = aws_eks_access_entry.admin_group[count.index].principal_arn
-
-  access_scope {
-    type = "cluster"
-  }
-}
-
-
-
 ############################# Admin User Roles ####################################################
 
 resource "aws_eks_access_entry" "admin_role" {
@@ -44,6 +14,8 @@ resource "aws_eks_access_entry" "admin_role" {
  # user_name         = "admin-role-${var.aws_admin_role_names[count.index]}"
   
   type = "STANDARD"
+
+   depends_on = [ aws_eks_cluster.demo_eks_cluster  ]
 }
 
 ## Access Policies (RBAC permissions)
@@ -74,6 +46,7 @@ resource "aws_eks_access_entry" "admin_user" {
  # user_name         = "admin-role-${var.aws_admin_user_names[count.index]}"
   
   type = "STANDARD"
+  depends_on = [ aws_eks_cluster.demo_eks_cluster  ]
 }
 
 
@@ -98,14 +71,19 @@ resource "aws_eks_access_policy_association" "admin_policy_users" {
   principal_arn = aws_iam_role.eks_worker_nodes_role.arn # Actual node role
   user_name     = "system:node:{{EC2PrivateDNSName}}"
   type          = "EC2_LINUX"
-
-  kubernetes_groups = [
-    "system:bootstrappers",
-    "system:nodes" # Never include system:masters here
-  ]
+  depends_on = [ aws_eks_cluster.demo_eks_cluster  ]
 }
 
- 
+ resource "aws_eks_access_policy_association" "worker_nodes_policy" {
+  cluster_name  = aws_eks_cluster.demo_eks_cluster.name
+  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSWorkerNodePolicy"
+  principal_arn = aws_eks_access_entry.worker_nodes.principal_arn
+
+  access_scope {
+    type = "cluster"
+  }
+}
+
  
 
 

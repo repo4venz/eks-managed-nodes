@@ -59,13 +59,7 @@ variable aws_admin_user_names {
   type = list(string)
   default     = []
 }
-
-variable aws_admin_group_names {
-  description = "AWS User who will assume AWS Admin Role to manage EKS cluster. The Group must be created in AWS to assume the admin role."
-  type = list(string)
-  default     = []
-}
-
+ 
 variable "include_ebs_csi_driver" {
   description = "Execute module/feature or not. true = execute and false = don't execute"
   default = true

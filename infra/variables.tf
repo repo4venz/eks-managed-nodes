@@ -22,12 +22,7 @@ variable aws_admin_user_names {
   default     = []
 }
 
-variable aws_admin_group_names {
-  description = "AWS User who will assume AWS Admin Role to manage EKS cluster. The Group must be created in AWS to assume the admin role."
-  type = list(string)
-  default     = []
-}
-
+ 
 variable "app_namespace" {
   description = "Business Application Namespaces"
   type        = list(string)

@@ -16,15 +16,11 @@ cidr_block_internet_gw       =  "0.0.0.0/0"
 cidr_block_nat_gw            =  "0.0.0.0/0"
 
 ####### EKS Authentication ##########################
-
-aws_admin_group_names         = ["eks-admin-group", "eks-support-admin"]  # used only for EKS Access Entries
 aws_admin_role_names          =  ["suvendu-super-admin-role"]      # used only for EKS Access Entries
 aws_admin_user_names          =  ["suvendu_admin_user", "suvendu-github-user"]  # used only for EKS Access Entries
 
 #github_runner_base_path      = "/home/runner/"
 k8s_observability_namespace  = "monitoring"
-
-
 
 nginx_ingress_chart_version  = "4.12.3"
 fluentbit_chart_version      = "0.1.35"
