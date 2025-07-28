@@ -16,8 +16,9 @@ cidr_block_internet_gw       =  "0.0.0.0/0"
 cidr_block_nat_gw            =  "0.0.0.0/0"
 
 ####### EKS Authentication ##########################
-aws_admin_role_names          =  ["suvendu-super-admin-role"]      # used only for EKS Access Entries
-aws_admin_user_names          =  ["suvendu_admin_user", "suvendu-github-user"]  # used only for EKS Access Entries
+aws_admin_role_names          =  ["suvendu-super-admin-role"]      # used for EKS Access Entries and ConfigMap
+aws_admin_user_names          =  ["suvendu_admin_user", "suvendu-github-user"]  # used for EKS Access Entries and ConfigMap
+enable_eks_access_entries_only  =  true
 
 #github_runner_base_path      = "/home/runner/"
 k8s_observability_namespace  = "monitoring"

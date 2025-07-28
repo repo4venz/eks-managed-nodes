@@ -60,6 +60,14 @@ variable aws_admin_user_names {
   default     = []
 }
  
+variable "enable_eks_access_entries_only" {
+  type        = bool
+  default     = false
+  description = "When false, it will use EKS ConfigMap and Access Entries both. When true, it will only use EKS Access Entries. EKS Authentication methods supports both - ConfigMap and Access Entries."
+}
+
+
+
 variable "include_ebs_csi_driver" {
   description = "Execute module/feature or not. true = execute and false = don't execute"
   default = true

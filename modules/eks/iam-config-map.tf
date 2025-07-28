@@ -3,6 +3,7 @@
 
 # Example of a local-exec provisioner to verify cluster readiness
 resource "null_resource" "wait_for_cluster" {
+  count = var.enable_eks_access_entries_only ? 0 : 1  # if enable_eks_access_entries_only=false then create the resource
 
   	  triggers = {
 	    always_run = timestamp()
@@ -18,6 +19,8 @@ resource "null_resource" "wait_for_cluster" {
 }
 
 resource "time_sleep" "wait_120_seconds" {
+  count = var.enable_eks_access_entries_only ? 0 : 1
+
   create_duration = "120s"  # 2 minutes
 
   depends_on = [aws_eks_cluster.demo_eks_cluster ]
@@ -26,6 +29,7 @@ resource "time_sleep" "wait_120_seconds" {
 
 # Update the Kubeconfig file in the GitHub Actions Runner
 resource "null_resource" "eks_get_config_exec" {
+  count = var.enable_eks_access_entries_only ? 0 : 1
 	
 	  triggers = {
 	    always_run = timestamp()
@@ -46,6 +50,7 @@ resource "null_resource" "eks_get_config_exec" {
  
 # Describe existing Config Map aws-auth  
 resource "null_resource" "eks_describe_existing_configmap_exec" {
+  count = var.enable_eks_access_entries_only ? 0 : 1
 	
 	  triggers = {
 	    always_run = timestamp()
@@ -69,6 +74,8 @@ resource "null_resource" "eks_describe_existing_configmap_exec" {
 # Update existing the aws-auth configmap
 #resource "kubernetes_config_map" "aws_auth" {
 resource "kubernetes_config_map_v1_data" "aws_auth" {
+  count = var.enable_eks_access_entries_only ? 0 : 1    # if enable_eks_access_entries_only=false then create the resource
+
   metadata {
     name      = "aws-auth"
     namespace = "kube-system"
