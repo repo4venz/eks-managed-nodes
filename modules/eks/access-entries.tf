@@ -69,7 +69,7 @@ resource "aws_eks_access_policy_association" "admin_policy_users" {
  resource "aws_eks_access_entry" "worker_nodes" {
   cluster_name  = aws_eks_cluster.demo_eks_cluster.name
   principal_arn = aws_iam_role.eks_worker_nodes_role.arn # Actual node role
-  user_name     = "eks-node:{{EC2PrivateDNSName}}"
+  #user_name     = "eks-node:{{EC2PrivateDNSName}}"
   type          = "EC2_LINUX"
 
  # kubernetes_groups = [
