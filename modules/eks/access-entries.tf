@@ -76,20 +76,11 @@ resource "aws_eks_access_policy_association" "admin_policy_users" {
  #   "system:bootstrappers",
  #   "system:nodes"
  # ]
-
+ 
   depends_on = [ aws_eks_cluster.demo_eks_cluster, aws_iam_role.eks_worker_nodes_role  ]
 }
 
- resource "aws_eks_access_policy_association" "worker_nodes_policy" {
-  cluster_name  = aws_eks_cluster.demo_eks_cluster.name
-  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSWorkerNodePolicy"
-  principal_arn = aws_eks_access_entry.worker_nodes.principal_arn
-
-  access_scope {
-    type = "cluster"
-  }
-}
-
+ 
  
 
 
