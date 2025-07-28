@@ -104,7 +104,7 @@ jobs:
       - name: Terraform Plan (Infra only)
         if: "!contains(github.event.head_commit.message, 'destroy')"
         id: plan_infra
-        run: TF_LOG=DEBUG terraform -chdir=infra plan -input=false -var-file=$(pwd)/${{ matrix.environment }}/terraform.tfvars -no-color
+        run: TF_LOG=DEBUG terraform -chdir=infra plan -input=false -var-file=$(pwd)/environments/${{ matrix.environment }}/terraform.tfvars -no-color
  
       - name: Format Terraform (Post Build Only)
         run: terraform -chdir=post-build fmt
@@ -121,7 +121,7 @@ jobs:
       - name: Terraform Plan (Post Build Only)
         if: "!contains(github.event.head_commit.message, 'destroy')"
         id: plan_post_build
-        run: TF_LOG=DEBUG terraform -chdir=post-build plan -input=false -var-file=$(pwd)/${{ matrix.environment }}/terraform.tfvars -no-color
+        run: TF_LOG=DEBUG terraform -chdir=post-build plan -input=false -var-file=$(pwd)/environments/${{ matrix.environment }}/terraform.tfvars -no-color
  
 
       - name: Format Terraform (Application Only)
@@ -139,7 +139,7 @@ jobs:
       - name: Terraform Plan (Application only)
         if: "!contains(github.event.head_commit.message, 'destroy')"
         id: plan_application
-        run: TF_LOG=DEBUG terraform -chdir=application-build plan -input=false -var-file=$(pwd)/${{ matrix.environment }}/terraform.tfvars -no-color
+        run: TF_LOG=DEBUG terraform -chdir=application-build plan -input=false -var-file=$(pwd)/environments/${{ matrix.environment }}/terraform.tfvars -no-color
 
 
   comment:

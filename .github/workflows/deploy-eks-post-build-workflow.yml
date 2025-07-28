@@ -117,20 +117,20 @@ jobs:
         #if: always()
         if: "!contains(github.event.head_commit.message, 'destroy') && !contains(github.event.head_commit.message, 'remove')"
         id: plan_post_build
-        run: TF_LOG=DEBUG terraform -chdir=post-build plan -input=false -var-file=$(pwd)/${{ matrix.environment }}/terraform.tfvars -no-color
+        run: TF_LOG=DEBUG terraform -chdir=post-build plan -input=false -var-file=$(pwd)/environments/${{ matrix.environment }}/terraform.tfvars -no-color
 
       - name: Terraform Apply (Post Build Only)
        #if: always()
        #if: github.ref == 'refs/heads/master'
         if: "!contains(github.event.head_commit.message, 'destroy') &&  !contains(github.event.head_commit.message, 'remove')"
         id: apply_post_build
-        run: TF_LOG=DEBUG terraform -chdir=post-build apply -auto-approve -input=false -var-file=$(pwd)/${{matrix.environment }}/terraform.tfvars
+        run: TF_LOG=DEBUG terraform -chdir=post-build apply -auto-approve -input=false -var-file=$(pwd)/environments/${{ matrix.environment }}/terraform.tfvars
 
       - name: Terraform Destroy (Post Build Only)
         #if: github.ref == 'refs/heads/master'
         if: "contains(github.event.head_commit.message, 'destroy post build')"
         id: destroy_post_build
-        run: TF_LOG=DEBUG terraform -chdir=post-build destroy -auto-approve -input=false -var-file=$(pwd)/${{ matrix.environment }}/terraform.tfvars   
+        run: TF_LOG=DEBUG terraform -chdir=post-build destroy -auto-approve -input=false -var-file=$(pwd)/environments/${{ matrix.environment }}/terraform.tfvars   
  
 
   comment:

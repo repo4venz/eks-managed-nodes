@@ -87,7 +87,7 @@ EOT
   ]
 }
 
- 
+ */
 
 
 resource "null_resource" "k8sgpt_cleanup" {
@@ -104,19 +104,16 @@ resource "null_resource" "k8sgpt_cleanup" {
     when    = destroy
     command = <<EOT
 
-      if ! kubectl get k8sgpt -n ${var.k8sgpt_namespace} >/dev/null 2>&1; then
-        kubectl create namespace ${var.app_namespace}
-        echo "Created namespace: ${var.app_namespace}"
+      if !  kubectl get k8sgpt ${self.triggers.service_name} -n ${self.triggers.namespace} >/dev/null 2>&1; then
+                kubectl patch k8sgpt ${self.triggers.service_name} -n ${self.triggers.namespace} -p '{\"metadata\":{\"finalizers\":[]}}' --type=merge --ignore-not-found 
+                kubectl delete k8sgpt ${self.triggers.service_name} -n ${self.triggers.namespace} --ignore-not-found
+                echo "Deleted k8sgpt service: ${self.triggers.service_name}"
       else
-        echo "Namespace ${var.app_namespace} already exists"
+            echo "Namespace ${self.triggers.service_name} does not exists"
       fi
-
-
-    kubectl patch k8sgpt ${self.triggers.service_name} -n ${self.triggers.namespace} -p '{\"metadata\":{\"finalizers\":[]}}' --type=merge --ignore-not-found 
-    kubectl delete k8sgpt ${self.triggers.service_name} -n ${self.triggers.namespace} --ignore-not-found
   EOT
   }
  
 }
 
-*/
+ 

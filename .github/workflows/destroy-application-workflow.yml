@@ -67,5 +67,5 @@ jobs:
 
       - name: Terraform Destroy (Application Only)
         id: destroy_application
-        run: TF_LOG=DEBUG terraform -chdir=application-build destroy -auto-approve -input=false -var-file=$(pwd)/${{ matrix.environment }}/terraform.tfvars   
+        run: TF_LOG=DEBUG terraform -chdir=application-build destroy -auto-approve -input=false -var-file=$(pwd)/environments/${{ matrix.environment }}/terraform.tfvars   
  

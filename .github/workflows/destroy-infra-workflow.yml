@@ -67,6 +67,6 @@ jobs:
 
       - name: Terraform Destroy (Infra Only)
         id: destroy_infra
-        run: TF_LOG=DEBUG terraform -chdir=infra destroy -auto-approve -input=false -var-file=$(pwd)/${{ matrix.environment }}/terraform.tfvars   
+        run: TF_LOG=DEBUG terraform -chdir=infra destroy -auto-approve -input=false -var-file=$(pwd)/environments/${{ matrix.environment }}/terraform.tfvars   
 
 

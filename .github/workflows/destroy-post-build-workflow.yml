@@ -68,4 +68,4 @@ jobs:
 
       - name: Terraform Destroy (Post Build Only)
         id: destroy_post_build
-        run: TF_LOG=DEBUG terraform -chdir=post-build destroy -auto-approve -input=false -var-file=$(pwd)/${{ matrix.environment }}/terraform.tfvars   
+        run: TF_LOG=DEBUG terraform -chdir=post-build destroy -auto-approve -input=false -var-file=$(pwd)/environments/${{ matrix.environment }}/terraform.tfvars   

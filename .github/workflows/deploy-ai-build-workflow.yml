@@ -114,17 +114,17 @@ jobs:
       - name: Terraform Plan (Agentic AI Build Only)
         if: "!contains(github.event.head_commit.message, 'destroy')"
         id: plan_agentic_ai
-        run: TF_LOG=DEBUG terraform -chdir=ai-build plan -input=false -var-file=$(pwd)/${{ matrix.environment }}/terraform.tfvars -no-color
+        run: TF_LOG=DEBUG terraform -chdir=ai-build plan -input=false -var-file=$(pwd)/environments/${{ matrix.environment }}/terraform.tfvars -no-color
 
       - name: Terraform Apply (Agentic AI Build Only)
         if: "!contains(github.event.head_commit.message, 'destroy')"
         id: apply_agentic_ai
-        run: TF_LOG=DEBUG terraform -chdir=ai-build apply -auto-approve -input=false -var-file=$(pwd)/${{matrix.environment }}/terraform.tfvars
+        run: TF_LOG=DEBUG terraform -chdir=ai-build apply -auto-approve -input=false -var-file=$(pwd)/environments/${{ matrix.environment }}/terraform.tfvars 
 
       - name: Terraform Destroy (Agentic AI Build Only)
         id: destroy_agentic_ai
         if: "contains(github.event.head_commit.message, 'destroy agentic ai build')"
-        run: TF_LOG=DEBUG terraform -chdir=ai-build destroy -auto-approve -input=false -var-file=$(pwd)/${{ matrix.environment }}/terraform.tfvars   
+        run: TF_LOG=DEBUG terraform -chdir=ai-build destroy -auto-approve -input=false -var-file=$(pwd)/environments/${{ matrix.environment }}/terraform.tfvars   
  
   comment:
     runs-on: ubuntu-latest

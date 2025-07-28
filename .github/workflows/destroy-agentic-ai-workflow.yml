@@ -68,4 +68,4 @@ jobs:
 
       - name: Terraform Destroy (Agentic AI Only)
         id: destroy_agentic_ai
-        run: TF_LOG=DEBUG terraform -chdir=ai-build destroy -auto-approve -input=false -var-file=$(pwd)/${{ matrix.environment }}/terraform.tfvars   
+        run: TF_LOG=DEBUG terraform -chdir=ai-build destroy -auto-approve -input=false -var-file=$(pwd)/environments/${{ matrix.environment }}/terraform.tfvars   

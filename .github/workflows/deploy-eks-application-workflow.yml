@@ -114,20 +114,20 @@ jobs:
         #if: always()
         if: "!contains(github.event.head_commit.message, 'destroy') && !contains(github.event.head_commit.message, 'remove')"
         id: plan
-        run: TF_LOG=DEBUG terraform -chdir=application-build plan -input=false -var-file=$(pwd)/${{ matrix.environment }}/terraform.tfvars -no-color
+        run: TF_LOG=DEBUG terraform -chdir=application-build plan -input=false -var-file=$(pwd)/environments/${{ matrix.environment }}/terraform.tfvars -no-color
 
       - name: Terraform Apply (Application only)
        #if: always()
        #if: github.ref == 'refs/heads/master'
         if: "!contains(github.event.head_commit.message, 'destroy') &&  !contains(github.event.head_commit.message, 'remove')"
         id: apply
-        run: TF_LOG=DEBUG terraform -chdir=application-build apply -auto-approve -input=false -var-file=$(pwd)/${{matrix.environment }}/terraform.tfvars
+        run: TF_LOG=DEBUG terraform -chdir=application-build apply -auto-approve -input=false -var-file=$(pwd)/environments/${{ matrix.environment }}/terraform.tfvars 
 
       - name: Terraform Destroy (Application Only)
         #if: github.ref == 'refs/heads/master'
         if: "contains(github.event.head_commit.message, 'destroy application build')"
         id: destroy_application
-        run: TF_LOG=DEBUG terraform -chdir=application-build destroy -auto-approve -input=false -var-file=$(pwd)/${{ matrix.environment }}/terraform.tfvars   
+        run: TF_LOG=DEBUG terraform -chdir=application-build destroy -auto-approve -input=false -var-file=$(pwd)/environments/${{ matrix.environment }}/terraform.tfvars   
 
   comment:
     runs-on: ubuntu-latest
