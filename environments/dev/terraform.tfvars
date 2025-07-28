@@ -14,8 +14,13 @@ availability_zones_public    =  ["eu-west-2a", "eu-west-2b", "eu-west-2c"]
 availability_zones_private   =  ["eu-west-2a", "eu-west-2b", "eu-west-2c"]
 cidr_block_internet_gw       =  "0.0.0.0/0"
 cidr_block_nat_gw            =  "0.0.0.0/0"
-aws_admin_role_name          = "suvendu-super-admin-role"
-aws_admin_user_name          = "suvendu_admin_user"
+
+####### EKS Authentication ##########################
+
+aws_admin_group_names         = ["eks-admin-group", "eks-support-admin"]  # used only for EKS Access Entries
+aws_admin_role_names          =  ["suvendu-super-admin-role"]      # used only for EKS Access Entries
+aws_admin_user_names          =  ["suvendu_admin_user", "suvendu-github-user"]  # used only for EKS Access Entries
+
 #github_runner_base_path      = "/home/runner/"
 k8s_observability_namespace  = "monitoring"
 

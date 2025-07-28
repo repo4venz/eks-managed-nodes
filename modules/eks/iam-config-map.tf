@@ -63,7 +63,8 @@ resource "null_resource" "eks_describe_existing_configmap_exec" {
 	}
  
 
- 
+ ##### ConfigMap will only use the First attribute mentioned in the list string for admin role and users. Refer EKS Access Entries for all types of authentication #######
+ ######################################################################################################################################################################
 
 # Update existing the aws-auth configmap
 #resource "kubernetes_config_map" "aws_auth" {
@@ -76,27 +77,27 @@ resource "kubernetes_config_map_v1_data" "aws_auth" {
   data = {
     "mapRoles" = yamlencode([
       {
-        rolearn  = "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:role/${var.aws_admin_role_name}"
-        username = "${var.aws_admin_role_name}"
+        rolearn  = "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:role/${var.aws_admin_role_name[0]}"
+        username = "${var.aws_admin_role_name[0]}"
         groups   = ["system:masters", "system:bootstrappers", "system:nodes"]
       },
       {
         rolearn  = "${aws_iam_role.eks_worker_nodes_role.arn}"
         username = "system:node:{{EC2PrivateDNSName}}"
-        groups   = ["system:masters", "system:bootstrappers", "system:nodes"]
+        groups   = ["system:bootstrappers", "system:nodes"]
       } 
       # Add more roles or users here
     ])
     "mapUsers" = yamlencode([
       {
-        userarn  = "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:user/${var.aws_admin_user_name}"
-        username = "${var.aws_admin_user_name}"
+        userarn  = "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:user/${var.aws_admin_user_name[0]}"
+        username = "${var.aws_admin_user_name[0]}"
         groups   = ["system:masters"]
       },
       {
-        userarn  = "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:user/${var.aws_admin_user_name}"
+        userarn  = "${aws_iam_role.eks_worker_nodes_role.arn}"
         username = "system:node:{{EC2PrivateDNSName}}"
-        groups   = ["system:masters", "system:bootstrappers", "system:nodes"]
+        groups   = [ "system:bootstrappers", "system:nodes"]
       }
     ])
   }

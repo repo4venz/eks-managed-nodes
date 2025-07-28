@@ -49,12 +49,21 @@ variable "eks_readiness_timeout" {
 }
 
 
-variable "aws_admin_role_name" {
+variable aws_admin_role_names {
   description = "AWS Admin Role to manage EKS cluster. The role must be created in AWS with required permission."
+  type = list(string)
+  default     = []
+}
+variable aws_admin_user_names {
+  description = "AWS User who will assume AWS Admin Role to manage EKS cluster. The user must be created in AWS to assume the admin role."
+  type = list(string)
+  default     = []
 }
 
-variable "aws_admin_user_name" {
-  description = "AWS User who will assume AWS Admin Role to manage EKS cluster. The user must be created in AWS to assume the admin role."
+variable aws_admin_group_names {
+  description = "AWS User who will assume AWS Admin Role to manage EKS cluster. The Group must be created in AWS to assume the admin role."
+  type = list(string)
+  default     = []
 }
 
 variable "include_ebs_csi_driver" {
