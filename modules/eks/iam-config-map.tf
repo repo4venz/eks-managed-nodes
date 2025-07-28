@@ -77,8 +77,8 @@ resource "kubernetes_config_map_v1_data" "aws_auth" {
   data = {
     "mapRoles" = yamlencode([
       {
-        rolearn  = "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:role/${var.aws_admin_role_name[0]}"
-        username = "${var.aws_admin_role_name[0]}"
+        rolearn  = "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:role/${var.aws_admin_role_names[0]}"
+        username = "${var.aws_admin_role_names[0]}"
         groups   = ["system:masters", "system:bootstrappers", "system:nodes"]
       },
       {
@@ -90,8 +90,8 @@ resource "kubernetes_config_map_v1_data" "aws_auth" {
     ])
     "mapUsers" = yamlencode([
       {
-        userarn  = "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:user/${var.aws_admin_user_name[0]}"
-        username = "${var.aws_admin_user_name[0]}"
+        userarn  = "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:user/${var.aws_admin_user_names[0]}"
+        username = "${var.aws_admin_user_names[0]}"
         groups   = ["system:masters"]
       },
       {
