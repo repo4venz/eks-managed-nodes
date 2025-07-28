@@ -111,9 +111,9 @@ resource "aws_eks_cluster" "demo_eks_cluster" {
     subnet_ids =  concat(var.public_subnets, var.private_subnets)
   }
 
-   access_config {
+   /*access_config {
       authentication_mode = "API_AND_CONFIG_MAP"
-   }
+   }*/
 
    encryption_config {
 	    provider {
