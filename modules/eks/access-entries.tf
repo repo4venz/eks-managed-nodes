@@ -9,8 +9,8 @@ resource "aws_eks_access_entry" "admin_group" {
   principal_arn = "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:group/${var.aws_admin_group_names[count.index]}"
 
   # Optional: Specify Kubernetes username and groups
-  kubernetes_groups = ["system:masters"]
-  user_name         = "admin-group-${var.aws_admin_group_names[count.index]}"
+ # kubernetes_groups = ["system:masters"]
+ # user_name         = "admin-group-${var.aws_admin_group_names[count.index]}"
   
   type = "STANDARD"
 }
@@ -30,6 +30,7 @@ resource "aws_eks_access_policy_association" "admin_policy_groups" {
 }
 
 
+
 ############################# Admin User Roles ####################################################
 
 resource "aws_eks_access_entry" "admin_role" {
@@ -39,8 +40,8 @@ resource "aws_eks_access_entry" "admin_role" {
   principal_arn = "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:role/${var.aws_admin_role_names[count.index]}"
 
   # Optional: Specify Kubernetes username and groups
-  kubernetes_groups = ["system:masters"]
-  user_name         = "admin-role-${var.aws_admin_role_names[count.index]}"
+ # kubernetes_groups = ["system:masters"]
+ # user_name         = "admin-role-${var.aws_admin_role_names[count.index]}"
   
   type = "STANDARD"
 }
@@ -69,8 +70,8 @@ resource "aws_eks_access_entry" "admin_user" {
   principal_arn = "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:user/${var.aws_admin_user_names[count.index]}"
 
   # Optional: Specify Kubernetes username and groups
-  kubernetes_groups = ["system:masters"]
-  user_name         = "admin-role-${var.aws_admin_user_names[count.index]}"
+ # kubernetes_groups = ["system:masters"]
+ # user_name         = "admin-role-${var.aws_admin_user_names[count.index]}"
   
   type = "STANDARD"
 }
