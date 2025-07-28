@@ -111,6 +111,10 @@ resource "aws_eks_cluster" "demo_eks_cluster" {
     subnet_ids =  concat(var.public_subnets, var.private_subnets)
   }
 
+   access_config {
+      authentication_mode = "API_AND_CONFIG_MAP"
+   }
+
    encryption_config {
 	    provider {
 	      key_arn = var.eks_kms_secret_encryption_alias_arn
