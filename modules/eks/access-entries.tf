@@ -72,12 +72,12 @@ resource "aws_eks_access_policy_association" "admin_policy_users" {
   user_name     = "eks-node:{{EC2PrivateDNSName}}"
   type          = "EC2_LINUX"
 
-  kubernetes_groups = [
-    "system:bootstrappers",
-    "system:nodes"
-  ]
+ # kubernetes_groups = [
+ #   "system:bootstrappers",
+ #   "system:nodes"
+ # ]
 
-  depends_on = [ aws_eks_cluster.demo_eks_cluster  ]
+  depends_on = [ aws_eks_cluster.demo_eks_cluster, aws_iam_role.eks_worker_nodes_role  ]
 }
 
  resource "aws_eks_access_policy_association" "worker_nodes_policy" {
@@ -95,16 +95,7 @@ resource "aws_eks_access_policy_association" "admin_policy_users" {
 
 
 /*
-resource "aws_eks_access_entry" "dev_team" {
-  cluster_name  = aws_eks_cluster.example.name
-  principal_arn = "arn:aws:iam::123456789012:group/DevTeam"
-
-  kubernetes_groups = ["developers"]
-  user_name         = "dev-team"
-  
-  type = "STANDARD"
-}
-
+ 
 
 
 resource "aws_eks_access_entry" "ci_cd" {
