@@ -23,30 +23,38 @@ resource "aws_eks_addon" "vpc_cni" {
   resolve_conflicts_on_update = "OVERWRITE"
 
   service_account_role_arn = aws_iam_role.vpc_cni_irsa_role.arn
+  
 
   configuration_values = jsonencode({
-    env = {
-      ENABLE_PREFIX_DELEGATION = "true"  # Enable prefix delegation
-      WARM_IP_TARGET           = "5"     # Warm up 5 IPs
-      WARM_ENI_TARGET          = "1"    
-      WARM_PREFIX_TARGET       = "1"      # Warm up 1 prefix
-      MINIMUM_IP_TARGET        = "10"
-    }
+    env = merge(
+      var.enable_vpc_cni_advance_network ? {
+        ENABLE_PREFIX_DELEGATION = var.vpc_cni_prefix_delegation_configs.enable_prefix_delegation
+        WARM_ENI_TARGET          = var.vpc_cni_prefix_delegation_configs.warm_eni_target
+        WARM_PREFIX_TARGET       = var.vpc_cni_prefix_delegation_configs.warm_prefix_target
+        WARM_IP_TARGET           = var.vpc_cni_prefix_delegation_configs.warm_ip_target
+        MINIMUM_IP_TARGET        = var.vpc_cni_prefix_delegation_configs.minimum_ip_target
+      } : {}
+    )
   })
-
+ 
   depends_on = [
     aws_iam_role_policy_attachment.vpc_cni_attach,
     aws_iam_role.vpc_cni_irsa_role
   ]
 }
+ 
 
 /*
 Variable	Recommended Value	 
-ENABLE_PREFIX_DELEGATION	true	Uses /28 IPv4 prefixes (reduces API calls, improves scaling).
+enable_vpc_cni_advance_network	true	Uses /28 IPv4 prefixes (reduces API calls, improves scaling).
 WARM_IP_TARGET	5	Pre-allocates 5 IPs to reduce pod startup latency (good for moderate churn).
 WARM_ENI_TARGET	1	Keeps 1 extra ENI "warmed up" (helps sudden scaling needs).
 WARM_PREFIX_TARGET	1 (not 2)	Warms 1 prefix (16 IPs) instead of 2 (avoids wasting IPs).
 MINIMUM_IP_TARGET	10 (optional)	Ensures at least 10 IPs are always available (prevents throttling).
+
+warm_ip_target and warm_prefix_target are mutually exclusive
+
+minimum_ip_target and warm_prefix_target are mutually exclusive
 
 
 Key Adjustments & Rationale
@@ -64,7 +72,7 @@ Adjust based on your average pod churn rate.
 
 Avoid Over-Allocation
 
-WARM_ENI_TARGET=1 is sufficient (warming more ENs consumes extra IPs unnecessarily).
+WARM_ENI_TARGET=1 is sufficient (warming more ENIs consumes extra IPs unnecessarily).
 
 
 

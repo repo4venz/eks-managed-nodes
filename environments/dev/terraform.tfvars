@@ -39,18 +39,19 @@ promtail_chart_version = "6.17.0"
 
 
 app_namespace        =  ["myapps1", "myapps2"]
-aws_test_secrets               = [
-                                    {
-                                        secret_name = "test/application3/credentials",          # Reference to the secret of AWS Secret Manager 
-                                        application_namespace = "myapps1"                # K8s namespace in EKS where the AWS Secret will sync
-                                    },
-                                    {
-                                        secret_name = "test/application4/credentials",
-                                        application_namespace = "myapps2"
-                                    }
-                                ]
+aws_test_secrets = [
+                    {
+                      secret_name = "test/application3/credentials",          # Reference to the secret of AWS Secret Manager 
+                      application_namespace = "myapps1"                # K8s namespace in EKS where the AWS Secret will sync
+                    },
+                    {
+                      secret_name = "test/application4/credentials",
+                      application_namespace = "myapps2"
+                    }
+                  ]
 
 include_vpc_cni_addon_module = true
+enable_vpc_cni_advance_network = false
 include_kube_proxy_addon_module = true
 include_coredns_addon_module = true
 include_pod_identity_agent_addon_module = true
@@ -80,7 +81,13 @@ application-external-secrets_module = false
 
 
 
-
+vpc_cni_prefix_delegation_configs = {
+    enable_prefix_delegation = "true"   
+    warm_eni_target     = "1"
+    warm_prefix_target  = "1"   # Warm up 1 prefix
+    warm_ip_target      = "0"   # Warm up n IPs.
+    minimum_ip_target   = "0"
+}
 
 
 

@@ -107,6 +107,8 @@ module "vpc-cni-addon" {
   count = var.include_vpc_cni_addon_module ? 1 : 0
   source                                        = "../modules/eks-add-ons/vpc-cni"
   k8s_cluster_name                              =  local.k8s_cluster_name
+  enable_vpc_cni_advance_network                =  var.enable_vpc_cni_advance_network
+  vpc_cni_prefix_delegation_configs             =  var.vpc_cni_prefix_delegation_configs
 
   depends_on = [module.eks]
 }
