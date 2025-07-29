@@ -51,7 +51,6 @@ aws_test_secrets = [
                   ]
 
 include_vpc_cni_addon_module = true
-enable_vpc_cni_advance_network = false
 include_kube_proxy_addon_module = true
 include_coredns_addon_module = true
 include_pod_identity_agent_addon_module = true
@@ -79,8 +78,8 @@ include_external_secrets_module = false
 application-external-secrets_module = false
 
 
-
-
+### VPC CNI Advance Networking for PODs ####################
+enable_vpc_cni_advance_network = true
 vpc_cni_prefix_delegation_configs = {
     enable_prefix_delegation = "true"   
     warm_eni_target     = "1"

@@ -1,0 +1,15 @@
+apiVersion: core.k8sgpt.ai/v1alpha1
+kind: K8sGPT
+metadata:
+  name: bedrock
+  namespace: k8sgpt-operator-system
+spec:
+  ai:
+    enabled: true
+    model: anthropic.claude-3-5-sonnet-20240620-v1:0 
+    region: eu-central-1
+    backend: amazonbedrock
+    language: english
+  noCache: false
+  repository: ghcr.io/k8sgpt-ai/k8sgpt
+  version: v0.4.12

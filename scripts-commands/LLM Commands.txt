@@ -1,0 +1,338 @@
+Get-Service vmcompute | Restart-Service
+
+ Install Ollama:
+Open your terminal and install Ollama using the provided command: curl -fsSL https://ollama.com/install.sh | sh. 
+This script will download and install Ollama, and it will attempt to detect and utilize your Nvidia GPU if available for faster processing. 
+
+https://github.com/awslabs/mcp/tree/main/src/eks-mcp-server
+
+ollama run llama3.1
+
+ollama list
+ollama run <model_name>
+
+
+ollama serve &
+
+sudo systemctl status ollama
+sudo systemctl stop ollama
+
+
+https://github.com/ollama/ollama
+
+
+https://pypi.org/project/awslabs.cost-explorer-mcp-server/
+
+docker build -t ollama-llama3.1-8b -f dockerfile-ollama-llama3.1-8b .
+
+docker tag ollama-llama3.1-8b:latest dockersuvendu/ollama-llama3.1-8b:latest
+docker rmi dockerhub.com/dockersuvendu/ollama-llama3.1-8b:latest
+
+docker push dockersuvendu/ollama-llama3.1-8b:latest
+
+docker ps
+
+ docker exec ollama curl -s http://localhost:11434/api/chat
+ 
+
+
+# Stage 1: Download the model
+FROM ollama/ollama:latest AS builder
+
+# Start Ollama server and pull model in one layer
+RUN (ollama serve &) && \
+    sleep 15 && \
+    ollama pull llama3.1 && \
+    pkill ollama
+
+# Stage 2: Create final image
+FROM ollama/ollama:latest
+
+# Copy the downloaded model
+COPY --from=builder /root/.ollama /root/.ollama
+
+EXPOSE 11434
+CMD ["sh", "-c", "sleep 5 && ollama serve"]
+
+
+
+
+FROM ubuntu:22.04
+
+RUN apt-get update && \
+    apt-get install -y ca-certificates curl && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN curl -fsSL https://ollama.com/install.sh | sh
+
+RUN mkdir -p /root/.ollama && \
+    chmod -R 777 /root/.ollama
+
+#RUN ollama pull llama3
+
+# Start Ollama server and pull model in one layer
+RUN (ollama serve &) && \
+    sleep 15 && \
+    ollama pull llama3.1  
+
+EXPOSE 11434
+HEALTHCHECK --interval=30s --timeout=5s \
+  CMD curl -f http://localhost:11434 || exit 1
+
+CMD ["sh", "-c", "sleep 5 && ollama serve"]
+
+
+docker exec ollama curl -X POST http://localhost:11434/api/chat \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "llama3.1",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Hello! How are you?"
+      }
+    ]
+  }'
+  
+  docker exec ollama curl -X POST http://localhost:11434/api/generate -d '{"model":"llama3.1","prompt":"test"}'
+  
+ Home Brew
+ /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+ 
+  
+  AI Backend for Bedrock
+  =======================
+  
+  k8sgpt auth add -b amazonbedrock -h
+  k8sgpt auth add -b amazonbedrock --providerRegion eu-west-2 -m anthropic.claude-3-7-sonnet-20250219-v1:0
+  k8sgpt analyze -b amazonbedrock -e
+  
+  k8sgpt auth add --backend amazonbedrock --model anthropic.claude-3-7-sonnet-20250219-v1:0 --providerRegion eu-west-2
+  k8sgpt auth default -p amazonbedrock
+  aws eks update-kubeconfig --region eu-west-2 --name eks-managed-clstr-dev
+  k8sgpt analyze --explain --backend amazonbedrock
+  
+  k8sgpt analyze --explain  --model-id anthropic.claude-3-7-sonnet-20250219-v1:0
+
+	AWS_PROFILE=super_admin k8sgpt analyze --explain --backend amazonbedrock
+
+
+
+  k8sgpt auth remove -b amazonbedrock
+  k8sgpt auth add --backend amazonbedrock --providerRegion eu-central-1 --model anthropic.claude-3-5-sonnet-20240620-v1:0 
+  k8sgpt auth default -p amazonbedrock
+   k8sgpt analyze --explain --backend amazonbedrock  --interactive 
+
+k8sgpt analyze --explain --backend amazonbedrock  --interactive
+
+
+kubectl get k8sgpt -n k8sgpt-operator-system
+
+kubectl delete all --all -n k8sgpt-operator-system --grace-period=0 --force
+
+kubectl patch k8sgpt <name> -n <namespace> -p '{"metadata":{"finalizers":[]}}' --type=merge
+kubectl edit k8sgpt <name> -n <namespace>
+kubectl edit k8sgpt bedrock -n k8sgpt-operator-system
+kubectl patch k8sgpt bedrock -n k8sgpt-operator-system -p '{"metadata":{"finalizers":[]}}' --type=merge
+Then in the editor, remove this line under .metadata.finalizers: 
+finalizers:
+  - k8sgpt.ai/finalizer
+ 
+ kubectl get namespace k8sgpt-operator-system -o json | jq '.spec.finalizers=[]' | kubectl replace --raw "/api/v1/namespaces/k8sgpt-operator-system/finalize" -f -
+
+
+
+ 
+export AWS_REGION=eu-west-2  # or your region
+
+aws sts get-caller-identity
+
+export AWS_SDK_LOAD_CONFIG=1
+export AWS_DEBUG=1
+export AWS_LOG_LEVEL=debug
+
+
+aws bedrock-runtime invoke-model \
+  --region eu-west-2 \
+  --model-id anthropic.claude-3-7-sonnet-20250219-v1:0 \
+  --body "$(echo -n '{
+    "anthropic_version": "bedrock-2023-05-31",
+    "messages": [
+      {
+        "role": "user",
+        "content": "How can I AWs CLI Issue?"
+      }
+    ],
+    "max_tokens": 100,
+    "temperature": 0.7
+  }' | base64)" \
+  --content-type application/json \
+  --accept application/json \
+  output.json
+  
+  
+aws bedrock-runtime invoke-model \
+  --region eu-west-2 \
+  --model-id anthropic.claude-3-7-sonnet-20250219-v1:0 \
+  --body "$(echo -n '{
+    "anthropic_version": "bedrock-2023-05-31",
+    "messages": [
+      {
+        "role": "user",
+        "content": "How can I AWs CLI Issue?"
+      }
+    ],
+    "max_tokens": 100,
+    "temperature": 0.7
+  }' | base64)" \
+  --content-type application/json \
+  --accept application/json \
+  output.json
+    
+
+
+
+
+cat output.json | jq
+
+
+kubectl -n monitoring patch serviceMonitor k8sgpt-k8sgpt-operator-controller-manager-metrics-monitor  -p '{"metadata":{"labels":{"release":"prometheus"}}}' --type=merge
+
+cat > k8sgpt-bedrock.yaml<<EOF
+apiVersion: core.k8sgpt.ai/v1alpha1
+kind: K8sGPT
+metadata:
+  name: bedrock
+  namespace: k8sgpt-operator-system
+spec:
+  ai:
+    enabled: true
+    model: anthropic.claude-3-5-sonnet-20240620-v1:0 
+    region: eu-central-1
+    backend: amazonbedrock
+    language: english
+  noCache: false
+  repository: ghcr.io/k8sgpt-ai/k8sgpt
+  version: v0.4.12
+EOF
+
+kubectl apply -f k8sgpt-bedrock.yaml
+
+kubectl get results -n k8sgpt-operator-system
+
+kubectl get results <scanresult> -n k8sgpt-operator-system -o json
+
+
+kubectl -n monitoring patch serviceMonitor k8sgpt-k8sgpt-operator-controller-manager-metrics-monitor -p '{"metadata":{"labels":{"release":"prometheus"}}}' --type=merge
+
+
+Test GPU Workload (Example Pod)
+------------------------------
+
+cat > test-gpu-workload.yaml<<EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: cuda-vectoradd
+spec:
+  restartPolicy: OnFailure
+  containers:
+  - name: cuda-vectoradd
+    image: nvidia/cuda:12.2.0-base-ubuntu22.04
+    command: ["/bin/bash", "-c", "nvidia-smi && sleep 60"]
+    resources:
+      limits:
+        nvidia.com/gpu: 1  # Request 1 GPU
+  tolerations:
+  - key: "nvidia.com/gpu"
+    operator: "Exists"
+    effect: "NoSchedule"
+EOF
+
+kubectl apply -f test-gpu-workload.yaml
+
+cat > test-gpu-workload.yaml<<EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: gpu-pod-example
+  labels:
+    app: gpu-test
+spec:
+  # Node selection criteria
+  nodeSelector:
+    accelerator: nvidia  # Requires nodes with this label
+	instance-type: gpu
+    # kubernetes.io/arch: amd64  # Optional: Architecture selector
+    # node-type: gpu-optimized  # Additional custom label
+
+
+  containers:
+  - name: cuda-container
+    image: nvidia/cuda:12.2.0-base-ubuntu22.04
+    command: ["/bin/bash", "-c", "--"]
+    args: ["while true; do sleep 30; done;"]
+    resources:
+      limits:
+        nvidia.com/gpu: 1  # Request 1 GPU
+    securityContext:
+      capabilities:
+        add: ["SYS_ADMIN"]  # Often needed for GPU workloads
+
+  # Optional: Tolerations for tainted nodes
+  tolerations:
+  - key: "nvidia.com/gpu"
+	operator: "Exists"
+    effect: "NoSchedule"
+EOF
+
+kubectl apply -f test-gpu-workload.yaml	
+	
+
+Basic GPU Test (Quick Verification)
+----------------------------------------------
+docker run --gpus all -it --rm nvidia/cuda:12.2.0-base-ubuntu22.04 nvidia-smi
+
+Comprehensive CUDA Test
+-------------------------------
+docker run --gpus all -it --rm nvidia/cuda:12.2.0-base-ubuntu22.04 bash -c "
+    apt-get update && \
+    apt-get install -y cuda-samples-12-2 && \
+    cd /usr/local/cuda/samples/1_Utilities/deviceQuery && \
+    make && \
+    ./deviceQuery
+"
+
+Bandwidth Test (Performance Verification)
+--------------------------------------------
+docker run --gpus all -it --rm nvidia/cuda:12.2.0-base-ubuntu22.04 bash -c "
+    apt-get update && \
+    apt-get install -y cuda-samples-12-2 && \
+    cd /usr/local/cuda/samples/1_Utilities/bandwidthTest && \
+    make && \
+    ./bandwidthTest
+"
+
+Matrix Multiplication Test (Computational Test)
+-----------------------------------------------
+docker run --gpus all -it --rm nvidia/cuda:12.2.0-base-ubuntu22.04 bash -c "
+    apt-get update && \
+    apt-get install -y cuda-samples-12-2 && \
+    cd /usr/local/cuda/samples/0_Simple/matrixMul && \
+    make && \
+    ./matrixMul -wA=64 -hA=64 -wB=64 -hB=64
+"
+
+
+ aws eks update-kubeconfig --region eu-west-2 --name eks-managed-clstr-dev
+ kubectl describe configmap -n kube-system aws-auth
+ 
+ kubectl get nodes -o custom-columns=NAME:.metadata.name,PODS:.status.capacity.pods
+
+aws eks describe-nodegroup   --cluster-name eks-managed-clstr-dev   --nodegroup-name eks-managed-clstr-dev-workernodes-group
+kubectl create deployment nginx --replicas 2 --image nginx
+kubectl get pods -A -o wide | column -t
+
+
+
+
