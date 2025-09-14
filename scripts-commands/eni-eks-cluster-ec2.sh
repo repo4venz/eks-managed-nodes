@@ -6,6 +6,7 @@ read eks_cluster_name
 total_ips=0
 assigned_ips=0
 free_ips=0
+eks_cluster_name=${eks_cluster_name:"eks-managed-clstr-dev"}
 
 eks_cluster_tag="kubernetes.io/cluster/$eks_cluster_name"
 

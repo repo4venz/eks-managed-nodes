@@ -65,7 +65,7 @@ include_nginx_controller_module = true
 include_eks_cluster_autoscaler_module = true
 include_external_dns_module = true
 include_metrics_server_module = true
-include_fluentbit_module = false
+include_fluentbit_module = true
 include_prometheus_module = true
 include_loki_promtail_module = true
 
@@ -73,7 +73,7 @@ include_cert_manager_module = true
 include_lets_encrypt_ca_module = true   
 include_k8s_app_module = false
 include_k8s_app_secured_module = true  
-include_kubecost_module = false    
+include_kubecost_module = true    
 include_external_secrets_module = false
 application-external-secrets_module = false
 
