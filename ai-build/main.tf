@@ -24,8 +24,8 @@ module "k8sGPT-operator" {
   source = "../modules/agentic-ai/k8sGPT-operator"
   k8s_cluster_name = local.k8s_cluster_name
   # Helm chart configuration
-  environment                  =  var.environment
-  k8sgpt_helm_version               = var.k8sgpt_helm_version
+  environment                  = var.environment
+  k8sgpt_helm_version          = var.k8sgpt_helm_version
   ai_foundation_model_service  = var.ai_foundation_model_service
   ai_foundation_model_region   = var.ai_foundation_model_region
   ai_foundation_model_name     = var.ai_foundation_model_name

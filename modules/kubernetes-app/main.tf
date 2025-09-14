@@ -65,7 +65,7 @@ resource "kubernetes_deployment" "this" {
       }
     }
   }
-   depends_on = [null_resource.create_namespace_if_not_exists, wait_60_seconds]
+   depends_on = [null_resource.create_namespace_if_not_exists, time_sleep.wait_60_seconds]
 }
 
 # -------------------
@@ -124,7 +124,7 @@ resource "kubernetes_ingress_v1" "this" {
       }
     }
   }
-   depends_on = [null_resource.create_namespace_if_not_exists, wait_60_seconds]
+   depends_on = [null_resource.create_namespace_if_not_exists, time_sleep.wait_60_seconds]
 }
 
 
