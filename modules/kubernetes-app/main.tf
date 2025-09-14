@@ -1,15 +1,26 @@
  
+
 resource "null_resource" "create_namespace_if_not_exists" {
+ 
   provisioner "local-exec" {
     command = <<EOT
-      kubectl get namespace ${var.app_namespace} || kubectl create namespace ${var.app_namespace}
+      if ! kubectl get namespace ${var.app_namespace} >/dev/null 2>&1; then
+        kubectl create namespace ${var.app_namespace}
+        echo "Created namespace: ${var.app_namespace}"
+      else
+        echo "Namespace ${var.app_namespace} already exists"
+      fi
     EOT
   }
-
-  triggers = {
+    triggers = {
     always_run = timestamp() # Forces re-run on every `apply`; can be improved
   }
 }
+
+resource "time_sleep" "wait_60_seconds" {
+  create_duration = "60s"
+}
+
 
 # Terraform module to deploy docker-2048 to EKS using NGINX Ingress
 
@@ -54,7 +65,7 @@ resource "kubernetes_deployment" "this" {
       }
     }
   }
-   depends_on = [null_resource.create_namespace_if_not_exists]
+   depends_on = [null_resource.create_namespace_if_not_exists, wait_60_seconds]
 }
 
 # -------------------
@@ -78,7 +89,7 @@ resource "kubernetes_service" "this" {
 
     # type = "ClusterIP"
   }
-   depends_on = [null_resource.create_namespace_if_not_exists]
+   depends_on = [null_resource.create_namespace_if_not_exists, wait_60_seconds]
 }
 
 # -------------------
@@ -113,7 +124,7 @@ resource "kubernetes_ingress_v1" "this" {
       }
     }
   }
-   depends_on = [null_resource.create_namespace_if_not_exists]
+   depends_on = [null_resource.create_namespace_if_not_exists, wait_60_seconds]
 }
 
 
