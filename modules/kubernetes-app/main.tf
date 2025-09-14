@@ -89,7 +89,7 @@ resource "kubernetes_service" "this" {
 
     # type = "ClusterIP"
   }
-   depends_on = [null_resource.create_namespace_if_not_exists, wait_60_seconds]
+   depends_on = [null_resource.create_namespace_if_not_exists, time_sleep.wait_60_seconds]
 }
 
 # -------------------
