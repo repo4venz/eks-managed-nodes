@@ -194,7 +194,7 @@ required_gpu_spot_instances = false
 
 ####################  END of EKS Worker Nodes configs with VPC CNI ###################
 
-public_domain_name = "suvendupublicdomain.fun"
+public_domain_name = "suvendu.online"
  
 
  
