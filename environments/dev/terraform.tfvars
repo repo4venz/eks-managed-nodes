@@ -3,7 +3,7 @@ environment                  =  "dev"
 #user_profile                 =  "AWS_741032333307_User"
 user_os                      =  "linux"
 cluster_name                 =  "eks-managed-clstr"
-cluster_version              =  "1.33"
+cluster_version              =  "1.36"
 cluster_group                =  "eks-managed-nodes"
 vpc_cidr                     =  "192.168.0.0/16"
 vpc_name                     =  "eks-vpc"
@@ -102,7 +102,7 @@ ebs_volume_type              =  "gp3"
 
 required_spot_instances      =  true   # either spot or ondemand or both instance types provision for eks worker nodes
 spot_instance_types          =  [ "t3.xlarge", "t3.2xlarge", "m5.2xlarge" ]
-increase_spot_pod_density    =  true   # applicable only when (required_spot_instances=true) for SPOT Node Group with mixed EC2 types. All EC2 instances POD density will be increased upto max
+increase_spot_pod_density    =  false   # applicable only when (required_spot_instances=true) for SPOT Node Group with mixed EC2 types. All EC2 instances POD density will be increased upto max
 
 # ---- Common SPOT Node Scaling Configs ----- #
 base_scaling_config_spot = {
